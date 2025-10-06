@@ -2,7 +2,7 @@
 using namespace std;
 
 int main() {
-    setlocale(0, "");
+    setlocale(LC_ALL, "ru");
     // 1 задание
     int a, b, c, d;          
     float p1, p2, p3, p4;    
