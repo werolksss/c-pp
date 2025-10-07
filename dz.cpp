@@ -3,76 +3,101 @@ using namespace std;
 
 int main() {
     setlocale(LC_ALL, "ru");
-    // 1 
-    cout << "\n1 задание\n";
-    int a;
-    cout << "введите число: ";
-    cin >> a;
 
-    cout << "обратное число: ";
-    for (; a > 0; a /= 10) {
-        cout << a % 10;
-    }
-    cout << endl;
-
-    //2
-    cout << "\n2задание\n";
+    // 1
+    cout << "//1 задание\n";
+    int a, b = 0, c = 0, d = 0, e;
     cout << "Введите число: ";
     cin >> a;
+    e = abs(a);
 
-    int b = 0;
-    for (; a > 0; a /= 10) {
-        b += a % 10;
+    if (a == 0) {
+        cout << "Количество цифр: 1\n";
+        cout << "Сумма: 0\n";
+        cout << "Среднее: 0\n";
+        cout << "Количество нулей: 1\n";
     }
-    cout << "Сумма цифр = " << b << endl;
-
-    //3
-    cout << "\n3 задание\n";
-    int n;
-    cout << "Введите количество дней: ";
-    cin >> n;
-
-    int total = 0;
-    int b_dist = 15;
-    for (int i = 1; i <= n; i++) {
-        total += b_dist;
-        b_dist += 2;
-    }
-    cout << "Общее расстояние = " << total << " см" << endl;
-
-    //4 
-    cout << "\n4 задание\n";
-    int coin, count = 0;
-    cout << "Введите 9 раз (1 = орел, 0 = решка):\n";
-    for (int i = 1; i <= 9; i++) {
-        cin >> coin;
-        if (coin == 1) count++;
-    }
-    if (count % 2 == 0)
-        cout << "Решение: положительное" << endl;
-    else
-        cout << "Решение: отрицательное" << endl;
-
-    //5
-    cout << "\n5 задание\n";
-    int days, start;
-    cout << "Введите количество дней в месяце: ";
-    cin >> days;
-    cout << "Введите первый день недели (1=Пн 2=Вт 3=Ср 4=Чт 5=Пт 6=Сб 7=Вс): ";
-    cin >> start;
-
-    cout << "\n Пн Вт Ср Чт Пт Сб Вс\n";
-
-    for (int i = 1; i < start; i++) {
-        cout << "   ";
+    else {
+        for (; e > 0; e /= 10) {
+            int f = e % 10;
+            c += f;
+            if (f == 0) d++;
+            b++;
+        }
+        cout << "Количество цифр: " << b << "\n";
+        cout << "Сумма цифр: " << c << "\n";
+        cout << "Среднее арифметическое: " << (double)c / b << "\n";
+        cout << "Количество нулей: " << d << "\n";
     }
 
-    for (int a_day = 1; a_day <= days; a_day++) {
-        cout.width(3);
-        cout << a_day;
-        if ((a_day + start - 1) % 7 == 0) cout << endl;
+    cout << "\n---------------------------------\n";
+
+    // 2 
+    cout << "//2 задание\n";
+    int g, h, i;
+    cout << "Введите размер клеточки: ";
+    cin >> g;
+
+    for (h = 0; h < 8 * g; h++) {
+        for (i = 0; i < 8 * g; i++) {
+            if (((h / g) + (i / g)) % 2 == 0)
+                cout << "*";
+            else
+                cout << "-";
+        }
+        cout << "\n";
     }
-    cout << endl;
+
+    cout << "\n---------------------------------\n";
+
+    // 3
+    cout << "//3 задание\n";
+    int j, k, l;
+    double m = 0;
+    cout << "На сколько человек заказ? ";
+    cin >> j;
+
+    for (k = 1; k <= j; k++) {
+        double n = 0;
+        cout << "\nМеню для человека " << k << ":\n";
+        cout << "1. Кофе - 150 руб\n";
+        cout << "2. Чай - 100 руб\n";
+        cout << "3. Пирожное - 200 руб\n";
+        cout << "4. Сок - 120 руб\n";
+        cout << "5. Завершить заказ\n";
+
+        for (;;) {
+            cout << "Выберите пункт меню: ";
+            cin >> l;
+            if (l == 1) n += 150;
+            else if (l == 2) n += 100;
+            else if (l == 3) n += 200;
+            else if (l == 4) n += 120;
+            else if (l == 5) break;
+            else cout << "Нет такого пункта!\n";
+        }
+
+        cout << "Сумма заказа для человека " << k << ": " << n << " руб\n";
+        m += n;
+    }
+
+    cout << "\nОбщая сумма заказа: " << m << " руб\n";
+
+    cout << "\n---------------------------------\n";
+
+    // 4 
+    cout << "//4 задание\n";
+    int o, p;
+    char q;
+    cout << "Морской бой:\n\n";
+    for (o = 0; o < 10; o++) {
+        for (p = 0; p < 10; p++) {
+            q = 'A' + p;
+            cout << q << o << " ";
+        }
+        cout << "\n";
+    }
 
     return 0;
 }
+
