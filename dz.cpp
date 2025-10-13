@@ -3,101 +3,96 @@ using namespace std;
 
 int main() {
     setlocale(LC_ALL, "ru");
-
     // 1
-    cout << "//1 задание\n";
-    int a, b = 0, c = 0, d = 0, e;
-    cout << "Введите число: ";
+    cout << "1 задание:\n";
+    int a, b;
+    cout << "Введите A: ";
     cin >> a;
-    e = abs(a);
+    cout << "Введите B: ";
+    cin >> b;
 
-    if (a == 0) {
-        cout << "Количество цифр: 1\n";
-        cout << "Сумма: 0\n";
-        cout << "Среднее: 0\n";
-        cout << "Количество нулей: 1\n";
-    }
-    else {
-        for (; e > 0; e /= 10) {
-            int f = e % 10;
-            c += f;
-            if (f == 0) d++;
-            b++;
+    for (int i = a; i <= b; i++) {
+        int count = 0;
+        for (int j = 1; j <= i; j++) {
+            if (i % j == 0) {
+                count++;
+            }
         }
-        cout << "Количество цифр: " << b << "\n";
-        cout << "Сумма цифр: " << c << "\n";
-        cout << "Среднее арифметическое: " << (double)c / b << "\n";
-        cout << "Количество нулей: " << d << "\n";
+        cout << "Число " << i << " имеет " << count << " делителей\n";
     }
+    cout << "\n";
 
-    cout << "\n---------------------------------\n";
+    // 2
+    cout << "2 задание:\n";
+    for (int i = 2; i <= 1000; i++) {
+        bool prostoe = true;
+        for (int j = 2; j < i; j++) {
+            if (i % j == 0) {
+                prostoe = false;
+                break;
+            }
+        }
+        if (prostoe) {
+            cout << i << " ";
+        }
+    }
+    cout << "\n\n";
 
-    // 2 
-    cout << "//2 задание\n";
-    int g, h, i;
-    cout << "Введите размер клеточки: ";
-    cin >> g;
+    // 3 
 
-    for (h = 0; h < 8 * g; h++) {
-        for (i = 0; i < 8 * g; i++) {
-            if (((h / g) + (i / g)) % 2 == 0)
-                cout << "*";
+    int n; 
+    cout << "введите нечетное положительное число: ";
+    cin >> n;
+
+    if (n <= 0 || n % 2 == 0) {
+        cout << " вы ввели не положительное нечетное число" << endl;
+        return 0;
+    }
+    for (int a = 0; a < n; a++) {        
+        for (int b = 0; b < n; b++) {    
+            if (a == b || a + b == n - 1 || a == n / 2 || b == n / 2)
+                cout << "* ";
             else
-                cout << "-";
+                cout << "  ";
         }
-        cout << "\n";
+        cout << "\n"; 
     }
-
-    cout << "\n---------------------------------\n";
-
-    // 3
-    cout << "//3 задание\n";
-    int j, k, l;
-    double m = 0;
-    cout << "На сколько человек заказ? ";
-    cin >> j;
-
-    for (k = 1; k <= j; k++) {
-        double n = 0;
-        cout << "\nМеню для человека " << k << ":\n";
-        cout << "1. Кофе - 150 руб\n";
-        cout << "2. Чай - 100 руб\n";
-        cout << "3. Пирожное - 200 руб\n";
-        cout << "4. Сок - 120 руб\n";
-        cout << "5. Завершить заказ\n";
-
-        for (;;) {
-            cout << "Выберите пункт меню: ";
-            cin >> l;
-            if (l == 1) n += 150;
-            else if (l == 2) n += 100;
-            else if (l == 3) n += 200;
-            else if (l == 4) n += 120;
-            else if (l == 5) break;
-            else cout << "Нет такого пункта!\n";
-        }
-
-        cout << "Сумма заказа для человека " << k << ": " << n << " руб\n";
-        m += n;
-    }
-
-    cout << "\nОбщая сумма заказа: " << m << " руб\n";
-
-    cout << "\n---------------------------------\n";
 
     // 4 
-    cout << "//4 задание\n";
-    int o, p;
-    char q;
-    cout << "Морской бой:\n\n";
-    for (o = 0; o < 10; o++) {
-        for (p = 0; p < 10; p++) {
-            q = 'A' + p;
-            cout << q << o << " ";
+    cout << "4 задание\n";
+    int time = 0;
+    for (int i = 0; i <= 9; i++) {
+        for (int j = 0; j <= 9; j++) {
+            for (int k = 0; k <= 9; k++) {
+                if (i != j && i != k && j != k) {
+                    cout << i << j << k << " ";
+                    time += 3;
+                }
+            }
         }
-        cout << "\n";
     }
+    cout << "\nВремя на подбор: " << time << " секунд\n\n";
+
+    // 5 
+    cout << "5 задание:\n";
+    int total = 0;
+
+    for (int i = 1; i <= 12; i++) {
+        int march, april, may;
+        cout << "Сотрудник " << i << ":\n";
+        cout << "Зарплата за март: ";
+        cin >> march;
+        cout << "Зарплата за апрель: ";
+        cin >> april;
+        cout << "Зарплата за май: ";
+        cin >> may;
+
+        int quarter = march + april + may;
+        cout << "Итого за квартал: " << quarter << "\n\n";
+        total += quarter;
+    }
+
+    cout << "Общая выплата по всем сотрудникам: " << total << "\n";
 
     return 0;
 }
-
