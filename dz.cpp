@@ -3,96 +3,76 @@ using namespace std;
 
 int main() {
     setlocale(LC_ALL, "ru");
-    // 1
-    cout << "1 задание:\n";
-    int a, b;
-    cout << "Введите A: ";
-    cin >> a;
-    cout << "Введите B: ";
-    cin >> b;
+//1
+    int a, b, c;
+    int d;
+    int e = 0;
+    cout << "Выберите уровень сложности (1-легкий, 2-средний, 3-сложный): ";
+    cin >> d;
 
-    for (int i = a; i <= b; i++) {
-        int count = 0;
-        for (int j = 1; j <= i; j++) {
-            if (i % j == 0) {
-                count++;
-            }
+    for (int i = 0; i < 5; i++) {
+        if (d == 1) {
+            a = 1 + rand() % 5;
+            b = 1 + rand() % 5;
         }
-        cout << "Число " << i << " имеет " << count << " делителей\n";
+        else if (d == 2) {
+            a = 1 + rand() % 8;
+            b = 1 + rand() % 8;
+        }
+        else {
+            a = 1 + rand() % 10;
+            b = 1 + rand() % 10;
+        }
+
+        cout << "Вопрос " << (i + 1) << ": " << a << " * " << b << " = ";
+        cin >> c;
+
+        if (c == a * b) {
+            cout << "Правильно!\n\n";
+            e++;
+        }
+        else {
+            cout << "Неправильно! Правильный ответ: " << a * b << "\n\n";
+        }
     }
-    cout << "\n";
 
-    // 2
-    cout << "2 задание:\n";
-    for (int i = 2; i <= 1000; i++) {
-        bool prostoe = true;
-        for (int j = 2; j < i; j++) {
-            if (i % j == 0) {
-                prostoe = false;
-                break;
-            }
-        }
-        if (prostoe) {
-            cout << i << " ";
-        }
+    cout << "Ваш результат: " << e << " из 5 правильных ответов\n";
+
+    double g = (double)e / 5 * 100;
+
+    if (g >= 90) {
+        cout << "Оценка 5\n";
+    }
+    else if (g >= 70) {
+        cout << "Оценка 4\n";
+    }
+    else if (g >= 50) {
+        cout << "Оценка 3\n";
+    }
+    else {
+        cout << "Оценка 2\n";
     }
     cout << "\n\n";
+    //2
+    cout << "Ромб из звездочек:\n\n";
 
-    // 3 
-
-    int n; 
-    cout << "введите нечетное положительное число: ";
-    cin >> n;
-
-    if (n <= 0 || n % 2 == 0) {
-        cout << " вы ввели не положительное нечетное число" << endl;
-        return 0;
-    }
-    for (int a = 0; a < n; a++) {        
-        for (int b = 0; b < n; b++) {    
-            if (a == b || a + b == n - 1 || a == n / 2 || b == n / 2)
-                cout << "* ";
-            else
-                cout << "  ";
+    for (int i = 1; i <= 5; i++) {
+        for (int j = 1; j <= 5 - i; j++) {
+            cout << " ";
         }
-        cout << "\n"; 
-    }
-
-    // 4 
-    cout << "4 задание\n";
-    int time = 0;
-    for (int i = 0; i <= 9; i++) {
-        for (int j = 0; j <= 9; j++) {
-            for (int k = 0; k <= 9; k++) {
-                if (i != j && i != k && j != k) {
-                    cout << i << j << k << " ";
-                    time += 3;
-                }
-            }
+        for (int j = 1; j <= 2 * i - 1; j++) {
+            cout << "*";
         }
+        cout << "\n";
     }
-    cout << "\nВремя на подбор: " << time << " секунд\n\n";
-
-    // 5 
-    cout << "5 задание:\n";
-    int total = 0;
-
-    for (int i = 1; i <= 12; i++) {
-        int march, april, may;
-        cout << "Сотрудник " << i << ":\n";
-        cout << "Зарплата за март: ";
-        cin >> march;
-        cout << "Зарплата за апрель: ";
-        cin >> april;
-        cout << "Зарплата за май: ";
-        cin >> may;
-
-        int quarter = march + april + may;
-        cout << "Итого за квартал: " << quarter << "\n\n";
-        total += quarter;
+    for (int i = 4; i >= 1; i--) {
+        for (int j = 1; j <= 5 - i; j++) {
+            cout << " ";
+        }
+        for (int j = 1; j <= 2 * i - 1; j++) {
+            cout << "*";
+        }
+        cout << "\n";
     }
-
-    cout << "Общая выплата по всем сотрудникам: " << total << "\n";
-
     return 0;
 }
