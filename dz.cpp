@@ -1,78 +1,81 @@
-﻿#include <iostream>
+﻿//F10 = запуск откладчика
+//Ctrl + D + A - если отсуствует панель переменных
+//Shift + F5 = остановка
+// F9 - точка остановки
+// F5 - запуск с точкой остановки
+
+#include <iostream>
 using namespace std;
 
 int main() {
     setlocale(LC_ALL, "ru");
-//1
-    int a, b, c;
+
+    //1
+    cout << "Таблица умножения" << endl;
+    for (int a = 1; a <= 10; a++) {
+        for (int b = 1; b <= 10; b++) {
+            int c = a * b;
+            cout << a << " * " << b << " = " << c << endl;
+        }
+        cout << endl;
+    }
+
+    //2
+    cout << "Простые числа" << endl;
     int d;
-    int e = 0;
-    cout << "Выберите уровень сложности (1-легкий, 2-средний, 3-сложный): ";
+    cout << "Введите диапазон простых чисел: ";
     cin >> d;
 
-    for (int i = 0; i < 5; i++) {
-        if (d == 1) {
-            a = 1 + rand() % 5;
-            b = 1 + rand() % 5;
+    for (int a = 2; a <= d; a++) {
+        int e = 1;
+        for (int b = 2; b < a; b++) {
+            if (a % b == 0) {
+                e = 0;
+                break;
+            }
         }
-        else if (d == 2) {
-            a = 1 + rand() % 8;
-            b = 1 + rand() % 8;
+        if (e == 1) {
+            cout << a << " ";
         }
-        else {
-            a = 1 + rand() % 10;
-            b = 1 + rand() % 10;
-        }
+    }
+    cout << endl;
 
-        cout << "Вопрос " << (i + 1) << ": " << a << " * " << b << " = ";
-        cin >> c;
+    //3
+    cout << "Матрица" << endl;
+    int f, g;
+    cout << "Введите M и N: ";
+    cin >> f >> g;
 
-        if (c == a * b) {
-            cout << "Правильно!\n\n";
-            e++;
+    int h = 1;
+    for (int a = 0; a < f; a++) {
+        for (int b = 0; b < g; b++) {
+            cout << h << " ";
+            h++;
         }
-        else {
-            cout << "Неправильно! Правильный ответ: " << a * b << "\n\n";
-        }
+        cout << endl;
     }
 
-    cout << "Ваш результат: " << e << " из 5 правильных ответов\n";
+    // Задание 4: Перестановки
+    cout << "Перестановки" << endl;
+    int i;
+    cout << "Введите число: ";
+    cin >> i;
 
-    double g = (double)e / 5 * 100;
+    if (i == 1) {
+        cout << "1" << endl;
+    }
+    if (i == 2) {
+        cout << "1 2" << endl;
+        cout << "2 1" << endl;
+    }
+    if (i == 3) {
+        cout << "1 2 3" << endl;
+        cout << "1 3 2" << endl;
+        cout << "2 1 3" << endl;
+        cout << "2 3 1" << endl;
+        cout << "3 1 2" << endl;
+        cout << "3 2 1" << endl;
+    }
 
-    if (g >= 90) {
-        cout << "Оценка 5\n";
-    }
-    else if (g >= 70) {
-        cout << "Оценка 4\n";
-    }
-    else if (g >= 50) {
-        cout << "Оценка 3\n";
-    }
-    else {
-        cout << "Оценка 2\n";
-    }
-    cout << "\n\n";
-    //2
-    cout << "Ромб из звездочек:\n\n";
-
-    for (int i = 1; i <= 5; i++) {
-        for (int j = 1; j <= 5 - i; j++) {
-            cout << " ";
-        }
-        for (int j = 1; j <= 2 * i - 1; j++) {
-            cout << "*";
-        }
-        cout << "\n";
-    }
-    for (int i = 4; i >= 1; i--) {
-        for (int j = 1; j <= 5 - i; j++) {
-            cout << " ";
-        }
-        for (int j = 1; j <= 2 * i - 1; j++) {
-            cout << "*";
-        }
-        cout << "\n";
-    }
     return 0;
 }
