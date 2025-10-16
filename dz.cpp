@@ -1,81 +1,131 @@
-﻿//F10 = запуск откладчика
-//Ctrl + D + A - если отсуствует панель переменных
-//Shift + F5 = остановка
-// F9 - точка остановки
-// F5 - запуск с точкой остановки
-
+﻿/*
+1. C) 22
+2. A) char
+3. A) const, D) constexpr
+4. A) x++;
+5. C) if(x==10){...}
+6. B) Альтернативный способ записи условного выражения вида "если ..., иначе..."
+7. A) Вход данных из потока ввода
+8. C) do-while
+9. C) Целочисленные значения и символы
+10. B) Для обработки двумерных структур данных (например, матриц)
+*/
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 int main() {
     setlocale(LC_ALL, "ru");
 
     //1
-    cout << "Таблица умножения" << endl;
-    for (int a = 1; a <= 10; a++) {
-        for (int b = 1; b <= 10; b++) {
-            int c = a * b;
-            cout << a << " * " << b << " = " << c << endl;
-        }
-        cout << endl;
+    cout << "задание 1:\n";
+    int a, b, c;
+    cout << "Введите три числа: ";
+    cin >> a >> b >> c;
+
+    int max = a;
+
+    if (b > max) {
+        max = b;
     }
+    if (c > max) {
+        max = c;
+    }
+
+    cout << "Наибольшее число: " << max << "\n\n";
 
     //2
-    cout << "Простые числа" << endl;
-    int d;
-    cout << "Введите диапазон простых чисел: ";
-    cin >> d;
+    cout << "задание 2:\n";
+    int n;
+    cout << "Введите размер таблицы: ";
+    cin >> n;
 
-    for (int a = 2; a <= d; a++) {
-        int e = 1;
-        for (int b = 2; b < a; b++) {
-            if (a % b == 0) {
-                e = 0;
-                break;
-            }
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            cout << i * j << " ";
         }
-        if (e == 1) {
-            cout << a << " ";
-        }
+        cout << "\n";
     }
-    cout << endl;
+    cout << "\n";
 
     //3
-    cout << "Матрица" << endl;
-    int f, g;
-    cout << "Введите M и N: ";
-    cin >> f >> g;
-
-    int h = 1;
-    for (int a = 0; a < f; a++) {
-        for (int b = 0; b < g; b++) {
-            cout << h << " ";
-            h++;
-        }
-        cout << endl;
-    }
-
-    // Задание 4: Перестановки
-    cout << "Перестановки" << endl;
-    int i;
+    cout << "задание 3:\n";
+    int x;
     cout << "Введите число: ";
-    cin >> i;
+    cin >> x;
 
-    if (i == 1) {
-        cout << "1" << endl;
+    if (x % 3 == 0 && x % 5 == 0) {
+        cout << "FizzBuzz\n\n";
     }
-    if (i == 2) {
-        cout << "1 2" << endl;
-        cout << "2 1" << endl;
+    else if (x % 3 == 0) {
+        cout << "Fizz\n\n";
     }
-    if (i == 3) {
-        cout << "1 2 3" << endl;
-        cout << "1 3 2" << endl;
-        cout << "2 1 3" << endl;
-        cout << "2 3 1" << endl;
-        cout << "3 1 2" << endl;
-        cout << "3 2 1" << endl;
+    else if (x % 5 == 0) {
+        cout << "Buzz\n\n";
     }
+    else {
+        cout << x << "\n\n";
+    }
+
+    //4
+    cout << "задание 4:\n";
+    int num;
+    cout << "Введите число: ";
+    cin >> num;
+
+    long factorial = 1;
+
+    for (int i = 1; i <= num; i++) {
+        factorial = factorial * i;
+    }
+
+    cout << "Факториал: " << factorial << "\n\n";
+
+    //5
+    cout << "задание 5:\n";
+    const int SIZE = 100;
+    int size;
+    cout << "Размер массива (не больше 100): ";
+    cin >> size;
+
+    int arr[SIZE];
+
+    srand((unsigned int)time(0));
+
+    cout << "Случайные числа: ";
+    for (int i = 0; i < size; i++) {
+        arr[i] = rand() % 100 + 1;
+        cout << arr[i] << " ";
+    }
+
+    int min = arr[0];
+
+    for (int i = 1; i < size; i++) {
+        if (arr[i] < min) {
+            min = arr[i];
+        }
+    }
+    cout << "\nМинимальный элемент: " << min << "\n\n";
+
+    //6
+    cout << "задание 6:\n";
+    int N;
+    cout << "Введите число: ";
+    cin >> N;
+
+    for (int i = 1; i <= N; i++) {
+        if (i % 15 == 0) {
+            cout << "ThreeFive ";
+        }
+        else if (i % 3 == 0) {
+            cout << "Three ";
+        }
+        else {
+            cout << i << " ";
+        }
+    }
+    cout << "\n";
 
     return 0;
 }
