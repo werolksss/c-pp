@@ -82,32 +82,6 @@ int main() {
 
     cout << "Факториал: " << factorial << "\n\n";
 
-    //5
-    cout << "задание 5:\n";
-    const int SIZE = 100;
-    int size;
-    cout << "Размер массива (не больше 100): ";
-    cin >> size;
-
-    int arr[SIZE];
-
-    srand((unsigned int)time(0));
-
-    cout << "Случайные числа: ";
-    for (int i = 0; i < size; i++) {
-        arr[i] = rand() % 100 + 1;
-        cout << arr[i] << " ";
-    }
-
-    int min = arr[0];
-
-    for (int i = 1; i < size; i++) {
-        if (arr[i] < min) {
-            min = arr[i];
-        }
-    }
-    cout << "\nМинимальный элемент: " << min << "\n\n";
-
     //6
     cout << "задание 6:\n";
     int N;
