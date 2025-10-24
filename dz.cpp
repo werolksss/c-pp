@@ -1,78 +1,147 @@
 ﻿#include <iostream>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 int main() {
     setlocale(LC_ALL, "ru");
-    srand(123);
 
-    //1
-    cout << "Задание 1\n";
-    int a[3][3] = { {1, 2, 3}, {4, 5, 6}, {7, 8, 9} };
-    int sum = 0;
-    int min = a[0][0];
-    int max = a[0][0];
+    //1 задание
+    cout << "задание 1\n";
+    int a;
+    cout << "введите число: ";
+    cin >> a;
 
+    int massiv1[3][3];
+    int b = a;
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            sum += a[i][j];
-            if (a[i][j] < min) min = a[i][j];
-            if (a[i][j] > max) max = a[i][j];
+            massiv1[i][j] = b;
+            b = b * 2; 
         }
     }
-    cout << "Сумма всех элементов: " << sum << "\n";
-    cout << "Среднее арифметическое: " << sum / 9.0 << "\n";
-    cout << "Минимальный элемент: " << min << "\n";
-    cout << "Максимальный элемент: " << max << "\n\n";
 
-    // 2
-    cout << "Задание 2\n";
-    int b[3][4] = { {3, 5, 6, 7}, {12, 1, 1, 1}, {0, 7, 12, 1} };
-    int rowSum[3] = { 0 };
-    int colSum[4] = { 0 };
-    int totalSum = 0;
-
+    cout << "полученный массив:\n";
     for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 4; j++) {
-            rowSum[i] += b[i][j];
-            colSum[j] += b[i][j];
-            totalSum += b[i][j];
+        for (int j = 0; j < 3; j++) {
+            cout << massiv1[i][j] << " ";
         }
+        cout << "\n";
     }
+    cout << "\n";
 
+    //2 задание
+    cout << "задание 2\n";
+    int c;
+    cout << "введите число: ";
+    cin >> c;
+
+    int massiv2[3][3]; 
+    int d = c;
     for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 4; j++) {
-            cout << b[i][j] << "\t";
+        for (int j = 0; j < 3; j++) {
+            massiv2[i][j] = d;
+            d = d + 1;
         }
-        cout << rowSum[i] << "\n";
     }
 
-    for (int j = 0; j < 4; j++) {
-        cout << colSum[j] << "\t";
+  
+    cout << "полученный массив:\n";
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            cout << massiv2[i][j] << " ";
+        }
+        cout << "\n";
     }
-    cout << totalSum << "\n\n";
+    cout << "\n";
 
     //3
-    cout << "Задание 3\n";
-    int c[5][10];  
-    int d[5][5];  
-    cout << "Первый массив:\n";
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 10; j++) {
-            c[i][j] = rand() % 51; 
-            cout << c[i][j] << "\t";
+    cout << "задание 3\n";
+    srand(time(0)); 
+
+    int massiv3[2][6]; 
+    cout << "исходный массив:\n";
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 6; j++) {
+            massiv3[i][j] = rand() % 10; 
+            cout << massiv3[i][j] << " ";
         }
         cout << "\n";
     }
 
-    cout << "\nВторой массив:\n";
-    int index = 0;
-    for (int i = 0; i < 5; i++) {
-        for (int j = 0; j < 5; j++) {
-            d[i][j] = c[i][index] + c[i][index + 1];
-            index += 2;
-            cout << d[i][j] << "\t";
+    int sdvig;
+    cout << "введите количество сдвигов: ";
+    cin >> sdvig;
+
+    int napravlenie;
+    cout << "выберите направление (1-влево, 2-вправо, 3-вверх, 4-вниз): ";
+    cin >> napravlenie;
+    int temp[2][6];
+
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 6; j++) {
+            temp[i][j] = massiv3[i][j];
         }
-        index = 0;
+    }
+    if (napravlenie == 1) {
+        for (int s = 0; s < sdvig; s++) {
+            for (int i = 0; i < 2; i++) {
+                int first = temp[i][0];
+                for (int j = 0; j < 5; j++) {
+                    temp[i][j] = temp[i][j + 1];
+                }
+                temp[i][5] = first;
+            }
+        }
+    }
+    else if (napravlenie == 2) {
+        for (int s = 0; s < sdvig; s++) {
+            for (int i = 0; i < 2; i++) {
+                int last = temp[i][5];
+                for (int j = 5; j > 0; j--) {
+                    temp[i][j] = temp[i][j - 1];
+                }
+                temp[i][0] = last;
+            }
+        }
+    }
+    else if (napravlenie == 3) {
+        for (int s = 0; s < sdvig; s++) {
+            int first_row[6];
+            for (int j = 0; j < 6; j++) {
+                first_row[j] = temp[0][j];
+            }
+            for (int i = 0; i < 1; i++) {
+                for (int j = 0; j < 6; j++) {
+                    temp[i][j] = temp[i + 1][j];
+                }
+            }
+            for (int j = 0; j < 6; j++) {
+                temp[1][j] = first_row[j];
+            }
+        }
+    }
+    else if (napravlenie == 4) { 
+        for (int s = 0; s < sdvig; s++) {
+            int last_row[6];
+            for (int j = 0; j < 6; j++) {
+                last_row[j] = temp[1][j];
+            }
+            for (int i = 1; i > 0; i--) {
+                for (int j = 0; j < 6; j++) {
+                    temp[i][j] = temp[i - 1][j];
+                }
+            }
+            for (int j = 0; j < 6; j++) {
+                temp[0][j] = last_row[j];
+            }
+        }
+    }
+    cout << "Массив после сдвига:\n";
+    for (int i = 0; i < 2; i++) {
+        for (int j = 0; j < 6; j++) {
+            cout << temp[i][j] << " ";
+        }
         cout << "\n";
     }
 
