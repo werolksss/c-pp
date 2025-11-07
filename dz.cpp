@@ -2,113 +2,149 @@
 using namespace std;
 
 //1
-void pryamougolnik(int n, int k)
+int stepen(int a, int b)
 {
-    cout << "прямоугольник " << n << "x" << k << ":\n";
-
-    for (int i = 0; i < n; i++)
+    int c = 1;
+    for (int i = 0; i < b; i++)
     {
-        for (int j = 0; j < k; j++)
-        {
-            cout << "*";
-        }
-        cout << "\n";
+        c = c * a;
     }
-    cout << "\n";
+    return c;
 }
 
 //2
-int factorial(int a)
+int summa(int a, int b)
 {
-    int b = 1;
+    int c = 0;
+    int min, max;
 
-    for (int i = 1; i <= a; i++)
+    if (a < b)
     {
-        b = b * i;
+        min = a;
+        max = b;
+    }
+    else
+    {
+        min = b;
+        max = a;
     }
 
-    return b;
+    for (int i = min + 1; i < max; i++)
+    {
+        c = c + i;
+    }
+
+    return c;
 }
 
 //3
-bool prostoe(int a)
+void sovershennie(int a, int b)
 {
-    if (a < 2) return false;
+    cout << "совершенные числа от " << a << " до " << b << ":\n";
 
-    for (int i = 2; i < a; i++)
+    for (int i = a; i <= b; i++)
     {
-        if (a % i == 0) return false;
+        int sum = 0;
+        for (int j = 1; j < i; j++)
+        {
+            if (i % j == 0)
+            {
+                sum = sum + j;
+            }
+        }
+        if (sum == i)
+        {
+            cout << i << " ";
+        }
     }
-
-    return true;
+    cout << "\n\n";
 }
 
 //4
-int kub(int a)
+void karta(int nomer)
 {
-    return a * a * a;
+    cout << " ------ \n";
+
+    //номер карты
+    if (nomer == 1) cout << "|A     |\n";
+    else if (nomer == 11) cout << "|J     |\n";
+    else if (nomer == 12) cout << "|Q     |\n";
+    else if (nomer == 13) cout << "|K     |\n";
+    else cout << "|" << nomer << "     |\n";
+
+    cout << "|      |\n";
+    cout << "|      |\n";
+    cout << "|      |\n";
+
+    if (nomer == 1) cout << "|     A|\n";
+    else if (nomer == 11) cout << "|     J|\n";
+    else if (nomer == 12) cout << "|     Q|\n";
+    else if (nomer == 13) cout << "|     K|\n";
+    else cout << "|     " << nomer << "|\n";
+
+    cout << " ------ \n\n";
 }
 
 //5
-int maximum(int a, int b)
+bool schastlivoe(int a)
 {
-    if (a > b) return a;
-    else return b;
-}
+    if (a < 100000 || a > 999999) return false;
 
-//6
-bool polojitelnoe(int a)
-{
-    if (a > 0) return true;
-    else return false;
+    int b1 = a / 100000;
+    int b2 = (a / 10000) % 10;
+    int b3 = (a / 1000) % 10;
+    int b4 = (a / 100) % 10;
+    int b5 = (a / 10) % 10;
+    int b6 = a % 10;
+
+    int sum1 = b1 + b2 + b3;
+    int sum2 = b4 + b5 + b6;
+
+    return sum1 == sum2;
 }
 
 int main()
 {
-setlocale(LC_ALL, "ru");
-    int a, b;
+    setlocale(LC_ALL, "ru");
+
+    int x, y, a, b, nomer, chislo;
 
     //1
-    cout << "задание 1 - прямоугольник:\n";
-    cout << "введите высоту: ";
-    cin >> a;
-    cout << "введите ширину: ";
-    cin >> b;
-    pryamougolnik(a, b);
+    cout << "задание 1 - степень числа:\n";
+    cout << "введите основание: ";
+    cin >> x;
+    cout << "введите показатель: ";
+    cin >> y;
+    cout << x << " в степени " << y << " = " << stepen(x, y) << "\n\n";
 
     //2
-    cout << "задание 2 - факториал:\n";
-    cout << "введите число: ";
-    cin >> a;
-    cout << "факториал " << a << " = " << factorial(a) << "\n\n";
-
-    //3
-    cout << "задание 3 - простое число:\n";
-    cout << "введите число: ";
-    cin >> a;
-    if (prostoe(a)) cout << a << " - простое число\n\n";
-    else cout << a << " - не простое число\n\n";
-
-    //4
-    cout << "задание 4 - куб числа:\n";
-    cout << "введите число: ";
-    cin >> a;
-    cout << "куб числа " << a << " = " << kub(a) << "\n\n";
-
-    //5
-    cout << "задание 5 - наибольшее число:\n";
+    cout << "задание 2 - сумма в диапазоне:\n";
     cout << "введите первое число: ";
     cin >> a;
     cout << "введите второе число: ";
     cin >> b;
-    cout << "наибольшее из " << a << " и " << b << " = " << maximum(a, b) << "\n\n";
+    cout << "сумма между " << a << " и " << b << " = " << summa(a, b) << "\n\n";
 
-    //6
-    cout << "задание 6 - положительное или отрицательное:\n";
-    cout << "введите число: ";
+    //3
+    cout << "задание 3 - совершенные числа:\n";
+    cout << "введите начало диапазона: ";
     cin >> a;
-    if (polojitelnoe(a)) cout << a << " - положительное\n\n";
-    else cout << a << " отрицательное\n\n";
+    cout << "введите конец диапазона: ";
+    cin >> b;
+    sovershennie(a, b);
+
+    //4
+    cout << "задание 4 - игральная карта:\n";
+    cout << "введите номер карты (1-13): ";
+    cin >> nomer;
+    karta(nomer);
+
+    //5
+    cout << "задание 5 - счастливое число:\n";
+    cout << "введите шестизначное число: ";
+    cin >> chislo;
+    if (schastlivoe(chislo)) cout << chislo << " - счастливое число\n\n";
+    else cout << chislo << " - не счастливое число\n\n";
 
     return 0;
 }
