@@ -1,150 +1,167 @@
 ﻿#include <iostream>
 using namespace std;
 
-//1
-int stepen(int a, int b)
-{
-    int c = 1;
-    for (int i = 0; i < b; i++)
-    {
-        c = c * a;
-    }
-    return c;
-}
+void perevod(int a, int b) {
+    char result[100];
+    int i = 0;
 
-//2
-int summa(int a, int b)
-{
-    int c = 0;
-    int min, max;
+    while (a > 0) {
+        int c = a % b;
 
-    if (a < b)
-    {
-        min = a;
-        max = b;
-    }
-    else
-    {
-        min = b;
-        max = a;
-    }
-
-    for (int i = min + 1; i < max; i++)
-    {
-        c = c + i;
-    }
-
-    return c;
-}
-
-//3
-void sovershennie(int a, int b)
-{
-    cout << "совершенные числа от " << a << " до " << b << ":\n";
-
-    for (int i = a; i <= b; i++)
-    {
-        int sum = 0;
-        for (int j = 1; j < i; j++)
-        {
-            if (i % j == 0)
-            {
-                sum = sum + j;
-            }
+        if (c < 10) {
+            result[i] = '0' + c;
         }
-        if (sum == i)
-        {
-            cout << i << " ";
+        else {
+            result[i] = 'A' + (c - 10);
+        }
+
+        a = a / b;
+        i++;
+    }
+
+    cout << "результат: ";
+    for (int j = i - 1; j >= 0; j--) {
+        cout << result[j];
+    }
+    cout << endl;
+}
+
+void kubiki() {
+    int chel = 0;
+    int comp = 0;
+    int hod;
+
+    cout << "кто ходит первым? (1-человек, 2-компьютер): ";
+    cin >> hod;
+
+    for (int i = 0; i < 5; i++) {
+        int a, b;
+
+        if (hod == 1) {
+            cout << "введите два числа от 1 до 6: ";
+            cin >> a >> b;
+            chel += a + b;
+            cout << "кубики: [" << a << "] [" << b << "]\n";
+            hod = 2;
+        }
+        else {
+            a = rand() % 6 + 1;
+            b = rand() % 6 + 1;
+            comp += a + b;
+            cout << "компьютер бросил: [" << a << "] [" << b << "]\n";
+            hod = 1;
         }
     }
-    cout << "\n\n";
+
+    cout << "сумма человека: " << chel << endl;
+    cout << "сумма компьютера: " << comp << endl;
+    cout << "среднее человека: " << chel / 5.0 << endl;
+    cout << "среднее компьютера: " << comp / 5.0 << endl;
 }
 
-//4
-void karta(int nomer)
-{
-    cout << " ------ \n";
-
-    //номер карты
-    if (nomer == 1) cout << "|A     |\n";
-    else if (nomer == 11) cout << "|J     |\n";
-    else if (nomer == 12) cout << "|Q     |\n";
-    else if (nomer == 13) cout << "|K     |\n";
-    else cout << "|" << nomer << "     |\n";
-
-    cout << "|      |\n";
-    cout << "|      |\n";
-    cout << "|      |\n";
-
-    if (nomer == 1) cout << "|     A|\n";
-    else if (nomer == 11) cout << "|     J|\n";
-    else if (nomer == 12) cout << "|     Q|\n";
-    else if (nomer == 13) cout << "|     K|\n";
-    else cout << "|     " << nomer << "|\n";
-
-    cout << " ------ \n\n";
+void pryamougolnik(int n, int k) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < k; j++) {
+            cout << "*";
+        }
+        cout << endl;
+    }
 }
 
-//5
-bool schastlivoe(int a)
-{
-    if (a < 100000 || a > 999999) return false;
-
-    int b1 = a / 100000;
-    int b2 = (a / 10000) % 10;
-    int b3 = (a / 1000) % 10;
-    int b4 = (a / 100) % 10;
-    int b5 = (a / 10) % 10;
-    int b6 = a % 10;
-
-    int sum1 = b1 + b2 + b3;
-    int sum2 = b4 + b5 + b6;
-
-    return sum1 == sum2;
+int faktorial(int a) {
+    int result = 1;
+    for (int i = 1; i <= a; i++) {
+        result *= i;
+    }
+    return result;
 }
 
-int main()
-{
+bool prostoe(int a) {
+    if (a < 2) return false;
+    for (int i = 2; i * i <= a; i++) {
+        if (a % i == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void minmax(int arr[], int size) {
+    int min = arr[0];
+    int max = arr[0];
+    int min_index = 0;
+    int max_index = 0;
+
+    for (int i = 1; i < size; i++) {
+        if (arr[i] < min) {
+            min = arr[i];
+            min_index = i;
+        }
+        if (arr[i] > max) {
+            max = arr[i];
+            max_index = i;
+        }
+    }
+
+    cout << "минимум: " << min << " на позиции " << min_index << endl;
+    cout << "максимум: " << max << " на позиции " << max_index << endl;
+}
+
+void obratno(int arr[], int size) {
+    for (int i = 0; i < size / 2; i++) {
+        int temp = arr[i];
+        arr[i] = arr[size - 1 - i];
+        arr[size - 1 - i] = temp;
+    }
+}
+
+int main() {
     setlocale(LC_ALL, "ru");
 
-    int x, y, a, b, nomer, chislo;
+    int a, b;
 
-    //1
-    cout << "задание 1 - степень числа:\n";
-    cout << "введите основание: ";
-    cin >> x;
-    cout << "введите показатель: ";
-    cin >> y;
-    cout << x << " в степени " << y << " = " << stepen(x, y) << "\n\n";
-
-    //2
-    cout << "задание 2 - сумма в диапазоне:\n";
-    cout << "введите первое число: ";
+    cout << "1. перевод числа:\n";
+    cout << "введите число: ";
     cin >> a;
-    cout << "введите второе число: ";
+    cout << "введите систему счисления: ";
     cin >> b;
-    cout << "сумма между " << a << " и " << b << " = " << summa(a, b) << "\n\n";
+    perevod(a, b);
 
-    //3
-    cout << "задание 3 - совершенные числа:\n";
-    cout << "введите начало диапазона: ";
+    cout << "\n2. игра в кубики:\n";
+    kubiki();
+
+    cout << "\n3. прямоугольник:\n";
+    cout << "введите высоту: ";
     cin >> a;
-    cout << "введите конец диапазона: ";
+    cout << "введите ширину: ";
     cin >> b;
-    sovershennie(a, b);
+    pryamougolnik(a, b);
 
-    //4
-    cout << "задание 4 - игральная карта:\n";
-    cout << "введите номер карты (1-13): ";
-    cin >> nomer;
-    karta(nomer);
+    cout << "\n4. факториал:\n";
+    cout << "введите число: ";
+    cin >> a;
+    cout << "факториал " << a << " = " << faktorial(a) << endl;
 
-    //5
-    cout << "задание 5 - счастливое число:\n";
-    cout << "введите шестизначное число: ";
-    cin >> chislo;
-    if (schastlivoe(chislo)) cout << chislo << " - счастливое число\n\n";
-    else cout << chislo << " - не счастливое число\n\n";
+    cout << "\n5. простое число:\n";
+    cout << "введите число: ";
+    cin >> a;
+    cout << a << " - " << (prostoe(a) ? "простое" : "не простое") << endl;
+
+    cout << "\n6. минимум и максимум:\n";
+    int arr[5];
+    cout << "введите 5 чисел: ";
+    for (int i = 0; i < 5; i++) {
+        cin >> arr[i];
+    }
+    minmax(arr, 5);
+
+    cout << "\n7. обратный порядок:\n";
+    obratno(arr, 5);
+    cout << "массив в обратном порядке: ";
+    for (int i = 0; i < 5; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
 
     return 0;
 }
