@@ -1,167 +1,169 @@
 ﻿#include <iostream>
 using namespace std;
 
-void perevod(int a, int b) {
-    char result[100];
-    int i = 0;
-
-    while (a > 0) {
-        int c = a % b;
-
-        if (c < 10) {
-            result[i] = '0' + c;
-        }
-        else {
-            result[i] = 'A' + (c - 10);
-        }
-
-        a = a / b;
-        i++;
-    }
-
-    cout << "результат: ";
-    for (int j = i - 1; j >= 0; j--) {
-        cout << result[j];
-    }
-    cout << endl;
+int stepen(int a, int b)
+{
+    if (b == 0)
+        return 1;
+    else
+        return a * stepen(a, b - 1);
 }
 
-void kubiki() {
-    int chel = 0;
-    int comp = 0;
-    int hod;
-
-    cout << "кто ходит первым? (1-человек, 2-компьютер): ";
-    cin >> hod;
-
-    for (int i = 0; i < 5; i++) {
-        int a, b;
-
-        if (hod == 1) {
-            cout << "введите два числа от 1 до 6: ";
-            cin >> a >> b;
-            chel += a + b;
-            cout << "кубики: [" << a << "] [" << b << "]\n";
-            hod = 2;
-        }
-        else {
-            a = rand() % 6 + 1;
-            b = rand() % 6 + 1;
-            comp += a + b;
-            cout << "компьютер бросил: [" << a << "] [" << b << "]\n";
-            hod = 1;
-        }
-    }
-
-    cout << "сумма человека: " << chel << endl;
-    cout << "сумма компьютера: " << comp << endl;
-    cout << "среднее человека: " << chel / 5.0 << endl;
-    cout << "среднее компьютера: " << comp / 5.0 << endl;
-}
-
-void pryamougolnik(int n, int k) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < k; j++) {
-            cout << "*";
-        }
-        cout << endl;
+void zvezdi(int n)
+{
+    if (n > 0)
+    {
+        cout << "*";
+        zvezdi(n - 1);
     }
 }
 
-int faktorial(int a) {
-    int result = 1;
-    for (int i = 1; i <= a; i++) {
-        result *= i;
-    }
-    return result;
+int summa(int a, int b)
+{
+    if (a > b)
+        return 0;
+    if (a == b)
+        return a;
+    else
+        return a + summa(a + 1, b);
 }
 
-bool prostoe(int a) {
-    if (a < 2) return false;
-    for (int i = 2; i * i <= a; i++) {
-        if (a % i == 0) {
-            return false;
-        }
+int findMinSum(int arr[], int size, int k, int& minSum, int& startIndex, int currentIndex)
+{
+    if (currentIndex > size - k)
+        return startIndex;
+
+    int currentSum = 0;
+    for (int i = 0; i < k; i++)
+    {
+        currentSum += arr[currentIndex + i];
     }
-    return true;
+
+    if (currentSum < minSum)
+    {
+        minSum = currentSum;
+        startIndex = currentIndex;
+    }
+
+    return findMinSum(arr, size, k, minSum, startIndex, currentIndex + 1);
 }
 
-void minmax(int arr[], int size) {
-    int min = arr[0];
+int findMax(int arr[], int size)
+{
     int max = arr[0];
-    int min_index = 0;
-    int max_index = 0;
-
-    for (int i = 1; i < size; i++) {
-        if (arr[i] < min) {
-            min = arr[i];
-            min_index = i;
-        }
-        if (arr[i] > max) {
+    for (int i = 1; i < size; i++)
+    {
+        if (arr[i] > max)
             max = arr[i];
-            max_index = i;
+    }
+    return max;
+}
+
+int findMax(int arr[][3], int rows, int cols)
+{
+    int max = arr[0][0];
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            if (arr[i][j] > max)
+                max = arr[i][j];
         }
     }
-
-    cout << "минимум: " << min << " на позиции " << min_index << endl;
-    cout << "максимум: " << max << " на позиции " << max_index << endl;
+    return max;
 }
 
-void obratno(int arr[], int size) {
-    for (int i = 0; i < size / 2; i++) {
-        int temp = arr[i];
-        arr[i] = arr[size - 1 - i];
-        arr[size - 1 - i] = temp;
+int findMax(int arr[][2][2], int x, int y, int z)
+{
+    int max = arr[0][0][0];
+    for (int i = 0; i < x; i++)
+    {
+        for (int j = 0; j < y; j++)
+        {
+            for (int k = 0; k < z; k++)
+            {
+                if (arr[i][j][k] > max)
+                    max = arr[i][j][k];
+            }
+        }
     }
+    return max;
 }
 
-int main() {
+int findMax(int a, int b)
+{
+    if (a > b)
+        return a;
+    else
+        return b;
+}
+
+int findMax(int a, int b, int c)
+{
+    int max = a;
+    if (b > max)
+        max = b;
+    if (c > max)
+        max = c;
+    return max;
+}
+
+int main()
+{
     setlocale(LC_ALL, "ru");
 
+    cout << "1. степень числа\n";
+    int num, pow;
+    cout << "введите число: ";
+    cin >> num;
+    cout << "введите степень: ";
+    cin >> pow;
+    cout << num << " в степени " << pow << " = " << stepen(num, pow) << "\n\n";
+
+    cout << "2. звезды в ряд\n";
+    int n;
+    cout << "введите количество звезд: ";
+    cin >> n;
+    cout << "результат: ";
+    zvezdi(n);
+    cout << "\n\n";
+
+    cout << "3. сумма чисел в диапазоне\n";
     int a, b;
-
-    cout << "1. перевод числа:\n";
-    cout << "введите число: ";
+    cout << "введите начало диапазона (a): ";
     cin >> a;
-    cout << "введите систему счисления: ";
+    cout << "введите конец диапазона (b): ";
     cin >> b;
-    perevod(a, b);
+    cout << "сумма чисел от " << a << " до " << b << " = " << summa(a, b) << "\n\n";
 
-    cout << "\n2. игра в кубики:\n";
-    kubiki();
-
-    cout << "\n3. прямоугольник:\n";
-    cout << "введите высоту: ";
-    cin >> a;
-    cout << "введите ширину: ";
-    cin >> b;
-    pryamougolnik(a, b);
-
-    cout << "\n4. факториал:\n";
-    cout << "введите число: ";
-    cin >> a;
-    cout << "факториал " << a << " = " << faktorial(a) << endl;
-
-    cout << "\n5. простое число:\n";
-    cout << "введите число: ";
-    cin >> a;
-    cout << a << " - " << (prostoe(a) ? "простое" : "не простое") << endl;
-
-    cout << "\n6. минимум и максимум:\n";
-    int arr[5];
-    cout << "введите 5 чисел: ";
-    for (int i = 0; i < 5; i++) {
-        cin >> arr[i];
+    cout << "4. поиск минимальной суммы\n";
+    int arr[100];
+    for (int i = 0; i < 100; i++)
+    {
+        arr[i] = rand() % 100;
     }
-    minmax(arr, 5);
 
-    cout << "\n7. обратный порядок:\n";
-    obratno(arr, 5);
-    cout << "массив в обратном порядке: ";
-    for (int i = 0; i < 5; i++) {
-        cout << arr[i] << " ";
-    }
-    cout << endl;
+    int minSum = 1000;
+    int startIndex = 0;
+    int k = 10;
+
+    int result = findMinSum(arr, 100, k, minSum, startIndex, 0);
+    cout << "начало последовательности с минимальной суммой: " << result << "\n";
+    cout << "минимальная сумма: " << minSum << "\n\n";
+
+    cout << "5. перегруженные функции\n";
+
+    int arr1D[5] = { 3, 7, 2, 9, 1 };
+    cout << "максимум в одномерном массиве: " << findMax(arr1D, 5) << "\n";
+
+    int arr2D[2][3] = { {3, 7, 2}, {9, 1, 5} };
+    cout << "максимум в двумерном массиве: " << findMax(arr2D, 2, 3) << "\n";
+
+    int arr3D[2][2][2] = { {{3, 7}, {2, 9}}, {{1, 5}, {8, 4}} };
+    cout << "максимум в трехмерном массиве: " << findMax(arr3D, 2, 2, 2) << "\n";
+
+    cout << "максимум из 5 и 3: " << findMax(5, 3) << "\n";
+    cout << "максимум из 5, 3 и 8: " << findMax(5, 3, 8) << "\n";
 
     return 0;
 }
