@@ -1,130 +1,90 @@
 ﻿#include <iostream>
+#include <cmath>
 using namespace std;
 
-void initMatrix(int m[][10], int s) {
-    for (int i = 0; i < s; i++) {
-        for (int j = 0; j < s; j++) {
-            m[i][j] = rand() % 100;
-        }
-    }
+template <typename T>
+T srednee(T arr[], int size) {
+    T sum = 0;
+    for (int i = 0; i < size; i++) sum += arr[i];
+    return sum / size;
 }
 
-void printMatrix(int m[][10], int s) {
-    for (int i = 0; i < s; i++) {
-        for (int j = 0; j < s; j++) {
-            cout << m[i][j] << " ";
-        }
-        cout << endl;
-    }
+template <typename T>
+void uravnenie(T a, T b) {
+    if (a == 0) cout << (b == 0 ? "бесконечно много решений\n" : "нет решений\n");
+    else cout << "корень: x = " << -b / a << "\n";
 }
 
-void findDiagonal(int m[][10], int s, int& max, int& min) {
-    max = m[0][0];
-    min = m[0][0];
-    for (int i = 0; i < s; i++) {
-        if (m[i][i] > max) max = m[i][i];
-        if (m[i][i] < min) min = m[i][i];
-    }
+template <typename T>
+void uravnenie(T a, T b, T c) {
+    if (a == 0) { uravnenie(b, c); return; }
+
+    T d = b * b - 4 * a * c;
+    if (d > 0) cout << "два корня: x1 = " << (-b + sqrt(d)) / (2 * a) << ", x2 = " << (-b - sqrt(d)) / (2 * a) << "\n";
+    else if (d == 0) cout << "один корень: x = " << -b / (2 * a) << "\n";
+    else cout << "действительных корней нет\n";
 }
 
-void sortRow(int r[], int s) {
-    for (int i = 0; i < s - 1; i++) {
-        for (int j = 0; j < s - i - 1; j++) {
-            if (r[j] > r[j + 1]) {
-                int t = r[j];
-                r[j] = r[j + 1];
-                r[j + 1] = t;
-            }
-        }
-    }
+double okruglenie(double chislo, int znakov) {
+    return round(chislo * pow(10, znakov)) / pow(10, znakov);
 }
 
-void sortMatrix(int m[][10], int s) {
-    for (int i = 0; i < s; i++) {
-        sortRow(m[i], s);
-    }
+template <typename T>
+T maximum(T arr[], int size) {
+    T max = arr[0];
+    for (int i = 1; i < size; i++) if (arr[i] > max) max = arr[i];
+    return max;
 }
 
-int nod(int a, int b) {
-    if (b == 0) return a;
-    return nod(b, a % b);
+template <typename T>
+T maximum(T arr[][10], int rows, int cols) {
+    T max = arr[0][0];
+    for (int i = 0; i < rows; i++)
+        for (int j = 0; j < cols; j++)
+            if (arr[i][j] > max) max = arr[i][j];
+    return max;
 }
 
-void checkNumber(int s[], int a[], int p, int& b, int& c) {
-    if (p >= 4) return;
-
-    if (a[p] == s[p]) {
-        b++;
-    }
-    else {
-        for (int i = 0; i < 4; i++) {
-            if (a[p] == s[i]) {
-                c++;
-                break;
-            }
-        }
-    }
-
-    checkNumber(s, a, p + 1, b, c);
+template <typename T>
+T maximum(T arr[][10][10], int x, int y, int z) {
+    T max = arr[0][0][0];
+    for (int i = 0; i < x; i++)
+        for (int j = 0; j < y; j++)
+            for (int k = 0; k < z; k++)
+                if (arr[i][j][k] > max) max = arr[i][j][k];
+    return max;
 }
 
-void game(int s[], int t) {
-    int n;
-    cout << "попытка " << t << ": ";
-    cin >> n;
-
-    int a[4];
-    a[0] = n / 1000;
-    a[1] = (n / 100) % 10;
-    a[2] = (n / 10) % 10;
-    a[3] = n % 10;
-
-    int b = 0, c = 0;
-    checkNumber(s, a, 0, b, c);
-
-    cout << "быки: " << b << ", коровы: " << c << endl;
-
-    if (b == 4) {
-        cout << "угадал за " << t << " попыток!" << endl;
-        return;
-    }
-
-    game(s, t + 1);
-}
+int maximum(int a, int b) { return a > b ? a : b; }
+int maximum(int a, int b, int c) { return maximum(maximum(a, b), c); }
 
 int main() {
     setlocale(LC_ALL, "ru");
-    srand(time(0));
 
-    cout << "1. матрицы\n";
-    int m[10][10];
-    int s = 4;
+    cout << "1 задание: среднее арифметическое массива\n";
+    int arr1[] = { 1, 2, 3, 4, 5 };
+    cout << "среднее: " << srednee(arr1, 5) << "\n\n";
 
-    initMatrix(m, s);
-    printMatrix(m, s);
+    cout << "2 задание: решение уравнений\n";
+    cout << "2x + 4 = 0: "; uravnenie(2.0, 4.0);
+    cout << "x^2 - 5x + 6 = 0: "; uravnenie(1.0, -5.0, 6.0);
+    cout << "\n";
 
-    int max, min;
-    findDiagonal(m, s, max, min);
-    cout << "макс: " << max << ", мин: " << min << endl;
+    cout << "3 задание: округление числа\n";
+    cout << "3.14159 до 2 знаков: " << okruglenie(3.14159, 2) << "\n\n";
 
-    sortMatrix(m, s);
-    cout << "после сортировки:\n";
-    printMatrix(m, s);
-    cout << endl;
+    cout << "4 задание: максимальное значение в массивах\n";
+    int odnomerniy[] = { 1, 8, 3, 6, 2 };
+    int dvumerniy[3][10] = { {1, 2, 3}, {9, 5, 6}, {7, 8, 4} };
+    int trehmerniy[2][10][10] = { {{1, 2}, {3, 4}}, {{15, 6}, {7, 8}} };
 
-    cout << "2. нод\n";
-    int a, b;
-    cin >> a >> b;
-    cout << "НОД: " << nod(a, b) << endl << endl;
+    cout << "в одномерном: " << maximum(odnomerniy, 5) << "\n";
+    cout << "в двумерном: " << maximum(dvumerniy, 3, 3) << "\n";
+    cout << "в трехмерном: " << maximum(trehmerniy, 2, 2, 2) << "\n\n";
 
-    cout << "3. быки и коровы\n";
-    int secret[4];
-    secret[0] = rand() % 9 + 1;
-    for (int i = 1; i < 4; i++) {
-        secret[i] = rand() % 10;
-    }
-
-    game(secret, 1);
+    cout << "5 задание: максимальное значение целых чисел\n";
+    cout << "из 5 и 10: " << maximum(5, 10) << "\n";
+    cout << "из 3, 7 и 2: " << maximum(3, 7, 2) << "\n";
 
     return 0;
 }
