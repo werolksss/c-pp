@@ -4,183 +4,101 @@ using namespace std;
 int main() {
     setlocale(LC_ALL, "ru");
 
-    // задание 1
-    cout << "задание 1: справочник\n";
-    long long mob[5] = { 89141111111, 89001111111, 89140000000, 89049999999, 89111111111 };
-    long long home[5] = { 1234567, 7654321, 5556677, 8889999, 1112233 };
+    //1 задание
+    cout << "1 задание - наибольшее из двух чисел\n";
+    int a, b;
+    cout << "введите два числа: ";
+    cin >> a >> b;
 
-    int ch;
-    do {
-        cout << "\n1 - сортировать по мобильным\n";
-        cout << "2 - сортировать по домашним\n";
-        cout << "3 - вывести данные\n";
-        cout << "0 - выход\n";
-        cout << "выберите: ";
-        cin >> ch;
+    int* p1 = &a;
+    int* p2 = &b;
 
-        if (ch == 1) {
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4 - i; j++) {
-                    if (mob[j] > mob[j + 1]) {
-                        long long t = mob[j];
-                        mob[j] = mob[j + 1];
-                        mob[j + 1] = t;
-
-                        long long th = home[j];
-                        home[j] = home[j + 1];
-                        home[j + 1] = th;
-                    }
-                }
-            }
-            cout << "отсортировано по мобильным\n";
-        }
-        else if (ch == 2) {
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4 - i; j++) {
-                    if (home[j] > home[j + 1]) {
-                        long long t = home[j];
-                        home[j] = home[j + 1];
-                        home[j + 1] = t;
-
-                        long long tm = mob[j];
-                        mob[j] = mob[j + 1];
-                        mob[j + 1] = tm;
-                    }
-                }
-            }
-            cout << "отсортировано по домашним\n";
-        }
-        else if (ch == 3) {
-            cout << "мобильные\tдомашние\n";
-            for (int i = 0; i < 5; i++) {
-                cout << mob[i] << "\t" << home[i] << "\n";
-            }
-        }
-    } while (ch != 0);
-
-    // задание 2
-    cout << "\nзадание 2: усовершенствованная пузырьковая сортировка\n";
-    int arr[6] = { 5, 2, 8, 1, 9, 3 };
-    int size = 6;
-
-    cout << "исходный массив: ";
-    for (int i = 0; i < size; i++) {
-        cout << arr[i] << " ";
+    if (*p1 > *p2) {
+        cout << "наибольшее число: " << *p1 << "\n\n";
     }
-    cout << "\n";
-
-    bool swapped;
-    for (int i = 0; i < size - 1; i++) {
-        swapped = false;
-        for (int j = 0; j < size - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-                swapped = true;
-            }
-        }
-        if (!swapped) break;
+    else {
+        cout << "наибольшее число: " << *p2 << "\n\n";
     }
 
-    cout << "отсортированный массив: ";
-    for (int i = 0; i < size; i++) {
-        cout << arr[i] << " ";
+    //2 задание
+    cout << "2 задание - определить знак числа\n";
+    int c;
+    cout << "введите число: ";
+    cin >> c;
+
+    int* p3 = &c;
+
+    if (*p3 > 0) {
+        cout << "число положительное\n\n";
     }
-    cout << "\n\n";
-
-    // задание 3
-    cout << "задание 3: стопка оладий\n";
-    int pancakes[5] = { 3, 1, 5, 2, 4 };
-    int p_size = 5;
-
-    cout << "исходная стопка: ";
-    for (int i = 0; i < p_size; i++) {
-        cout << pancakes[i] << " ";
+    else if (*p3 < 0) {
+        cout << "число отрицательное\n\n";
     }
-    cout << "\n";
-
-    // сортируем стопку оладий
-    for (int i = 0; i < p_size - 1; i++) {
-        int max_idx = i;
-        for (int j = i + 1; j < p_size; j++) {
-            if (pancakes[j] > pancakes[max_idx]) {
-                max_idx = j;
-            }
-        }
-
-        if (max_idx != i) {
-            // переворачиваем часть стопки
-            for (int k = 0; k < (max_idx - i + 1) / 2; k++) {
-                int temp = pancakes[i + k];
-                pancakes[i + k] = pancakes[max_idx - k];
-                pancakes[max_idx - k] = temp;
-            }
-        }
+    else {
+        cout << "число равно нулю\n\n";
     }
 
-    cout << "отсортированная стопка: ";
-    for (int i = 0; i < p_size; i++) {
-        cout << pancakes[i] << " ";
+    //3 задание 
+    cout << "3 задание - обменять местами значения\n";
+    int d = 5, e = 10;
+    cout << "до обмена: d = " << d << ", e = " << e << "\n";
+
+    int* p4 = &d;
+    int* p5 = &e;
+    int temp = *p4;
+    *p4 = *p5;
+    *p5 = temp;
+
+    cout << "после обмена: d = " << d << ", e = " << e << "\n\n";
+
+    //4 задание
+    cout << "4 задание - калькулятор\n";
+    float f, g;
+    char op;
+    cout << "введите два числа и оператор (+, -, *, /): ";
+    cin >> f >> g >> op;
+
+    float* p6 = &f;
+    float* p7 = &g;
+    float result;
+    float* pres = &result;
+
+    if (op == '+') {
+        *pres = *p6 + *p7;
     }
-    cout << "\n\n";
-
-    // задание 4
-    cout << "задание 4: сравнение сортировок\n";
-
-    int bubble_total = 0;
-    int select_total = 0;
-
-    for (int test = 0; test < 10; test++) {
-        int a1[1000], a2[1000];
-
-        for (int i = 0; i < 1000; i++) {
-            a1[i] = rand() % 1000;
-            a2[i] = a1[i];
+    else if (op == '-') {
+        *pres = *p6 - *p7;
+    }
+    else if (op == '*') {
+        *pres = *p6 * *p7;
+    }
+    else if (op == '/') {
+        if (*p7 != 0) {
+            *pres = *p6 / *p7;
         }
-
-        // пузырьковая сортировка
-        bool swapped_b;
-        int bubble_swaps = 0;
-        for (int i = 0; i < 999; i++) {
-            swapped_b = false;
-            for (int j = 0; j < 999 - i; j++) {
-                if (a1[j] > a1[j + 1]) {
-                    int temp = a1[j];
-                    a1[j] = a1[j + 1];
-                    a1[j + 1] = temp;
-                    bubble_swaps++;
-                    swapped_b = true;
-                }
-            }
-            if (!swapped_b) break;
+        else {
+            cout << "ошибка: деление на ноль!\n\n";
+            return 1;
         }
-        bubble_total += bubble_swaps;
-
-        // сортировка выбором
-        int select_swaps = 0;
-        for (int i = 0; i < 999; i++) {
-            int min_idx = i;
-            for (int j = i + 1; j < 1000; j++) {
-                if (a2[j] < a2[min_idx]) {
-                    min_idx = j;
-                }
-            }
-            if (min_idx != i) {
-                int temp = a2[i];
-                a2[i] = a2[min_idx];
-                a2[min_idx] = temp;
-                select_swaps++;
-            }
-        }
-        select_total += select_swaps;
-
-        cout << "тест " << test + 1 << ": пузырек=" << bubble_swaps << ", выбор=" << select_swaps << "\n";
+    }
+    else {
+        cout << "неверный оператор!\n\n";
+        return 1;
     }
 
-    cout << "среднее число перестановок:\n";
-    cout << "пузырьковая: " << bubble_total / 10.0 << "\n";
-    cout << "выбором: " << select_total / 10.0 << "\n";
+    cout << "результат: " << *pres << "\n\n";
+
+    //5 задание
+    cout << "5 задание - сумма элементов массива\n";
+    int arr[5] = { 1, 2, 3, 4, 5 };
+    int sum = 0;
+    int* parr = arr;
+
+    for (int i = 0; i < 5; i++) {
+        sum += *(parr + i);
+    }
+
+    cout << "сумма элементов массива: " << sum << "\n";
 
     return 0;
 }
