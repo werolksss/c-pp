@@ -4,13 +4,13 @@ using namespace std;
 int main() {
     setlocale(LC_ALL, "ru");
 
-    //1
-    cout << "задание 1\n";
+    // 3
+    cout << " задание 3 \n";
 
     int m1, n1;
-    cout << "введите размер массива A: ";
+    cout << "введите размер массива a: ";
     cin >> m1;
-    cout << "введите размер массива B: ";
+    cout << "введите размер массива b: ";
     cin >> n1;
 
     // создаем массивы
@@ -18,161 +18,142 @@ int main() {
     int* b1 = new int[n1];
 
     // заполняем
-    cout << "введите " << m1 << " чисел для массива A:\n";
+    cout << "введите " << m1 << " чисел для массива a:\n";
     for (int i = 0; i < m1; i++) {
         cin >> a1[i];
     }
 
-    cout << "введите " << n1 << " чисел для массива B:\n";
+    cout << "введите " << n1 << " чисел для массива b:\n";
     for (int i = 0; i < n1; i++) {
         cin >> b1[i];
     }
 
     // временный массив для результата
-    int* temp1 = new int[m1];
+    int* temp1 = new int[m1 + n1];
     int count1 = 0;
 
-    // ищем элементы из A, которых нет в B
+    // добавляем элементы из a
     for (int i = 0; i < m1; i++) {
-        bool found = false;
-        for (int j = 0; j < n1; j++) {
-            if (a1[i] == b1[j]) {
-                found = true;
+        bool duplicate = false;
+        for (int k = 0; k < count1; k++) {
+            if (temp1[k] == a1[i]) {
+                duplicate = true;
                 break;
             }
         }
-
-        if (!found) {
-            bool duplicate = false;
-            for (int k = 0; k < count1; k++) {
-                if (temp1[k] == a1[i]) {
-                    duplicate = true;
-                    break;
-                }
-            }
-            if (!duplicate) {
-                temp1[count1] = a1[i];
-                count1++;
-            }
+        if (!duplicate) {
+            temp1[count1] = a1[i];
+            count1++;
         }
     }
 
-    // финальный массив
+    // добавляем элементы из b
+    for (int i = 0; i < n1; i++) {
+        bool duplicate = false;
+        for (int k = 0; k < count1; k++) {
+            if (temp1[k] == b1[i]) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (!duplicate) {
+            temp1[count1] = b1[i];
+            count1++;
+        }
+    }
+
+    // создаем финальный массив
     int* c1 = new int[count1];
     for (int i = 0; i < count1; i++) {
         c1[i] = temp1[i];
     }
 
-    cout << "\nрезультат (элементы A, которых нет в B):\n";
+    cout << "\nрезультат (все уникальные элементы из a и b):\n";
     for (int i = 0; i < count1; i++) {
         cout << c1[i] << " ";
     }
     if (count1 == 0) {
-        cout << "таких элементов нет";
+        cout << "массивы пустые";
     }
     cout << "\n\n";
+
     delete[] a1;
     delete[] b1;
     delete[] temp1;
     delete[] c1;
 
-    //  2
-    cout << "задание 2\n";
+    // 4
+    cout << " задание 4 \n";
 
-    int m2, n2;
-    cout << "введите размер массива A: ";
+    int m2;
+    cout << "введите размер массива: ";
     cin >> m2;
-    cout << "введите размер массива B: ";
-    cin >> n2;
 
-    // создаем массивы
+    // создаем массив
     int* a2 = new int[m2];
-    int* b2 = new int[n2];
 
-    // заполняем
-    cout << "введите " << m2 << " чисел для массива A:\n";
+    // заполняем 
+    cout << "введите " << m2 << " чисел для массива:\n";
     for (int i = 0; i < m2; i++) {
         cin >> a2[i];
     }
 
-    cout << "введите " << n2 << " чисел для массива B:\n";
-    for (int i = 0; i < n2; i++) {
-        cin >> b2[i];
-    }
+    // выбор пользователя
+    int choice;
+    cout << "\nчто удалить?\n";
+    cout << "1 - четные числа\n";
+    cout << "2 - нечетные числа\n";
+    cout << "ваш выбор: ";
+    cin >> choice;
 
-    // временный массив
-    int* temp2 = new int[m2 + n2];
+    // временный массив для результата
+    int* temp2 = new int[m2];
     int count2 = 0;
 
-    // элементы из A, которых нет в B
-    for (int i = 0; i < m2; i++) {
-        bool found = false;
-        for (int j = 0; j < n2; j++) {
-            if (a2[i] == b2[j]) {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            bool duplicate = false;
-            for (int k = 0; k < count2; k++) {
-                if (temp2[k] == a2[i]) {
-                    duplicate = true;
-                    break;
-                }
-            }
-            if (!duplicate) {
+    // удаляем в зависимости от выбора
+    if (choice == 1) {
+        // удаляем четные (оставляем нечетные)
+        for (int i = 0; i < m2; i++) {
+            if (a2[i] % 2 != 0) {
                 temp2[count2] = a2[i];
                 count2++;
             }
         }
     }
-
-    // элементы из B, которых нет в A
-    for (int i = 0; i < n2; i++) {
-        bool found = false;
-        for (int j = 0; j < m2; j++) {
-            if (b2[i] == a2[j]) {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            bool duplicate = false;
-            for (int k = 0; k < count2; k++) {
-                if (temp2[k] == b2[i]) {
-                    duplicate = true;
-                    break;
-                }
-            }
-            if (!duplicate) {
-                temp2[count2] = b2[i];
+    else if (choice == 2) {
+        // удаляем нечетные (оставляем четные)
+        for (int i = 0; i < m2; i++) {
+            if (a2[i] % 2 == 0) {
+                temp2[count2] = a2[i];
                 count2++;
             }
         }
     }
-
-    // финальный массив
-    int* c2 = new int[count2];
-    for (int i = 0; i < count2; i++) {
-        c2[i] = temp2[i];
+    else {
+        cout << "неверный выбор!\n";
+        delete[] a2;
+        delete[] temp2;
+        return 0;
     }
 
-    cout << "\nрезультат (элементы, которые не общие для A и B):\n";
+    // создаем финальный массив
+    int* result = new int[count2];
     for (int i = 0; i < count2; i++) {
-        cout << c2[i] << " ";
+        result[i] = temp2[i];
+    }
+
+    cout << "\nмассив после удаления:\n";
+    for (int i = 0; i < count2; i++) {
+        cout << result[i] << " ";
     }
     if (count2 == 0) {
-        cout << "таких элементов нет";
+        cout << "все элементы удалены";
     }
     cout << "\n\n";
 
     delete[] a2;
-    delete[] b2;
     delete[] temp2;
-    delete[] c2;
+    delete[] result;
 
     return 0;
 }
