@@ -1,79 +1,120 @@
 ﻿#include <iostream>
 #include <string>
-#include <cwctype> 
+#include <cctype>
 using namespace std;
 
-int main() {
-    setlocale(LC_ALL, "");
+void udalit_po_nom(string& a, int n) {            
+    if (n >= 0 && n < a.size()) a.erase(n, 1);
+}
 
-    // 1
-    {
-        wstring a;
-        wcout << L"Введите строку\n";
-        getline(wcin, a);
-
-        for (int i = 0; i < (int)a.size(); i++) {
-            if (a[i] == L' ') a[i] = L'\t';
+void udalit_vhozh(string& a, char b) {            
+    for (int i = 0; i < a.size(); i++) {
+        if (a[i] == b) {
+            a.erase(i, 1);
+            i--;
         }
+    }
+}
 
-        wcout << L"Результат:\n" << a << L"\n\n";
+void vstavit(string& a, int pos, char b) {        
+    if (pos >= 0 && pos <= a.size()) {
+        a.insert(pos, 1, b);
+    }
+}
+
+int main() {
+    setlocale(LC_ALL, "ru");
+
+    // 1 
+    {
+        string a;
+        int n;
+        cout << "удаление символа с заданным номером\n";
+        getline(cin, a);
+        cout << "введите номер символа для удаления:\n";
+        cin >> n;
+        cin.ignore();
+        udalit_po_nom(a, n);
+        cout << "результат:\n" << a << "\n\n";
     }
 
     // 2 
     {
-        wstring b;
-        wcout << L"Количество символов\n";
-        getline(wcin, b);
-
-        int buk = 0, cif = 0, ost = 0;
-        for (int i = 0; i < (int)b.size(); i++) {
-            wchar_t ch = b[i];
-            if (iswalpha(ch)) buk++;
-            else if (iswdigit(ch)) cif++;
-            else ost++;
-        }
-
-        wcout << L"Букв: " << buk << L"\n";
-        wcout << L"Цифр: " << cif << L"\n";
-        wcout << L"Остальных символов: " << ost << L"\n\n";
+        string a;
+        char b;
+        cout << "Удаление всех вхождений заданного символа\n";
+        getline(cin, a);
+        cout << "Введите символ для удаления:\n";
+        cin >> b;
+        cin.ignore();
+        udalit_vhozh(a, b);
+        cout << "Результат:\n" << a << "\n\n";
     }
 
     // 3 
     {
-        wstring c;
-        wcout << L"Количество слов в предложении\n";
-        getline(wcin, c);
-
-        int slova = 0;
-        bool f = false;
-        for (int i = 0; i < (int)c.size(); i++) {
-            if (c[i] != L' ' && !f) {
-                f = true;
-                slova++;
-            }
-            if (c[i] == L' ') f = false;
-        }
-
-        wcout << L"Количество слов: " << slova << L"\n\n";
+        string a;
+        char b;
+        int pos;
+        cout << "Вставка символа в указанную позицию:\n";
+        getline(cin, a);
+        cout << "Введите позицию для вставки:\n";
+        cin >> pos;
+        cout << "Введите символ:\n";
+        cin >> b;
+        cin.ignore();
+        vstavit(a, pos, b);
+        cout << "Результат:\n" << a << "\n\n";
     }
 
-    // 4
+    // 4 
     {
-        wstring d;
-        wcout << L"Проверка на палиндром\n";
-        getline(wcin, d);
+        string a;
+        cout << "Замена всех точек на восклицательные знаки\n";
+        getline(cin, a);
 
-        int n = d.size();
-        bool pal = true;
-        for (int i = 0; i < n / 2; i++) {
-            if (d[i] != d[n - i - 1]) {
-                pal = false;
-                break;
-            }
+        for (int i = 0; i < a.size(); i++) {
+            if (a[i] == '.') a[i] = '!';
         }
 
-        if (pal) wcout << L"Палиндром\n";
-        else wcout << L"Не палиндром\n";
+        cout << "Результат:\n" << a << "\n\n";
+    }
+
+    // 5 
+    {
+        string a;
+        char b;
+        cout << "Подсчет вхождений символа\n";
+        getline(cin, a);
+        cout << "Введите искомый символ:\n";
+        cin >> b;
+        cin.ignore();
+
+        int k = 0;
+        for (int i = 0; i < a.size(); i++) {
+            if (a[i] == b) k++;
+        }
+
+        cout << "Количество встреч: " << k << "\n\n";
+    }
+
+    // 6 
+    {
+        string a;
+        cout << "Подсчет букв, цифр и других символов\n";
+        getline(cin, a);
+
+        int buk = 0, cif = 0, ost = 0;
+
+        for (int i = 0; i < a.size(); i++) {
+            if (isalpha((unsigned char)a[i])) buk++;
+            else if (isdigit((unsigned char)a[i])) cif++;
+            else ost++;
+        }
+
+        cout << "Букв: " << buk << "\n";
+        cout << "Цифр: " << cif << "\n";
+        cout << "Остальных символов: " << ost << "\n\n";
     }
 
     return 0;
