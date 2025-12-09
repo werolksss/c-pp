@@ -1,182 +1,80 @@
 ﻿#include <iostream>
+#include <string>
+#include <cwctype> 
 using namespace std;
 
 int main() {
-    setlocale(LC_ALL, "ru");
+    setlocale(LC_ALL, "");
 
-    //1
-    cout << "задание 1\n";
-    int m, n;
-    cout << "размер массива a: ";
-    cin >> m;
-    cout << "размер массива b: ";
-    cin >> n;
+    // 1
+    {
+        wstring a;
+        wcout << L"Введите строку\n";
+        getline(wcin, a);
 
-    // создаем массивы
-    int* a = new int[m];
-    int* b = new int[n];
+        for (int i = 0; i < (int)a.size(); i++) {
+            if (a[i] == L' ') a[i] = L'\t';
+        }
 
-    cout << "\nвведите элементы массива a:\n";
-    for (int i = 0; i < m; i++) {
-        cout << "a[" << i << "] = ";
-        cin >> a[i];
+        wcout << L"Результат:\n" << a << L"\n\n";
     }
-    cout << "\nвведите элементы массива b:\n";
-    for (int i = 0; i < n; i++) {
-        cout << "b[" << i << "] = ";
-        cin >> b[i];
+
+    // 2 
+    {
+        wstring b;
+        wcout << L"Количество символов\n";
+        getline(wcin, b);
+
+        int buk = 0, cif = 0, ost = 0;
+        for (int i = 0; i < (int)b.size(); i++) {
+            wchar_t ch = b[i];
+            if (iswalpha(ch)) buk++;
+            else if (iswdigit(ch)) cif++;
+            else ost++;
+        }
+
+        wcout << L"Букв: " << buk << L"\n";
+        wcout << L"Цифр: " << cif << L"\n";
+        wcout << L"Остальных символов: " << ost << L"\n\n";
     }
-    int count1 = 0;
-    for (int i = 0; i < m; i++) {
-        bool estb = false;
-        for (int j = 0; j < n; j++) {
-            if (a[i] == b[j]) {
-                estb = true;
+
+    // 3 
+    {
+        wstring c;
+        wcout << L"Количество слов в предложении\n";
+        getline(wcin, c);
+
+        int slova = 0;
+        bool f = false;
+        for (int i = 0; i < (int)c.size(); i++) {
+            if (c[i] != L' ' && !f) {
+                f = true;
+                slova++;
+            }
+            if (c[i] == L' ') f = false;
+        }
+
+        wcout << L"Количество слов: " << slova << L"\n\n";
+    }
+
+    // 4
+    {
+        wstring d;
+        wcout << L"Проверка на палиндром\n";
+        getline(wcin, d);
+
+        int n = d.size();
+        bool pal = true;
+        for (int i = 0; i < n / 2; i++) {
+            if (d[i] != d[n - i - 1]) {
+                pal = false;
                 break;
             }
         }
-        if (!estb) {
-            bool duplikat = false;
-            for (int k = 0; k < i; k++) {
-                if (a[i] == a[k]) {
-                    duplikat = true;
-                    break;
-                }
-            }
-            if (!duplikat) count1++;
-        }
+
+        if (pal) wcout << L"Палиндром\n";
+        else wcout << L"Не палиндром\n";
     }
-
-    int* c = new int[count1];
-    int index1 = 0;
-    for (int i = 0; i < m; i++) {
-        bool estb = false;
-        for (int j = 0; j < n; j++) {
-            if (a[i] == b[j]) {
-                estb = true;
-                break;
-            }
-        }
-        if (!estb) {
-            bool duplikat = false;
-            for (int k = 0; k < i; k++) {
-                if (a[i] == a[k]) {
-                    duplikat = true;
-                    break;
-                }
-            }
-            if (!duplikat) {
-                c[index1] = a[i];
-                index1++;
-            }
-        }
-    }
-    cout << "массив c: ";
-    if (count1 == 0) cout << "пуст";
-    else for (int i = 0; i < count1; i++) cout << c[i] << " ";
-    cout << "\n";
-
-    //2
-    cout << "\nзадание 2\n";
-    int count2 = 0;
-
-    for (int i = 0; i < m; i++) {
-        bool estb = false;
-        for (int j = 0; j < n; j++) {
-            if (a[i] == b[j]) {
-                estb = true;
-                break;
-            }
-        }
-        if (!estb) {
-            bool duplikat = false;
-            for (int k = 0; k < i; k++) {
-                if (a[i] == a[k]) {
-                    duplikat = true;
-                    break;
-                }
-            }
-            if (!duplikat) count2++;
-        }
-    }
-
-    for (int i = 0; i < n; i++) {
-        bool esta = false;
-        for (int j = 0; j < m; j++) {
-            if (b[i] == a[j]) {
-                esta = true;
-                break;
-            }
-        }
-        if (!esta) {
-            bool duplikat = false;
-            for (int k = 0; k < i; k++) {
-                if (b[i] == b[k]) {
-                    duplikat = true;
-                    break;
-                }
-            }
-            if (!duplikat) count2++;
-        }
-    }
-
-    int* d = new int[count2];
-    int index2 = 0;
-
-    for (int i = 0; i < m; i++) {
-        bool estb = false;
-        for (int j = 0; j < n; j++) {
-            if (a[i] == b[j]) {
-                estb = true;
-                break;
-            }
-        }
-        if (!estb) {
-            bool duplikat = false;
-            for (int k = 0; k < i; k++) {
-                if (a[i] == a[k]) {
-                    duplikat = true;
-                    break;
-                }
-            }
-            if (!duplikat) {
-                d[index2] = a[i];
-                index2++;
-            }
-        }
-    }
-
-    for (int i = 0; i < n; i++) {
-        bool esta = false;
-        for (int j = 0; j < m; j++) {
-            if (b[i] == a[j]) {
-                esta = true;
-                break;
-            }
-        }
-        if (!esta) {
-            bool duplikat = false;
-            for (int k = 0; k < i; k++) {
-                if (b[i] == b[k]) {
-                    duplikat = true;
-                    break;
-                }
-            }
-            if (!duplikat) {
-                d[index2] = b[i];
-                index2++;
-            }
-        }
-    }
-
-    cout << "массив d: ";
-    if (count2 == 0) cout << "пуст";
-    else for (int i = 0; i < count2; i++) cout << d[i] << " ";
-    cout << "\n";
-    delete[] a;
-    delete[] b;
-    delete[] c;
-    delete[] d;
 
     return 0;
 }
