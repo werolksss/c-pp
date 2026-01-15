@@ -1,206 +1,167 @@
 ﻿#include <iostream>
 using namespace std;
 
+// создание массива
+int** createArray(int rows, int cols) {
+    int** a = new int* [rows];
+    for (int i = 0; i < rows; i++) {
+        a[i] = new int[cols];
+    }
+    return a;
+}
+
+// удаление массива
+void deleteArray(int** a, int rows) {
+    for (int i = 0; i < rows; i++) {
+        delete[] a[i];
+    }
+    delete[] a;
+}
+
+// вывод массива
+void printArray(int** a, int rows, int cols) {
+    cout << "\nмассив:\n";
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            cout << a[i][j] << " ";
+        }
+        cout << "\n";
+    }
+}
+
+// 1 задание - добавить строку в конец
+int** addRowEnd(int** a, int& rows, int cols) {
+    int** b = new int* [rows + 1];
+
+    for (int i = 0; i < rows; i++) {
+        b[i] = a[i];
+    }
+
+    b[rows] = new int[cols];
+    for (int j = 0; j < cols; j++) {
+        b[rows][j] = 0;
+    }
+
+    rows++;
+    delete[] a;
+    return b;
+}
+
+// 2 задание - добавить строку в начало
+int** addRowBegin(int** a, int& rows, int cols) {
+    int** b = new int* [rows + 1];
+
+    for (int i = 0; i < rows; i++) {
+        b[i + 1] = a[i];
+    }
+
+    b[0] = new int[cols];
+    for (int j = 0; j < cols; j++) {
+        b[0][j] = 0;
+    }
+
+    rows++;
+    delete[] a;
+    return b;
+}
+
+// 3 задание - добавить строку в указанную позицию
+int** addRowAt(int** a, int& rows, int cols, int pos) {
+    if (pos < 0 || pos > rows) {
+        cout << "\nнеправильная позиция!\n";
+        return a;
+    }
+
+    int** b = new int* [rows + 1];
+
+    for (int i = 0; i < pos; i++) {
+        b[i] = a[i];
+    }
+
+    b[pos] = new int[cols];
+    for (int j = 0; j < cols; j++) {
+        b[pos][j] = 0;
+    }
+
+    for (int i = pos; i < rows; i++) {
+        b[i + 1] = a[i];
+    }
+
+    rows++;
+    delete[] a;
+    return b;
+}
+
+// 4 задание - удалить строку по указанному номеру
+int** deleteRow(int** a, int& rows, int cols, int pos) {
+    if (pos < 0 || pos >= rows) {
+        cout << "\nнеправильная позиция!\n";
+        return a;
+    }
+
+    if (rows == 1) {
+        cout << "\nнельзя удалить последнюю строку!\n";
+        return a;
+    }
+
+    int** b = new int* [rows - 1];
+
+    for (int i = 0; i < pos; i++) {
+        b[i] = a[i];
+    }
+
+    for (int i = pos + 1; i < rows; i++) {
+        b[i - 1] = a[i];
+    }
+
+    delete[] a[pos];
+    rows--;
+    delete[] a;
+
+    return b;
+}
+
 int main() {
     setlocale(LC_ALL, "ru");
+    int rows = 3;
+    int cols = 4;
 
-    // 1.1
-    int a, b;
-    cout << "сложение\n";
-    cout << "введите числа: ";
-    cin >> a >> b;
-    cout << a << "+" << b << "=" << a + b << "\n\n";
+    int** arr = createArray(rows, cols);
 
-    // 1.2
-    float c, f;
-    cout << "перевод в фаренгейт\n";
-    cout << "введите цельсия: ";
-    cin >> c;
-    f = c * 9 / 5 + 32;
-    cout << c << "c=" << f << "f\n\n";
-
-    // 2.1
-    int n1;
-    cout << "четное или нет\n";
-    cout << "введите число: ";
-    cin >> n1;
-    if (n1 % 2 == 0) {
-        cout << n1 << " четное\n\n";
-    }
-    else {
-        cout << n1 << " нечетное\n\n";
-    }
-
-    // 2.2
-    int g;
-    cout << "високосный год\n";
-    cout << "введите год: ";
-    cin >> g;
-    if ((g % 4 == 0 && g % 100 != 0) || g % 400 == 0) {
-        cout << g << " високосный\n\n";
-    }
-    else {
-        cout << g << " не високосный\n\n";
-    }
-
-    // 3.1
-    int n;
-    cout << "сумма от 1 до n\n";
-    cout << "введите n: ";
-    cin >> n;
-    int s = 0;
-    for (int i = 1; i <= n; i++) {
-        s = s + i;
-    }
-    cout << "сумма=" << s << "\n\n";
-
-    // 3.2
-    int t;
-    cout << "таблица умножения\n";
-    cout << "введите число: ";
-    cin >> t;
-    for (int i = 1; i <= 10; i++) {
-        cout << t << "x" << i << "=" << t * i << "\n";
-    }
-    cout << "\n";
-
-    // 4.1
-    int m[10];
-    cout << "минимальный элемент\n";
-    cout << "введите 10 чисел: ";
-    for (int i = 0; i < 10; i++) {
-        cin >> m[i];
-    }
-    int min = m[0];
-    for (int i = 1; i < 10; i++) {
-        if (m[i] < min) {
-            min = m[i];
+    // заполняем массив числами
+    int num = 1;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            arr[i][j] = num++;
         }
     }
-    cout << "минимум=" << min << "\n\n";
 
-    // 4.2
-    int mat[3][3];
-    cout << "сумма строк матрицы\n";
-    cout << "введите 9 чисел: ";
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            cin >> mat[i][j];
-        }
-    }
-    for (int i = 0; i < 3; i++) {
-        int sum = 0;
-        for (int j = 0; j < 3; j++) {
-            sum = sum + mat[i][j];
-        }
-        cout << "строка " << i + 1 << ": " << sum << "\n";
-    }
-    cout << "\n";
+    cout << "начальный массив:";
+    printArray(arr, rows, cols);
 
-    // 5.1
-    int x, y;
-    cout << "наибольшее число\n";
-    cout << "введите числа: ";
-    cin >> x >> y;
-    if (x > y) {
-        cout << "наибольшее=" << x << "\n\n";
-    }
-    else {
-        cout << "наибольшее=" << y << "\n\n";
-    }
+    // тест 1 задания
+    cout << "\n\n1 задание - добавляем строку в конец:";
+    arr = addRowEnd(arr, rows, cols);
+    printArray(arr, rows, cols);
 
-    // 5.2
-    int p;
-    cout << "простое число\n";
-    cout << "введите число: ";
-    cin >> p;
-    bool pr = true;
-    if (p < 2) pr = false;
-    for (int i = 2; i < p; i++) {
-        if (p % i == 0) {
-            pr = false;
-            break;
-        }
-    }
-    if (pr) {
-        cout << p << " простое\n\n";
-    }
-    else {
-        cout << p << " не простое\n\n";
-    }
+    // тест 2 задания
+    cout << "\n\n2 задание - добавляем строку в начало:";
+    arr = addRowBegin(arr, rows, cols);
+    printArray(arr, rows, cols);
 
-    // 6.1
-    int v1, v2;
-    cout << "обмен через указатели\n";
-    cout << "введите числа: ";
-    cin >> v1 >> v2;
-    cout << "до: " << v1 << " " << v2 << "\n";
-    int* ptr1 = &v1, * ptr2 = &v2;
-    int tmp = *ptr1;
-    *ptr1 = *ptr2;
-    *ptr2 = tmp;
-    cout << "после: " << v1 << " " << v2 << "\n\n";
+    // тест 3 задания
+    cout << "\n\n3 задание - добавляем строку в позицию 2:";
+    arr = addRowAt(arr, rows, cols, 2);
+    printArray(arr, rows, cols);
 
-    // 6.2
-    int arr[5];
-    cout << "сумма через указатели\n";
-    cout << "введите 5 чисел: ";
-    for (int i = 0; i < 5; i++) {
-        cin >> arr[i];
-    }
-    int* ptr = arr;
-    int total = 0;
-    for (int i = 0; i < 5; i++) {
-        total = total + *(ptr + i);
-    }
-    cout << "сумма=" << total << "\n\n";
+    // тест 4 задания
+    cout << "\n\n4 задание - удаляем строку в позиции 2:";
+    arr = deleteRow(arr, rows, cols, 2);
+    printArray(arr, rows, cols);
 
-    // 7.1
-    char str[100];
-    cout << "длина строки\n";
-    cout << "введите строку: ";
-    cin.ignore();
-    cin.getline(str, 100);
-    int l = 0;
-    while (str[l] != '\0') {
-        l++;
-    }
-    cout << "длина=" << l << "\n\n";
+    deleteArray(arr, rows);
 
-    // 8.1
-    int a1[5];
-    cout << "среднее\n";
-    cout << "введите 5 чисел: ";
-    for (int i = 0; i < 5; i++) {
-        cin >> a1[i];
-    }
-    float av = 0;
-    for (int i = 0; i < 5; i++) {
-        av = av + a1[i];
-    }
-    av = av / 5;
-    cout << "среднее=" << av << "\n\n";
-
-    // 8.2
-    int pal[5];
-    cout << "палиндром\n";
-    cout << "введите 5 чисел: ";
-    for (int i = 0; i < 5; i++) {
-        cin >> pal[i];
-    }
-    bool pl = true;
-    for (int i = 0; i < 2; i++) {
-        if (pal[i] != pal[4 - i]) {
-            pl = false;
-            break;
-        }
-    }
-    if (pl) {
-        cout << "палиндром\n";
-    }
-    else {
-        cout << "не палиндром\n";
-    }
+    cout << "\nпрограмма завершена.\n";
 
     return 0;
 }
