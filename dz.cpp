@@ -1,240 +1,118 @@
 ﻿#include <iostream>
-#include <string>
-
+#include <cmath>
+#include <vector>
+#include <cstring>
+#include <locale>
 using namespace std;
 
-// 1. Ошибки
-enum ErrorCode {
-    GOOD,
-    NO_FILE,
-    NO_ACCESS,
-    NO_MEMORY
-};
+//1.1
+int sum(int a, int b) { return a + b; }
+int sub(int a, int b) { return a - b; }
+int mul(int a, int b) { return a * b; }
+int divi(int a, int b) { return b == 0 ? 0 : a / b; }
 
-ErrorCode checkError(bool f, bool a, bool m) {
-    if (!f) return NO_FILE;
-    if (!a) return NO_ACCESS;
-    if (!m) return NO_MEMORY;
-    return GOOD;
+//1.2
+int compareStrings(const char* a, const char* b) { return strcmp(a, b); }
+
+//2.1
+bool up(int a, int b) { return a > b; }
+bool down(int a, int b) { return a < b; }
+void sort(int a[], int n, bool (*comp)(int, int)) {
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n - 1; j++)
+            if (comp(a[j], a[j + 1]))
+                swap(a[j], a[j + 1]);
 }
 
-// 2. Дни недели
-enum Day {
-    MON,
-    TUE,
-    WED,
-    THU,
-    FRI,
-    SAT,
-    SUN
-};
-
-string dayName(Day d) {
-    if (d == MON) return "Понедельник";
-    if (d == TUE) return "Вторник";
-    if (d == WED) return "Среда";
-    if (d == THU) return "Четверг";
-    if (d == FRI) return "Пятница";
-    if (d == SAT) return "Суббота";
-    if (d == SUN) return "Воскресенье";
-    return "???";
+//2.2
+double f1(double a) { return sin(a); }
+double f2(double a) { return a * a; }
+double integrate(double a, double b, int n, double (*func)(double)) {
+    double h = (b - a) / n, s = 0;
+    for (int i = 0; i < n; i++) s += func(a + i * h) * h;
+    return s;
 }
 
-bool isWeekend(Day d) {
-    return d == SAT || d == SUN;
-}
+//3.1
+void m1() { cout << "Открыть файл\n"; }
+void m2() { cout << "Сохранить файл\n"; }
+void m3() { cout << "Выход\n"; }
 
-// 4. Флаги отображения
-enum DisplayFlags {
-    BORDER = 1,
-    GRID = 2,
-    AXES = 4,
-    LEGEND = 8
-};
+//5.1
+template <class T, class U>
+auto add(T a, U b) -> decltype(a + b) { return a + b; }
 
-void showFlags(int flags) {
-    cout << "Включено: ";
-    if (flags & BORDER) cout << "границы ";
-    if (flags & GRID) cout << "сетка ";
-    if (flags & AXES) cout << "оси ";
-    if (flags & LEGEND) cout << "легенда ";
-    cout << endl;
-}
-
-// 6. Направления
-enum Direction {
-    UP,
-    RIGHT,
-    DOWN,
-    LEFT
-};
-
-void move(int& x, int& y, Direction dir) {
-    if (dir == UP) y++;
-    else if (dir == RIGHT) x++;
-    else if (dir == DOWN) y--;
-    else if (dir == LEFT) x--;
-}
-
-string dirName(Direction dir) {
-    if (dir == UP) return "вверх";
-    else if (dir == RIGHT) return "вправо";
-    else if (dir == DOWN) return "вниз";
-    else if (dir == LEFT) return "влево";
-    return "???";
-}
-
-// 9. Площади фигур
-enum Shape {
-    CIRCLE,
-    SQUARE,
-    RECTANGLE,
-    TRIANGLE
-};
-
-double getArea(Shape s, double a, double b = 0) {
-    if (s == CIRCLE) return 3.14 * a * a;
-    else if (s == SQUARE) return a * a;
-    else if (s == RECTANGLE) return a * b;
-    else if (s == TRIANGLE) return 0.5 * a * b;
-    return 0;
-}
-
-string shapeName(Shape s) {
-    if (s == CIRCLE) return "круг";
-    else if (s == SQUARE) return "квадрат";
-    else if (s == RECTANGLE) return "прямоугольник";
-    else if (s == TRIANGLE) return "треугольник";
-    return "???";
-}
+//5.2
+double func2(int a) { return a * 1.5; }
+double (*getFunc())(int) { return func2; }
+auto getFunc2() -> double(*)(int) { return func2; }
 
 int main() {
     setlocale(LC_ALL, "ru");
 
-    // === 1. Ошибки ===
-    bool file, access, memory;
-    cout << "=== 1. Проверка ошибок ===" << endl;
-    cout << "Файл существует? (1-да, 0-нет): ";
-    cin >> file;
-    cout << "Есть доступ? (1-да, 0-нет): ";
-    cin >> access;
-    cout << "Хватает памяти? (1-да, 0-нет): ";
-    cin >> memory;
+    //1.1
+    int a, b; char c;
+    cout << "Введите два числа:\n";
+    cin >> a >> b;
+    cout << "Введите операцию (+ - * /):\n";
+    cin >> c;
 
-    ErrorCode err = checkError(file, access, memory);
-    cout << "Результат: код " << err << " (";
-    if (err == GOOD) cout << "Успех";
-    else if (err == NO_FILE) cout << "Нет файла";
-    else if (err == NO_ACCESS) cout << "Нет доступа";
-    else if (err == NO_MEMORY) cout << "Нет памяти";
-    cout << ")" << endl << endl;
+    int (*operation)(int, int) = nullptr;
+    if (c == '+') operation = sum;
+    else if (c == '-') operation = sub;
+    else if (c == '*') operation = mul;
+    else if (c == '/') operation = divi;
 
-    // === 2. Дни недели ===
-    int dayNum;
-    cout << "=== 2. Дни недели ===" << endl;
-    cout << "Введите номер дня (1-понедельник, 7-воскресенье): ";
-    cin >> dayNum;
+    if (operation) cout << "Результат: " << operation(a, b) << "\n\n";
 
-    if (dayNum < 1 || dayNum > 7) {
-        cout << "Неверный номер!" << endl;
-    }
-    else {
-        Day d = (Day)(dayNum - 1);
-        cout << "День: " << dayName(d) << endl;
-        cout << "Выходной? " << (isWeekend(d) ? "Да" : "Нет") << endl;
-    }
-    cout << endl;
+    //1.2
+    char s1[100], s2[100];
+    cout << "Введите первую строку:\n"; cin >> s1;
+    cout << "Введите вторую строку:\n"; cin >> s2;
 
-    // === 4. Флаги отображения ===
-    int flags = 0;
-    int flagChoice;
-    cout << "=== 4. Флаги отображения ===" << endl;
-    cout << "Выберите флаги (1-границы, 2-сетка, 3-оси, 4-легенда, 0-закончить):" << endl;
+    int r = compareStrings(s1, s2);
+    if (r > 0) cout << "Первая больше\n\n";
+    else if (r == 0) cout << "Равны\n\n";
+    else cout << "Вторая больше\n\n";
 
-    while (true) {
-        cout << "Введите номер флага (1-4) или 0 для выхода: ";
-        cin >> flagChoice;
-        if (flagChoice == 0) break;
+    //2.1
+    int mas[5] = { 5,2,4,1,3 };
+    sort(mas, 5, up);
+    cout << "По возрастанию:\n";
+    for (int i = 0; i < 5; i++) cout << mas[i] << " ";
+    cout << "\n\n";
 
-        if (flagChoice == 1) flags |= BORDER;
-        else if (flagChoice == 2) flags |= GRID;
-        else if (flagChoice == 3) flags |= AXES;
-        else if (flagChoice == 4) flags |= LEGEND;
-        else cout << "Неверный выбор" << endl;
-    }
+    sort(mas, 5, down);
+    cout << "По убыванию:\n";
+    for (int i = 0; i < 5; i++) cout << mas[i] << " ";
+    cout << "\n\n";
 
-    cout << "Комбинация флагов: " << flags << endl;
-    showFlags(flags);
-    cout << endl;
+    //2.2
+    cout << "Интеграл sin(x): " << integrate(0, 3.14, 1000, f1) << "\n";
+    cout << "Интеграл x*x: " << integrate(0, 3, 1000, f2) << "\n\n";
 
-    // === 6. Движение по координатам ===
-    int startX, startY;
-    int dirChoice;
-    cout << "=== 6. Движение по координатам ===" << endl;
-    cout << "Введите начальные координаты:" << endl;
-    cout << "X: "; cin >> startX;
-    cout << "Y: "; cin >> startY;
+    //3.1
+    void (*menu[])() = { m1, m2, m3 };
+    int k;
+    cout << "Меню:\n1\n2\n3\n"; cin >> k;
+    if (k >= 1 && k <= 3) menu[k - 1]();
 
-    cout << "Выберите направление (1-вверх, 2-вправо, 3-вниз, 4-влево): ";
-    cin >> dirChoice;
+    //4.1
+    vector<int> v = { 1,2,3,4,5 };
+    for (auto i = v.begin(); i != v.end(); i++) cout << *i << " ";
+    cout << "\n\n";
 
-    if (dirChoice < 1 || dirChoice > 4) {
-        cout << "Неверное направление!" << endl;
-    }
-    else {
-        Direction dir = (Direction)(dirChoice - 1);
-        int x = startX, y = startY;
+    //4.2
+    int x = 5; double y = 3.14;
+    decltype(x * y) z1;
+    auto z2 = x * y;
 
-        cout << "Начало: x=" << x << ", y=" << y << endl;
-        move(x, y, dir);
-        cout << "После движения " << dirName(dir) << ": x=" << x << ", y=" << y << endl;
-    }
-    cout << endl;
+    //5.1
+    cout << add(2, 3.5) << "\n";
 
-    // === 9. Площади фигур ===
-    int shapeChoice;
-    double a, b;
-    cout << "=== 9. Площади фигур ===" << endl;
-    cout << "Выберите фигуру:" << endl;
-    cout << "1. Круг" << endl;
-    cout << "2. Квадрат" << endl;
-    cout << "3. Прямоугольник" << endl;
-    cout << "4. Треугольник" << endl;
-    cout << "Ваш выбор: ";
-    cin >> shapeChoice;
-
-    if (shapeChoice < 1 || shapeChoice > 4) {
-        cout << "Неверный выбор!" << endl;
-    }
-    else {
-        Shape s = (Shape)(shapeChoice - 1);
-
-        if (s == CIRCLE) {
-            cout << "Введите радиус: ";
-            cin >> a;
-            b = 0;
-        }
-        else if (s == SQUARE) {
-            cout << "Введите сторону: ";
-            cin >> a;
-            b = 0;
-        }
-        else if (s == RECTANGLE) {
-            cout << "Введите длину: ";
-            cin >> a;
-            cout << "Введите ширину: ";
-            cin >> b;
-        }
-        else if (s == TRIANGLE) {
-            cout << "Введите основание: ";
-            cin >> a;
-            cout << "Введите высоту: ";
-            cin >> b;
-        }
-
-        double area = getArea(s, a, b);
-        cout << "Площадь " << shapeName(s) << " = " << area << endl;
-    }
+    //5.2
+    double (*p)(int) = getFunc2();
+    cout << p(4) << "\n";
 
     return 0;
 }
