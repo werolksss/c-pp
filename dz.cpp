@@ -1,118 +1,120 @@
 ﻿#include <iostream>
-#include <cmath>
-#include <vector>
-#include <cstring>
 #include <locale>
 using namespace std;
 
-//1.1
-int sum(int a, int b) { return a + b; }
-int sub(int a, int b) { return a - b; }
-int mul(int a, int b) { return a * b; }
-int divi(int a, int b) { return b == 0 ? 0 : a / b; }
+// структура видеомагазина
+struct video
+{
+    char n[50]; // название
+    char r[50]; // режиссер
+    char g[30]; // жанр
+    int p;      // популярность
+    int c;      // цена
+};
 
-//1.2
-int compareStrings(const char* a, const char* b) { return strcmp(a, b); }
-
-//2.1
-bool up(int a, int b) { return a > b; }
-bool down(int a, int b) { return a < b; }
-void sort(int a[], int n, bool (*comp)(int, int)) {
-    for (int i = 0; i < n; i++)
-        for (int j = 0; j < n - 1; j++)
-            if (comp(a[j], a[j + 1]))
-                swap(a[j], a[j + 1]);
+//1 показ всех
+void show(video a[], int b)
+{
+    for (int i = 0; i < b; i++)
+    {
+        cout << "Фильм: " << a[i].n << "\n";
+        cout << "Режиссер: " << a[i].r << "\n";
+        cout << "Жанр: " << a[i].g << "\n";
+        cout << "Рейтинг: " << a[i].p << "\n";
+        cout << "Цена: " << a[i].c << "\n\n";
+    }
 }
 
-//2.2
-double f1(double a) { return sin(a); }
-double f2(double a) { return a * a; }
-double integrate(double a, double b, int n, double (*func)(double)) {
-    double h = (b - a) / n, s = 0;
-    for (int i = 0; i < n; i++) s += func(a + i * h) * h;
-    return s;
+//2 поиск по названию
+void find_n(video a[], int b)
+{
+    char x[50];
+    cout << "Введите название:\n";
+    cin >> x;
+    for (int i = 0; i < b; i++)
+        if (strcmp(a[i].n, x) == 0)
+            cout << "Найден: " << a[i].n << "\n\n";
 }
 
-//3.1
-void m1() { cout << "Открыть файл\n"; }
-void m2() { cout << "Сохранить файл\n"; }
-void m3() { cout << "Выход\n"; }
+//3 поиск по жанру
+void find_g(video a[], int b)
+{
+    char x[30];
+    cout << "Введите жанр:\n";
+    cin >> x;
+    for (int i = 0; i < b; i++)
+        if (strcmp(a[i].g, x) == 0)
+            cout << a[i].n << "\n";
+    cout << "\n";
+}
 
-//5.1
-template <class T, class U>
-auto add(T a, U b) -> decltype(a + b) { return a + b; }
+//4 поиск по режиссеру
+void find_r(video a[], int b)
+{
+    char x[50];
+    cout << "Введите режиссера:\n";
+    cin >> x;
+    for (int i = 0; i < b; i++)
+        if (strcmp(a[i].r, x) == 0)
+            cout << a[i].n << "\n";
+    cout << "\n";
+}
 
-//5.2
-double func2(int a) { return a * 1.5; }
-double (*getFunc())(int) { return func2; }
-auto getFunc2() -> double(*)(int) { return func2; }
+//5 самый популярный в жанре
+void top(video a[], int b)
+{
+    char x[30];
+    int m = -1, k = 0;
+    cout << "Введите жанр:\n";
+    cin >> x;
+    for (int i = 0; i < b; i++)
+        if (strcmp(a[i].g, x) == 0 && a[i].p > m)
+        {
+            m = a[i].p;
+            k = i;
+        }
+    cout << "Самый популярный: " << a[k].n << "\n\n";
+}
 
-int main() {
+//6 добавление
+void add(video a[], int& b)
+{
+    cout << "Название:\n";
+    cin >> a[b].n;
+    cout << "Режиссер:\n";
+    cin >> a[b].r;
+    cout << "Жанр:\n";
+    cin >> a[b].g;
+    cout << "Рейтинг:\n";
+    cin >> a[b].p;
+    cout << "Цена:\n";
+    cin >> a[b].c;
+    b++;
+}
+
+int main()
+{
     setlocale(LC_ALL, "ru");
 
-    //1.1
-    int a, b; char c;
-    cout << "Введите два числа:\n";
-    cin >> a >> b;
-    cout << "Введите операцию (+ - * /):\n";
-    cin >> c;
+    video a[10] = {
+        {"Matrix","Wach","Sci",9,300},
+        {"Avatar","Cam","Sci",8,350}
+    };
+    int b = 2, c;
 
-    int (*operation)(int, int) = nullptr;
-    if (c == '+') operation = sum;
-    else if (c == '-') operation = sub;
-    else if (c == '*') operation = mul;
-    else if (c == '/') operation = divi;
+    while (true)
+    {
+        cout << "1-показ\n2-название\n3-жанр\n4-режиссер\n5-топ\n6-добавить\n0-выход\n";
+        cin >> c;
 
-    if (operation) cout << "Результат: " << operation(a, b) << "\n\n";
-
-    //1.2
-    char s1[100], s2[100];
-    cout << "Введите первую строку:\n"; cin >> s1;
-    cout << "Введите вторую строку:\n"; cin >> s2;
-
-    int r = compareStrings(s1, s2);
-    if (r > 0) cout << "Первая больше\n\n";
-    else if (r == 0) cout << "Равны\n\n";
-    else cout << "Вторая больше\n\n";
-
-    //2.1
-    int mas[5] = { 5,2,4,1,3 };
-    sort(mas, 5, up);
-    cout << "По возрастанию:\n";
-    for (int i = 0; i < 5; i++) cout << mas[i] << " ";
-    cout << "\n\n";
-
-    sort(mas, 5, down);
-    cout << "По убыванию:\n";
-    for (int i = 0; i < 5; i++) cout << mas[i] << " ";
-    cout << "\n\n";
-
-    //2.2
-    cout << "Интеграл sin(x): " << integrate(0, 3.14, 1000, f1) << "\n";
-    cout << "Интеграл x*x: " << integrate(0, 3, 1000, f2) << "\n\n";
-
-    //3.1
-    void (*menu[])() = { m1, m2, m3 };
-    int k;
-    cout << "Меню:\n1\n2\n3\n"; cin >> k;
-    if (k >= 1 && k <= 3) menu[k - 1]();
-
-    //4.1
-    vector<int> v = { 1,2,3,4,5 };
-    for (auto i = v.begin(); i != v.end(); i++) cout << *i << " ";
-    cout << "\n\n";
-
-    //4.2
-    int x = 5; double y = 3.14;
-    decltype(x * y) z1;
-    auto z2 = x * y;
-
-    //5.1
-    cout << add(2, 3.5) << "\n";
-
-    //5.2
-    double (*p)(int) = getFunc2();
-    cout << p(4) << "\n";
+        if (c == 1) show(a, b);
+        if (c == 2) find_n(a, b);
+        if (c == 3) find_g(a, b);
+        if (c == 4) find_r(a, b);
+        if (c == 5) top(a, b);
+        if (c == 6) add(a, b);
+        if (c == 0) break;
+    }
 
     return 0;
 }
