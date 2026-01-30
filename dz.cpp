@@ -1,65 +1,218 @@
 ﻿#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+
 using namespace std;
 
-// 1 задание: макрос для нахождения меньшего из двух чисел
-#define MIN(a, b) ((a) < (b) ? (a) : (b))
+// Структура для сотрудника
+struct Sotrudnik {
+    string fam; // фамилия
+    string im;  // имя
+    int voz;    // возраст
+    string dol; // должность
+};
 
-// 2 задание: макрос для нахождения большего из двух чисел
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
+vector<Sotrudnik> baza; // база сотрудников
 
-// 3 задание: макрос для возведения числа в квадрат
-#define SQUARE(x) ((x) * (x))
+// Функция загрузки
+void zagruzka() {
+    string f;
+    cout << "Введите имя файла: ";
+    cin >> f;
 
-// 4 задание: макрос для возведения числа в степень
-#define POWER(x, y) (pow(x, y))
+    ifstream file(f);
+    if (!file) {
+        cout << "Файл не найден\n";
+        return;
+    }
 
-// 5 задание: макрос для проверки числа на четность
-#define IS_EVEN(x) ((x) % 2 == 0)
+    baza.clear();
+    Sotrudnik s;
+    while (file >> s.fam >> s.im >> s.voz >> s.dol) {
+        baza.push_back(s);
+    }
+    file.close();
+    cout << "Загружено: " << baza.size() << endl;
+}
 
-// 6 задание: макрос для проверки числа на нечетность
-#define IS_ODD(x) ((x) % 2 != 0)
+// Функция сохранения
+void sohranenie() {
+    string f;
+    cout << "Введите имя файла: ";
+    cin >> f;
 
-int main()
-{
-    setlocale(LC_ALL, "ru"); // Устанавливаем русскую локаль
+    ofstream file(f);
+    for (int i = 0; i < baza.size(); i++) {
+        file << baza[i].fam << " "
+            << baza[i].im << " "
+            << baza[i].voz << " "
+            << baza[i].dol << endl;
+    }
+    file.close();
+    cout << "Сохранено\n";
+}
 
-    // Простые переменные, как у новичка
-    int a, b, c;
+// Добавить
+void dobavit() {
+    Sotrudnik n;
+    cout << "Фамилия: ";
+    cin >> n.fam;
+    cout << "Имя: ";
+    cin >> n.im;
+    cout << "Возраст: ";
+    cin >> n.voz;
+    cout << "Должность: ";
+    cin >> n.dol;
+    baza.push_back(n);
+    cout << "Добавлено\n";
+}
 
-    cout << "Введите первое число: ";
-    cin >> a;
-    cout << "Введите второе число: ";
+// Показать всех
+void pokazat() {
+    if (baza.empty()) {
+        cout << "База пуста\n";
+        return;
+    }
+    for (int i = 0; i < baza.size(); i++) {
+        cout << baza[i].fam << " "
+            << baza[i].im << " "
+            << baza[i].voz << " "
+            << baza[i].dol << endl;
+    }
+}
+
+// Найти по фамилии
+void naiti() {
+    string f;
+    cout << "Введите фамилию: ";
+    cin >> f;
+
+    bool est = false;
+    for (int i = 0; i < baza.size(); i++) {
+        if (baza[i].fam == f) {
+            cout << baza[i].fam << " "
+                << baza[i].im << " "
+                << baza[i].voz << " "
+                << baza[i].dol << endl;
+            est = true;
+        }
+    }
+    if (!est) cout << "Не найдено\n";
+}
+
+// Редактировать
+void izmenit() {
+    string f;
+    cout << "Фамилия для изменения: ";
+    cin >> f;
+
+    for (int i = 0; i < baza.size(); i++) {
+        if (baza[i].fam == f) {
+            cout << "Новое имя: ";
+            cin >> baza[i].im;
+            cout << "Новый возраст: ";
+            cin >> baza[i].voz;
+            cout << "Новая должность: ";
+            cin >> baza[i].dol;
+            cout << "Изменено\n";
+            return;
+        }
+    }
+    cout << "Не найдено\n";
+}
+
+// Удалить
+void udalit() {
+    string f;
+    cout << "Фамилия для удаления: ";
+    cin >> f;
+
+    for (int i = 0; i < baza.size(); i++) {
+        if (baza[i].fam == f) {
+            baza.erase(baza.begin() + i);
+            cout << "Удалено\n";
+            return;
+        }
+    }
+    cout << "Не найдено\n";
+}
+
+// По возрасту
+void poVozrastu() {
+    int v;
+    cout << "Введите возраст: ";
+    cin >> v;
+
+    bool est = false;
+    for (int i = 0; i < baza.size(); i++) {
+        if (baza[i].voz == v) {
+            cout << baza[i].fam << " "
+                << baza[i].im << " "
+                << baza[i].voz << " "
+                << baza[i].dol << endl;
+            est = true;
+        }
+    }
+    if (!est) cout << "Не найдено\n";
+}
+
+// По букве
+void poBukve() {
+    char b;
+    cout << "Введите букву: ";
     cin >> b;
 
-    // Используем макросы
-    cout << "\nМеньшее число: " << MIN(a, b) << endl;
-    cout << "Большее число: " << MAX(a, b) << endl;
-    cout << "Квадрат первого числа: " << SQUARE(a) << endl;
-    cout << "Квадрат второго числа: " << SQUARE(b) << endl;
+    bool est = false;
+    for (int i = 0; i < baza.size(); i++) {
+        if (!baza[i].fam.empty() && tolower(baza[i].fam[0]) == tolower(b)) {
+            cout << baza[i].fam << " "
+                << baza[i].im << " "
+                << baza[i].voz << " "
+                << baza[i].dol << endl;
+            est = true;
+        }
+    }
+    if (!est) cout << "Не найдено\n";
+}
 
-    // Для степени нужно подключить математическую библиотеку
-    // Но для простоты сделаем без неё, либо ограничимся квадратом
-    cout << "\nПроверка на четность:\n";
-    if (IS_EVEN(a))
-        cout << a << " - четное\n";
-    else
-        cout << a << " - нечетное\n";
+// Главная функция
+int main() {
+    setlocale(LC_ALL, "ru");
 
-    if (IS_EVEN(b))
-        cout << b << " - четное\n";
-    else
-        cout << b << " - нечетное\n";
+    zagruzka();
 
-    cout << "\nПроверка на нечетность:\n";
-    if (IS_ODD(a))
-        cout << a << " - нечетное\n";
-    else
-        cout << a << " - четное\n";
+    int v; // выбор
+    do {
+        cout << "\n1. Добавить\n";
+        cout << "2. Показать всех\n";
+        cout << "3. Найти по фамилии\n";
+        cout << "4. Изменить\n";
+        cout << "5. Удалить\n";
+        cout << "6. По возрасту\n";
+        cout << "7. По букве\n";
+        cout << "8. Сохранить\n";
+        cout << "0. Выход\n";
+        cout << "Выберите: ";
+        cin >> v;
 
-    if (IS_ODD(b))
-        cout << b << " - нечетное\n";
-    else
-        cout << b << " - четное\n";
+        switch (v) {
+        case 1: dobavit(); break;
+        case 2: pokazat(); break;
+        case 3: naiti(); break;
+        case 4: izmenit(); break;
+        case 5: udalit(); break;
+        case 6: poVozrastu(); break;
+        case 7: poBukve(); break;
+        case 8: sohranenie(); break;
+        case 0: break;
+        default: cout << "Ошибка\n";
+        }
+    } while (v != 0);
+
+    // Автосохранение
+    cout << "Автосохранение...\n";
+    sohranenie();
 
     return 0;
 }
