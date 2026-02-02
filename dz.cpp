@@ -1,218 +1,121 @@
 ﻿#include <iostream>
 #include <fstream>
-#include <vector>
 #include <string>
+#include <locale>
 
 using namespace std;
 
-// Структура для сотрудника
-struct Sotrudnik {
-    string fam; // фамилия
-    string im;  // имя
-    int voz;    // возраст
-    string dol; // должность
-};
-
-vector<Sotrudnik> baza; // база сотрудников
-
-// Функция загрузки
-void zagruzka() {
-    string f;
-    cout << "Введите имя файла: ";
-    cin >> f;
-
-    ifstream file(f);
-    if (!file) {
-        cout << "Файл не найден\n";
-        return;
-    }
-
-    baza.clear();
-    Sotrudnik s;
-    while (file >> s.fam >> s.im >> s.voz >> s.dol) {
-        baza.push_back(s);
-    }
-    file.close();
-    cout << "Загружено: " << baza.size() << endl;
-}
-
-// Функция сохранения
-void sohranenie() {
-    string f;
-    cout << "Введите имя файла: ";
-    cin >> f;
-
-    ofstream file(f);
-    for (int i = 0; i < baza.size(); i++) {
-        file << baza[i].fam << " "
-            << baza[i].im << " "
-            << baza[i].voz << " "
-            << baza[i].dol << endl;
-    }
-    file.close();
-    cout << "Сохранено\n";
-}
-
-// Добавить
-void dobavit() {
-    Sotrudnik n;
-    cout << "Фамилия: ";
-    cin >> n.fam;
-    cout << "Имя: ";
-    cin >> n.im;
-    cout << "Возраст: ";
-    cin >> n.voz;
-    cout << "Должность: ";
-    cin >> n.dol;
-    baza.push_back(n);
-    cout << "Добавлено\n";
-}
-
-// Показать всех
-void pokazat() {
-    if (baza.empty()) {
-        cout << "База пуста\n";
-        return;
-    }
-    for (int i = 0; i < baza.size(); i++) {
-        cout << baza[i].fam << " "
-            << baza[i].im << " "
-            << baza[i].voz << " "
-            << baza[i].dol << endl;
-    }
-}
-
-// Найти по фамилии
-void naiti() {
-    string f;
-    cout << "Введите фамилию: ";
-    cin >> f;
-
-    bool est = false;
-    for (int i = 0; i < baza.size(); i++) {
-        if (baza[i].fam == f) {
-            cout << baza[i].fam << " "
-                << baza[i].im << " "
-                << baza[i].voz << " "
-                << baza[i].dol << endl;
-            est = true;
-        }
-    }
-    if (!est) cout << "Не найдено\n";
-}
-
-// Редактировать
-void izmenit() {
-    string f;
-    cout << "Фамилия для изменения: ";
-    cin >> f;
-
-    for (int i = 0; i < baza.size(); i++) {
-        if (baza[i].fam == f) {
-            cout << "Новое имя: ";
-            cin >> baza[i].im;
-            cout << "Новый возраст: ";
-            cin >> baza[i].voz;
-            cout << "Новая должность: ";
-            cin >> baza[i].dol;
-            cout << "Изменено\n";
-            return;
-        }
-    }
-    cout << "Не найдено\n";
-}
-
-// Удалить
-void udalit() {
-    string f;
-    cout << "Фамилия для удаления: ";
-    cin >> f;
-
-    for (int i = 0; i < baza.size(); i++) {
-        if (baza[i].fam == f) {
-            baza.erase(baza.begin() + i);
-            cout << "Удалено\n";
-            return;
-        }
-    }
-    cout << "Не найдено\n";
-}
-
-// По возрасту
-void poVozrastu() {
-    int v;
-    cout << "Введите возраст: ";
-    cin >> v;
-
-    bool est = false;
-    for (int i = 0; i < baza.size(); i++) {
-        if (baza[i].voz == v) {
-            cout << baza[i].fam << " "
-                << baza[i].im << " "
-                << baza[i].voz << " "
-                << baza[i].dol << endl;
-            est = true;
-        }
-    }
-    if (!est) cout << "Не найдено\n";
-}
-
-// По букве
-void poBukve() {
-    char b;
-    cout << "Введите букву: ";
-    cin >> b;
-
-    bool est = false;
-    for (int i = 0; i < baza.size(); i++) {
-        if (!baza[i].fam.empty() && tolower(baza[i].fam[0]) == tolower(b)) {
-            cout << baza[i].fam << " "
-                << baza[i].im << " "
-                << baza[i].voz << " "
-                << baza[i].dol << endl;
-            est = true;
-        }
-    }
-    if (!est) cout << "Не найдено\n";
-}
-
-// Главная функция
 int main() {
     setlocale(LC_ALL, "ru");
 
-    zagruzka();
-
-    int v; // выбор
-    do {
-        cout << "\n1. Добавить\n";
-        cout << "2. Показать всех\n";
-        cout << "3. Найти по фамилии\n";
-        cout << "4. Изменить\n";
-        cout << "5. Удалить\n";
-        cout << "6. По возрасту\n";
-        cout << "7. По букве\n";
-        cout << "8. Сохранить\n";
-        cout << "0. Выход\n";
-        cout << "Выберите: ";
-        cin >> v;
-
-        switch (v) {
-        case 1: dobavit(); break;
-        case 2: pokazat(); break;
-        case 3: naiti(); break;
-        case 4: izmenit(); break;
-        case 5: udalit(); break;
-        case 6: poVozrastu(); break;
-        case 7: poBukve(); break;
-        case 8: sohranenie(); break;
-        case 0: break;
-        default: cout << "Ошибка\n";
+    // 1 задание: подсчет слов, начинающихся с заданного символа
+    {
+        ifstream file1("file1.txt");
+        if (!file1.is_open()) {
+            cout << "не удалось открыть file1.txt\n";
+            return 1;
         }
-    } while (v != 0);
 
-    // Автосохранение
-    cout << "Автосохранение...\n";
-    sohranenie();
+        char a;
+        cout << "введите символ для поиска: ";
+        cin >> a;
+
+        int b = 0;
+        string c;
+
+        while (file1 >> c) {
+            if (!c.empty() && c[0] == a) {
+                b++;
+            }
+        }
+
+        cout << "слов, начинающихся с '" << a << "': " << b << "\n";
+        file1.close();
+    }
+
+    // 2 задание: замена 0 на 1 и 1 на 0
+    {
+        ifstream file2("file2.txt");
+        ofstream file2_new("file2_new.txt");
+
+        if (!file2.is_open() || !file2_new.is_open()) {
+            cout << "не удалось открыть файлы для 2 задания\n";
+            return 1;
+        }
+
+        string d;
+        while (getline(file2, d)) {
+            for (char& e : d) {
+                if (e == '0') {
+                    e = '1';
+                }
+                else if (e == '1') {
+                    e = '0';
+                }
+            }
+            file2_new << d << "\n";
+        }
+
+        file2.close();
+        file2_new.close();
+        cout << "файл преобразован и сохранен как file2_new.txt\n";
+    }
+
+    // 3 задание: запись массива строк в файл
+    {
+        string f[] = { "первая строка", "вторая строка", "третья строка" };
+        ofstream file3("file3.txt");
+
+        if (!file3.is_open()) {
+            cout << "не удалось создать file3.txt\n";
+            return 1;
+        }
+
+        for (const string& g : f) {
+            file3 << g << "\n";
+        }
+
+        file3.close();
+        cout << "массив строк записан в file3.txt\n";
+    }
+
+    // 4 задание: подсчет символов в файле
+    {
+        ifstream file4("file4.txt");
+        if (!file4.is_open()) {
+            cout << "не удалось открыть file4.txt\n";
+            return 1;
+        }
+
+        int h = 0;
+        char i;
+
+        while (file4.get(i)) {
+            h++;
+        }
+
+        file4.close();
+        cout << "количество символов в файле: " << h << "\n";
+    }
+
+    // 5 задание: подсчет строк в файле
+    {
+        ifstream file5("file5.txt");
+        if (!file5.is_open()) {
+            cout << "не удалось открыть file5.txt\n";
+            return 1;
+        }
+
+        int j = 0;
+        string k;
+
+        while (getline(file5, k)) {
+            j++;
+        }
+
+        file5.close();
+        cout << "количество строк в файле: " << j << "\n";
+    }
 
     return 0;
 }
