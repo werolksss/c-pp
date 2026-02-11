@@ -1,84 +1,80 @@
 ﻿#include <iostream>
-#include <string>
+#include <fstream>
 #include <windows.h>
 using namespace std;
 
-class Student {
+class Point {
 private:
-    string fio;
-    string birthDate;
-    string phone;
-    string city;
-    string country;
-    string university;
-    string universityCity;
-    string universityCountry;
-    string groupNumber;
+    double x, y, z;
 
 public:
     // Ввод данных
     void input() {
-        cout << "Введите ФИО: ";
-        getline(cin, fio);
-
-        cout << "Введите дату рождения: ";
-        getline(cin, birthDate);
-
-        cout << "Введите контактный телефон: ";
-        getline(cin, phone);
-
-        cout << "Введите город проживания: ";
-        getline(cin, city);
-
-        cout << "Введите страну проживания: ";
-        getline(cin, country);
-
-        cout << "Введите название учебного заведения: ";
-        getline(cin, university);
-
-        cout << "Введите город учебного заведения: ";
-        getline(cin, universityCity);
-
-        cout << "Введите страну учебного заведения: ";
-        getline(cin, universityCountry);
-
-        cout << "Введите номер группы: ";
-        getline(cin, groupNumber);
+        cout << "Введите координату X: ";
+        cin >> x;
+        cout << "Введите координату Y: ";
+        cin >> y;
+        cout << "Введите координату Z: ";
+        cin >> z;
     }
 
     // Вывод данных
     void print() {
-        cout << "\nДанные студента:\n";
-        cout << "ФИО: " << fio << endl;
-        cout << "Дата рождения: " << birthDate << endl;
-        cout << "Телефон: " << phone << endl;
-        cout << "Город: " << city << endl;
-        cout << "Страна: " << country << endl;
-        cout << "Учебное заведение: " << university << endl;
-        cout << "Город учебного заведения: " << universityCity << endl;
-        cout << "Страна учебного заведения: " << universityCountry << endl;
-        cout << "Номер группы: " << groupNumber << endl;
+        cout << "Координаты точки: ("
+            << x << ", "
+            << y << ", "
+            << z << ")" << endl;
     }
 
-    // Аксессоры (get)
-    string getFio() { return fio; }
-    string getPhone() { return phone; }
+    // Аксессоры
+    double getX() { return x; }
+    double getY() { return y; }
+    double getZ() { return z; }
 
-    // Мутаторы (set)
-    void setPhone(string newPhone) {
-        phone = newPhone;
+    void setX(double newX) { x = newX; }
+    void setY(double newY) { y = newY; }
+    void setZ(double newZ) { z = newZ; }
+
+    // Сохранение в файл
+    void saveToFile(string filename) {
+        ofstream file(filename);
+        if (file.is_open()) {
+            file << x << " " << y << " " << z;
+            file.close();
+            cout << "Данные успешно сохранены в файл.\n";
+        }
+        else {
+            cout << "Ошибка при открытии файла!\n";
+        }
+    }
+
+    // Загрузка из файла
+    void loadFromFile(string filename) {
+        ifstream file(filename);
+        if (file.is_open()) {
+            file >> x >> y >> z;
+            file.close();
+            cout << "Данные успешно загружены из файла.\n";
+        }
+        else {
+            cout << "Ошибка при открытии файла!\n";
+        }
     }
 };
 
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-    Student s;
+    Point p;
 
-    cout << "Ввод данных студента:\n";
-    s.input();
+    p.input();
+    p.print();
 
-    s.print();
+    p.saveToFile("point.txt");
+
+    cout << "\nЗагрузка данных из файла...\n";
+    p.loadFromFile("point.txt");
+    p.print();
 
     return 0;
 }
