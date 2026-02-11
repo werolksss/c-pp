@@ -1,111 +1,84 @@
 ﻿#include <iostream>
+#include <string>
 #include <windows.h>
-
 using namespace std;
 
-class Fraction {
+class Student {
 private:
-    int numerator;
-    int denominator;
+    string fio;
+    string birthDate;
+    string phone;
+    string city;
+    string country;
+    string university;
+    string universityCity;
+    string universityCountry;
+    string groupNumber;
 
 public:
-    Fraction() {
-        numerator = 0;
-        denominator = 1;
-    }
-
-    // Ввод дроби
+    // Ввод данных
     void input() {
-        cout << "Введите числитель: ";
-        cin >> numerator;
-        cout << "Введите знаменатель: ";
-        cin >> denominator;
+        cout << "Введите ФИО: ";
+        getline(cin, fio);
 
-        if (denominator == 0) {
-            cout << "Знаменатель не может быть равен 0\n";
-            denominator = 1;
-        }
+        cout << "Введите дату рождения: ";
+        getline(cin, birthDate);
+
+        cout << "Введите контактный телефон: ";
+        getline(cin, phone);
+
+        cout << "Введите город проживания: ";
+        getline(cin, city);
+
+        cout << "Введите страну проживания: ";
+        getline(cin, country);
+
+        cout << "Введите название учебного заведения: ";
+        getline(cin, university);
+
+        cout << "Введите город учебного заведения: ";
+        getline(cin, universityCity);
+
+        cout << "Введите страну учебного заведения: ";
+        getline(cin, universityCountry);
+
+        cout << "Введите номер группы: ";
+        getline(cin, groupNumber);
     }
 
-    // Вывод дроби
+    // Вывод данных
     void print() {
-        cout << numerator << "/" << denominator;
+        cout << "\nДанные студента:\n";
+        cout << "ФИО: " << fio << endl;
+        cout << "Дата рождения: " << birthDate << endl;
+        cout << "Телефон: " << phone << endl;
+        cout << "Город: " << city << endl;
+        cout << "Страна: " << country << endl;
+        cout << "Учебное заведение: " << university << endl;
+        cout << "Город учебного заведения: " << universityCity << endl;
+        cout << "Страна учебного заведения: " << universityCountry << endl;
+        cout << "Номер группы: " << groupNumber << endl;
     }
 
-    // Сложение
-    Fraction add(Fraction f) {
-        Fraction result;
-        result.numerator = numerator * f.denominator + f.numerator * denominator;
-        result.denominator = denominator * f.denominator;
-        return result;
-    }
+    // Аксессоры (get)
+    string getFio() { return fio; }
+    string getPhone() { return phone; }
 
-    // Вычитание
-    Fraction subtract(Fraction f) {
-        Fraction result;
-        result.numerator = numerator * f.denominator - f.numerator * denominator;
-        result.denominator = denominator * f.denominator;
-        return result;
-    }
-
-    // Умножение
-    Fraction multiply(Fraction f) {
-        Fraction result;
-        result.numerator = numerator * f.numerator;
-        result.denominator = denominator * f.denominator;
-        return result;
-    }
-
-    // Деление
-    Fraction divide(Fraction f) {
-        Fraction result;
-        result.numerator = numerator * f.denominator;
-        result.denominator = denominator * f.numerator;
-
-        if (result.denominator == 0) {
-            cout << "\Деление на ноль невозможно\n";
-            result.denominator = 1;
-        }
-
-        return result;
+    // Мутаторы (set)
+    void setPhone(string newPhone) {
+        phone = newPhone;
     }
 };
 
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
+    Student s;
 
-    Fraction f1, f2, result;
+    cout << "Ввод данных студента:\n";
+    s.input();
 
-    cout << "Работа с дробями\n";
-
-    cout << "Введите первую дробь:\n";
-    f1.input();
-
-    cout << "\nВведите вторую дробь:\n";
-    f2.input();
-
-    cout << "\nРезультаты операций:\n";
-
-    cout << "Сложение: ";
-    result = f1.add(f2);
-    result.print();
-    cout << endl;
-
-    cout << "Вычитание: ";
-    result = f1.subtract(f2);
-    result.print();
-    cout << endl;
-
-    cout << "Умножение: ";
-    result = f1.multiply(f2);
-    result.print();
-    cout << endl;
-
-    cout << "Деление: ";
-    result = f1.divide(f2);
-    result.print();
-    cout << endl;
+    s.print();
 
     return 0;
 }
