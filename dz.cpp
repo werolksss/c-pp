@@ -1,161 +1,101 @@
 ﻿#include <iostream>
-#include <string>
-#include <cstring>  // для strcpy_s, strlen
+#include <fstream>
 #include <windows.h>
 using namespace std;
 
-class Student {
+class Point {
 private:
-    char* fio;  // Динамическое выделение под ФИО
-    string birthDate;
-    string phone;
-    string city;
-    string country;
-    string university;
-    string universityCity;
-    string universityCountry;
-    string groupNumber;
+    double x, y, z;
 
 public:
-    // Конструктор по умолчанию с инициализаторами
-    Student() : fio(nullptr), birthDate(""), phone(""), city(""),
-        country(""), university(""), universityCity(""),
-        universityCountry(""), groupNumber("") {
-        cout << "Конструктор по умолчанию вызван" << endl;
+    // Конструктор по умолчанию с инициализатором
+    Point() : x(0.0), y(0.0), z(0.0) {
+        cout << "Вызван конструктор по умолчанию\n";
     }
 
-    // Конструктор с параметрами (для ФИО)
-    Student(const char* name) : fio(nullptr), birthDate(""), phone(""), city(""),
-        country(""), university(""), universityCity(""),
-        universityCountry(""), groupNumber("") {
-        if (name) {
-            fio = new char[strlen(name) + 1];
-            // Используем безопасное копирование
-            strcpy_s(fio, strlen(name) + 1, name);
-        }
-        cout << "Конструктор с параметрами вызван" << endl;
+    // Конструктор с параметрами (инициализатор)
+    Point(double x_val, double y_val, double z_val) : x(x_val), y(y_val), z(z_val) {
+        cout << "Вызван конструктор с параметрами\n";
     }
 
-    // Конструктор копирования (глубокое копирование)
-    Student(const Student& other) : birthDate(other.birthDate), phone(other.phone),
-        city(other.city), country(other.country),
-        university(other.university),
-        universityCity(other.universityCity),
-        universityCountry(other.universityCountry),
-        groupNumber(other.groupNumber) {
-        if (other.fio) {
-            fio = new char[strlen(other.fio) + 1];
-            strcpy_s(fio, strlen(other.fio) + 1, other.fio);
-        }
-        else {
-            fio = nullptr;
-        }
-        cout << "Конструктор копирования вызван" << endl;
+    // Конструктор копирования
+    Point(const Point& other) : x(other.x), y(other.y), z(other.z) {
+        cout << "Вызван конструктор копирования\n";
     }
 
     // Деструктор
-    ~Student() {
-        delete[] fio;
-        cout << "Деструктор вызван, память освобождена" << endl;
+    ~Point() {
+        cout << "Вызван деструктор для точки (" << x << ", " << y << ", " << z << ")\n";
     }
 
-    // Перегрузка оператора присваивания
-    Student& operator=(const Student& other) {
-        if (this != &other) {
-            // Освобождаем старую память
-            delete[] fio;
-
-            // Копируем ФИО
-            if (other.fio) {
-                fio = new char[strlen(other.fio) + 1];
-                strcpy_s(fio, strlen(other.fio) + 1, other.fio);
-            }
-            else {
-                fio = nullptr;
-            }
-
-            // Копируем остальные поля
-            birthDate = other.birthDate;
-            phone = other.phone;
-            city = other.city;
-            country = other.country;
-            university = other.university;
-            universityCity = other.universityCity;
-            universityCountry = other.universityCountry;
-            groupNumber = other.groupNumber;
-        }
-        cout << "Оператор присваивания вызван" << endl;
-        return *this;
-    }
-
-    // Ввод данных
+    // Ввод данных (inline)
     inline void input() {
-        string tempFio;
-        cout << "Введите ФИО: ";
-        getline(cin, tempFio);
-
-        // Освобождаем старую память и выделяем новую
-        delete[] fio;
-        fio = new char[tempFio.length() + 1];
-        // Используем безопасное копирование
-        strcpy_s(fio, tempFio.length() + 1, tempFio.c_str());
-
-        cout << "Введите дату рождения: ";
-        getline(cin, birthDate);
-
-        cout << "Введите контактный телефон: ";
-        getline(cin, phone);
-
-        cout << "Введите город проживания: ";
-        getline(cin, city);
-
-        cout << "Введите страну проживания: ";
-        getline(cin, country);
-
-        cout << "Введите название учебного заведения: ";
-        getline(cin, university);
-
-        cout << "Введите город учебного заведения: ";
-        getline(cin, universityCity);
-
-        cout << "Введите страну учебного заведения: ";
-        getline(cin, universityCountry);
-
-        cout << "Введите номер группы: ";
-        getline(cin, groupNumber);
+        cout << "Введите координату X: ";
+        cin >> x;
+        cout << "Введите координату Y: ";
+        cin >> y;
+        cout << "Введите координату Z: ";
+        cin >> z;
     }
 
     // Вывод данных (inline)
     inline void print() const {
-        cout << "\nДанные студента:\n";
-        cout << "ФИО: " << (fio ? fio : "не указано") << endl;
-        cout << "Дата рождения: " << birthDate << endl;
-        cout << "Телефон: " << phone << endl;
-        cout << "Город: " << city << endl;
-        cout << "Страна: " << country << endl;
-        cout << "Учебное заведение: " << university << endl;
-        cout << "Город учебного заведения: " << universityCity << endl;
-        cout << "Страна учебного заведения: " << universityCountry << endl;
-        cout << "Номер группы: " << groupNumber << endl;
+        cout << "Координаты точки: ("
+            << x << ", "
+            << y << ", "
+            << z << ")" << endl;
     }
 
-    // Аксессоры (get) - inline
-    inline const char* getFio() const { return fio ? fio : ""; }
-    inline string getPhone() const { return phone; }
+    // Аксессоры (inline геттеры)
+    inline double getX() const { return x; }
+    inline double getY() const { return y; }
+    inline double getZ() const { return z; }
 
-    // Мутаторы (set)
-    inline void setPhone(const string& newPhone) {
-        phone = newPhone;
+    // Аксессоры (inline сеттеры)
+    inline void setX(double newX) { x = newX; }
+    inline void setY(double newY) { y = newY; }
+    inline void setZ(double newZ) { z = newZ; }
+
+    // Метод для установки всех координат сразу
+    inline void setCoordinates(double x_val, double y_val, double z_val) {
+        x = x_val;
+        y = y_val;
+        z = z_val;
     }
 
-    inline void setFio(const char* newFio) {
-        delete[] fio;
-        if (newFio) {
-            fio = new char[strlen(newFio) + 1];
-            strcpy_s(fio, strlen(newFio) + 1, newFio);
+    // Метод для получения модуля вектора (расстояние от начала координат)
+    inline double getMagnitude() const {
+        return sqrt(x * x + y * y + z * z);
+    }
+
+    // Метод для проверки равенства точек
+    inline bool equals(const Point& other) const {
+        return (x == other.x && y == other.y && z == other.z);
+    }
+
+    // Сохранение в файл
+    void saveToFile(string filename) {
+        ofstream file(filename);
+        if (file.is_open()) {
+            file << x << " " << y << " " << z;
+            file.close();
+            cout << "Данные успешно сохранены в файл\n";
         }
         else {
-            fio = nullptr;
+            cout << "Ошибка при открытии файла!\n";
+        }
+    }
+
+    // Загрузка из файла
+    void loadFromFile(string filename) {
+        ifstream file(filename);
+        if (file.is_open()) {
+            file >> x >> y >> z;
+            file.close();
+            cout << "Данные успешно загружены из файла.\n";
+        }
+        else {
+            cout << "Ошибка при открытии файла!\n";
         }
     }
 };
@@ -164,34 +104,45 @@ int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
-    cout << "Создание объекта с конструктором по умолчанию" << endl;
-    Student s1;
+    cout << "Тест конструкторов\n";
 
-    cout << "\nВвод данных для s1" << endl;
-    s1.input();
-    s1.print();
+    // Тест конструктора по умолчанию
+    Point p1;
+    p1.print();
 
-    cout << "\nСоздание объекта с конструктором с параметрами" << endl;
-    Student s2("Иванов Иван Иванович");
-    s2.print();
+    // Тест конструктора с параметрами
+    Point p2(5.5, 7.8, 3.2);
+    p2.print();
 
-    cout << "\nТест конструктора копирования" << endl;
-    Student s3 = s1;  // конструктор копирования
-    s3.print();
+    // Тест конструктора копирования
+    Point p3(p2);
+    p3.print();
 
-    cout << "\nТест оператора присваивания" << endl;
-    s2 = s1;  // оператор присваивания
-    s2.print();
+    cout << "\nТест inline методов\n";
 
-    cout << "\nИзменение телефона через мутатор" << endl;
-    s1.setPhone("+7-999-123-45-67");
-    cout << "Новый телефон s1: " << s1.getPhone() << endl;
+    // Тест сеттеров
+    p1.setCoordinates(1.1, 2.2, 3.3);
+    cout << "После setCoordinates: ";
+    p1.print();
 
-    cout << "\nИзменение ФИО через мутатор" << endl;
-    s1.setFio("Петров Петр Петрович");
-    cout << "Новое ФИО s1: " << s1.getFio() << endl;
+    // Тест геттеров
+    cout << "Значение X у p2: " << p2.getX() << endl;
 
-    cout << "\nЗавершение программы, деструкторы будут вызваны автоматически" << endl;
+    // Тест дополнительных методов
+    cout << "Модуль вектора p2: " << p2.getMagnitude() << endl;
+    cout << "p2 и p3 " << (p2.equals(p3) ? "равны" : "не равны") << endl;
+
+    cout << "\nТест файловых операций\n";
+
+    // Тест сохранения и загрузки
+    p1.saveToFile("point.txt");
+    Point p4;
+    p4.loadFromFile("point.txt");
+    cout << "Загруженная точка: ";
+    p4.print();
+
+    cout << "\nДемонстрация работы деструкторов\n";
+    cout << "Программа завершается, объекты будут уничтожены:\n";
 
     return 0;
 }
