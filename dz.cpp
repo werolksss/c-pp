@@ -1,398 +1,529 @@
 ﻿#include <iostream>
-#include <fstream>
-#include <string>
 #include <vector>
+#include <string>
+#include <cmath>
 #include <iomanip>
 #include <windows.h>
+#include <limits>
 
 using namespace std;
 
-class Subject {
+// Класс "РулонОбоев"
+class WallpaperRoll {
 private:
-    string name;
+    string name;        // Название обоев
+    double width;       // Ширина рулона (м)
+    double length;      // Длина рулона (м)
+    double price;       // Цена за рулон (руб)
 
 public:
-    Subject() : name("") {}
-    Subject(const string& n) : name(n) {}
+    // Конструкторы с инициализаторами
+    WallpaperRoll() : name("Неизвестные обои"), width(0.53), length(10.05), price(0) {}
 
+    WallpaperRoll(const string& n, double w, double l, double p)
+        : name(n), width(w), length(l), price(p) {
+        // Валидация данных
+        if (width <= 0) width = 0.53;
+        if (length <= 0) length = 10.05;
+        if (price < 0) price = 0;
+    }
+
+    // Конструктор копирования
+    WallpaperRoll(const WallpaperRoll& other)
+        : name(other.name), width(other.width),
+        length(other.length), price(other.price) {
+    }
+
+    // Деструктор
+    ~WallpaperRoll() {}
+
+    // Геттеры
     string getName() const { return name; }
+    double getWidth() const { return width; }
+    double getLength() const { return length; }
+    double getPrice() const { return price; }
+    double getArea() const { return width * length; }
+
+    // Сеттеры
     void setName(const string& n) { name = n; }
-    void print() const { cout << name; }
+    void setWidth(double w) { if (w > 0) width = w; }
+    void setLength(double l) { if (l > 0) length = l; }
+    void setPrice(double p) { if (p >= 0) price = p; }
+
+    // Ввод данных
+    void input() {
+        cout << "  Название обоев: ";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        getline(cin, name);
+
+        cout << "  Ширина рулона (м): ";
+        cin >> width;
+        while (width <= 0) {
+            cout << "  Ошибка! Ширина должна быть > 0. Повторите: ";
+            cin >> width;
+        }
+
+        cout << "  Длина рулона (м): ";
+        cin >> length;
+        while (length <= 0) {
+            cout << "  Ошибка! Длина должна быть > 0. Повторите: ";
+            cin >> length;
+        }
+
+        cout << "  Цена за рулон (руб): ";
+        cin >> price;
+        while (price < 0) {
+            cout << "  Ошибка! Цена не может быть отрицательной. Повторите: ";
+            cin >> price;
+        }
+    }
+
+    // Вывод данных
+    void print() const {
+        cout << left << "  " << setw(25) << name
+            << fixed << setprecision(2)
+            << setw(10) << width << " м"
+            << setw(10) << length << " м"
+            << setw(10) << price << " руб"
+            << setw(10) << getArea() << " м2" << endl;  // Заменил ² на 2
+    }
 };
 
-class Student {
+// Класс "Комната"
+class Room {
 private:
-    string fullName;
-    vector<int> grades;
+    string name;        // Название комнаты
+    double width;       // Ширина комнаты (м)
+    double length;      // Длина комнаты (м)
+    double height;      // Высота потолков (м)
+    bool hasCeiling;    // Клеить потолок?
 
 public:
-    Student() : fullName("") {}
-    Student(const string& name) : fullName(name) {}
+    // Конструкторы с инициализаторами
+    Room() : name("Комната"), width(4.0), length(5.0), height(2.5), hasCeiling(false) {}
 
-    string getName() const { return fullName; }
-    int getGrade(int subjectIndex) const {
-        if (subjectIndex >= 0 && subjectIndex < grades.size()) {
-            return grades[subjectIndex];
-        }
-        return 0;
+    Room(const string& n, double w, double l, double h, bool ceiling)
+        : name(n), width(w), length(l), height(h), hasCeiling(ceiling) {
+        if (width <= 0) width = 4.0;
+        if (length <= 0) length = 5.0;
+        if (height <= 0) height = 2.5;
     }
-    const vector<int>& getGrades() const { return grades; }
-    void setName(const string& name) { fullName = name; }
-    void addGrade(int grade) { grades.push_back(grade); }
-    void setGrade(int index, int grade) {
-        if (index >= 0 && index < grades.size()) {
-            grades[index] = grade;
-        }
+
+    // Конструктор копирования
+    Room(const Room& other)
+        : name(other.name), width(other.width),
+        length(other.length), height(other.height),
+        hasCeiling(other.hasCeiling) {
     }
-    int getGradeCount() const { return grades.size(); }
-    double getAverageGrade() const {
-        if (grades.empty()) return 0.0;
-        double sum = 0;
-        for (int grade : grades) sum += grade;
-        return sum / grades.size();
-    }
-    void print() const { cout << fullName; }
-};
 
-class Group {
-private:
-    string name;
-    vector<Student> students;
-    vector<Subject> subjects;
+    // Деструктор
+    ~Room() {}
 
-public:
-    Group() : name("") {}
-    Group(const string& n) : name(n) {}
-
+    // Геттеры
     string getName() const { return name; }
-    Student& getStudent(int index) { return students[index]; }
-    const Student& getStudent(int index) const { return students[index]; }
-    Subject& getSubject(int index) { return subjects[index]; }
-    const Subject& getSubject(int index) const { return subjects[index]; }
-    int getStudentCount() const { return students.size(); }
-    int getSubjectCount() const { return subjects.size(); }
+    double getWidth() const { return width; }
+    double getLength() const { return length; }
+    double getHeight() const { return height; }
+    bool isCeiling() const { return hasCeiling; }
+
+    // Вычисление периметра
+    double getPerimeter() const { return 2 * (width + length); }
+
+    // Площадь стен
+    double getWallsArea() const { return getPerimeter() * height; }
+
+    // Площадь потолка
+    double getCeilingArea() const { return width * length; }
+
+    // Общая площадь для оклейки
+    double getTotalArea() const {
+        return getWallsArea() + (hasCeiling ? getCeilingArea() : 0);
+    }
+
+    // Сеттеры
     void setName(const string& n) { name = n; }
-    void addStudent(const Student& student) { students.push_back(student); }
-    void addSubject(const Subject& subject) {
-        subjects.push_back(subject);
-        for (auto& student : students) {
-            while (student.getGradeCount() < subjects.size()) {}
+    void setWidth(double w) { if (w > 0) width = w; }
+    void setLength(double l) { if (l > 0) length = l; }
+    void setHeight(double h) { if (h > 0) height = h; }
+    void setCeiling(bool c) { hasCeiling = c; }
+
+    // Ввод данных
+    void input() {
+        cout << "  Название комнаты: ";
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        getline(cin, name);
+
+        cout << "  Ширина комнаты (м): ";
+        cin >> width;
+        while (width <= 0) {
+            cout << "  Ошибка! Ширина должна быть > 0. Повторите: ";
+            cin >> width;
         }
+
+        cout << "  Длина комнаты (м): ";
+        cin >> length;
+        while (length <= 0) {
+            cout << "  Ошибка! Длина должна быть > 0. Повторите: ";
+            cin >> length;
+        }
+
+        cout << "  Высота потолков (м): ";
+        cin >> height;
+        while (height <= 0) {
+            cout << "  Ошибка! Высота должна быть > 0. Повторите: ";
+            cin >> height;
+        }
+
+        char choice;
+        cout << "  Клеить потолок? (y/n): ";
+        cin >> choice;
+        hasCeiling = (choice == 'y' || choice == 'Y');
     }
 
-    double getSubjectAverage(int subjectIndex) const {
-        if (students.empty() || subjectIndex < 0 || subjectIndex >= subjects.size()) {
-            return 0.0;
-        }
-        double sum = 0;
-        for (const auto& student : students) sum += student.getGrade(subjectIndex);
-        return sum / students.size();
-    }
-
-    double getGroupAverage() const {
-        if (students.empty() || subjects.empty()) return 0.0;
-        double totalSum = 0;
-        int totalGrades = 0;
-        for (const auto& student : students) {
-            for (int grade : student.getGrades()) {
-                totalSum += grade;
-                totalGrades++;
-            }
-        }
-        return (totalGrades > 0) ? totalSum / totalGrades : 0.0;
-    }
-
-    void findMaxGradeForSubject(int subjectIndex, int& maxGrade, vector<int>& studentIndices) const {
-        maxGrade = -1;
-        studentIndices.clear();
-        if (subjectIndex < 0 || subjectIndex >= subjects.size()) return;
-        for (int i = 0; i < students.size(); i++) {
-            int grade = students[i].getGrade(subjectIndex);
-            if (grade > maxGrade) {
-                maxGrade = grade;
-                studentIndices.clear();
-                studentIndices.push_back(i);
-            }
-            else if (grade == maxGrade) {
-                studentIndices.push_back(i);
-            }
-        }
-    }
-
-    void findMinGradeForSubject(int subjectIndex, int& minGrade, vector<int>& studentIndices) const {
-        minGrade = 101;
-        studentIndices.clear();
-        if (subjectIndex < 0 || subjectIndex >= subjects.size()) return;
-        for (int i = 0; i < students.size(); i++) {
-            int grade = students[i].getGrade(subjectIndex);
-            if (grade < minGrade) {
-                minGrade = grade;
-                studentIndices.clear();
-                studentIndices.push_back(i);
-            }
-            else if (grade == minGrade) {
-                studentIndices.push_back(i);
-            }
-        }
-    }
-
-    bool loadFromFiles(const string& studentsFile, const string& subjectsFile, const string& gradesFile) {
-        ifstream sFile(studentsFile);
-        if (!sFile.is_open()) {
-            cout << "Ошибка открытия файла со студентами!\n";
-            return false;
-        }
-
-        students.clear();
-        string line;
-        while (getline(sFile, line)) {
-            if (!line.empty()) students.push_back(Student(line));
-        }
-        sFile.close();
-        cout << "Загружено студентов: " << students.size() << endl;
-
-        ifstream subjFile(subjectsFile);
-        if (!subjFile.is_open()) {
-            cout << "Ошибка открытия файла с предметами!\n";
-            return false;
-        }
-
-        subjects.clear();
-        while (getline(subjFile, line)) {
-            if (!line.empty()) subjects.push_back(Subject(line));
-        }
-        subjFile.close();
-        cout << "Загружено предметов: " << subjects.size() << endl;
-
-        ifstream gFile(gradesFile);
-        if (!gFile.is_open()) {
-            cout << "Ошибка открытия файла с оценками!\n";
-            return false;
-        }
-
-        int studentIndex = 0;
-        while (getline(gFile, line) && studentIndex < students.size()) {
-            size_t pos = 0;
-            int gradeIndex = 0;
-
-            while (pos < line.length() && gradeIndex < subjects.size()) {
-                while (pos < line.length() && line[pos] == ' ') pos++;
-                if (pos >= line.length()) break;
-
-                size_t endPos = pos;
-                while (endPos < line.length() && line[endPos] != ' ') endPos++;
-
-                string gradeStr = line.substr(pos, endPos - pos);
-                if (!gradeStr.empty()) {
-                    int grade = stoi(gradeStr);
-                    students[studentIndex].addGrade(grade);
-                    gradeIndex++;
-                }
-                pos = endPos;
-            }
-
-            while (students[studentIndex].getGradeCount() < subjects.size()) {
-                students[studentIndex].addGrade(0);
-            }
-            studentIndex++;
-        }
-        gFile.close();
-
-        cout << "Загружены оценки для " << studentIndex << " студентов\n";
-        return true;
-    }
-
-    void printGradeTable() const {
-        if (students.empty() || subjects.empty()) {
-            cout << "Нет данных для отображения!\n";
-            return;
-        }
-
-        cout << "\nТАБЛИЦА ОЦЕНОК ГРУППЫ \"" << name << "\"\n";
-        cout << left << setw(30) << "Студент";
-        for (const auto& subject : subjects) {
-            cout << " | " << setw(10) << subject.getName().substr(0, 10);
-        }
-        cout << " | " << setw(10) << "Средний" << endl;
-
-        for (const auto& student : students) {
-            cout << left << setw(30) << student.getName().substr(0, 28);
-            for (int grade : student.getGrades()) {
-                cout << " | " << setw(10) << grade;
-            }
-            cout << " | " << setw(10) << fixed << setprecision(2) << student.getAverageGrade() << endl;
-        }
-    }
-
-    void printStudentAverages() const {
-        if (students.empty()) {
-            cout << "Нет студентов!\n";
-            return;
-        }
-
-        cout << "\nСРЕДНИЕ ОЦЕНКИ СТУДЕНТОВ:\n";
-        cout << left << setw(30) << "Студент" << " | " << setw(10) << "Средний балл" << endl;
-
-        for (const auto& student : students) {
-            cout << left << setw(30) << student.getName().substr(0, 28)
-                << " | " << setw(10) << fixed << setprecision(2) << student.getAverageGrade() << endl;
-        }
-    }
-
-    void printSubjectAverages() const {
-        if (subjects.empty()) {
-            cout << "Нет предметов!\n";
-            return;
-        }
-
-        cout << "\nСРЕДНИЕ ОЦЕНКИ ПО ПРЕДМЕТАМ:\n";
-        cout << left << setw(30) << "Предмет" << " | " << setw(10) << "Средний балл" << endl;
-
-        for (int i = 0; i < subjects.size(); i++) {
-            cout << left << setw(30) << subjects[i].getName().substr(0, 28)
-                << " | " << setw(10) << fixed << setprecision(2) << getSubjectAverage(i) << endl;
-        }
-    }
-
-    void printGroupAverage() const {
-        cout << "\nСРЕДНИЙ БАЛЛ ГРУППЫ: " << fixed << setprecision(2) << getGroupAverage() << endl;
-    }
-
-    void printMinMaxGrades() const {
-        if (subjects.empty() || students.empty()) {
-            cout << "Нет данных для анализа!\n";
-            return;
-        }
-
-        cout << "\nМАКС/МИН ОЦЕНКИ ПО ПРЕДМЕТАМ:\n";
-
-        for (int i = 0; i < subjects.size(); i++) {
-            cout << "\nПредмет: " << subjects[i].getName() << endl;
-
-            int maxGrade;
-            vector<int> maxStudents;
-            findMaxGradeForSubject(i, maxGrade, maxStudents);
-
-            cout << "Макс: " << maxGrade << " (";
-            for (size_t j = 0; j < maxStudents.size(); j++) {
-                if (j > 0) cout << ", ";
-                cout << students[maxStudents[j]].getName();
-            }
-            cout << ")\n";
-
-            int minGrade;
-            vector<int> minStudents;
-            findMinGradeForSubject(i, minGrade, minStudents);
-
-            cout << "Мин: " << minGrade << " (";
-            for (size_t j = 0; j < minStudents.size(); j++) {
-                if (j > 0) cout << ", ";
-                cout << students[minStudents[j]].getName();
-            }
-            cout << ")\n";
-        }
-    }
-
-    void printFullReport() const {
-        printGradeTable();
-        printStudentAverages();
-        printSubjectAverages();
-        printGroupAverage();
-        printMinMaxGrades();
+    // Вывод данных
+    void print() const {
+        cout << left << "  " << setw(20) << name
+            << fixed << setprecision(2)
+            << setw(8) << width << " м"
+            << setw(8) << length << " м"
+            << setw(8) << height << " м"
+            << setw(12) << (hasCeiling ? "Да" : "Нет")
+            << setw(12) << getWallsArea() << " м2"   // Заменил ² на 2
+            << setw(12) << getTotalArea() << " м2" << endl;  // Заменил ² на 2
     }
 };
 
-void createSampleFiles() {
-    ofstream sFile("students.txt");
-    sFile << "Иванов Иван Иванович\n";
-    sFile << "Петров Петр Петрович\n";
-    sFile << "Сидорова Анна Сергеевна\n";
-    sFile << "Козлов Дмитрий Александрович\n";
-    sFile << "Смирнова Елена Владимировна\n";
-    sFile << "Васильев Алексей Игоревич\n";
-    sFile.close();
+// Класс "Квартира"
+class Apartment {
+private:
+    vector<Room> rooms;                 // Список комнат
+    vector<WallpaperRoll> wallpapers;   // Список доступных обоев
 
-    ofstream subjFile("subjects.txt");
-    subjFile << "Математика\n";
-    subjFile << "Физика\n";
-    subjFile << "Программирование\n";
-    subjFile << "История\n";
-    subjFile << "Английский язык\n";
-    subjFile.close();
+public:
+    // Конструктор
+    Apartment() {}
 
-    ofstream gFile("grades.txt");
-    gFile << "5 4 5 4 5\n";
-    gFile << "4 5 4 4 4\n";
-    gFile << "5 5 5 5 5\n";
-    gFile << "3 4 4 3 4\n";
-    gFile << "4 4 5 5 4\n";
-    gFile << "5 5 4 4 5\n";
-    gFile.close();
+    // Деструктор
+    ~Apartment() {}
 
-    cout << "Созданы примерные файлы:\n";
-    cout << "students.txt, subjects.txt, grades.txt\n\n";
+    // Добавление комнаты
+    void addRoom() {
+        cout << "\n--- Добавление новой комнаты ---\n";
+        Room newRoom;
+        newRoom.input();
+        rooms.push_back(newRoom);
+        cout << "  + Комната успешно добавлена!\n";
+    }
+
+    // Добавление нескольких комнат
+    void addMultipleRooms(int count) {
+        for (int i = 0; i < count; i++) {
+            cout << "\n--- Комната #" << i + 1 << " ---\n";
+            addRoom();
+        }
+    }
+
+    // Удаление комнаты
+    bool removeRoom(int index) {
+        if (index >= 0 && index < (int)rooms.size()) {
+            string name = rooms[index].getName();
+            rooms.erase(rooms.begin() + index);
+            cout << "  - Комната \"" << name << "\" удалена.\n";
+            return true;
+        }
+        cout << "  X Ошибка: неверный индекс комнаты!\n";
+        return false;
+    }
+
+    // Добавление вида обоев
+    void addWallpaper() {
+        cout << "\n--- Добавление нового вида обоев ---\n";
+        WallpaperRoll newWallpaper;
+        newWallpaper.input();
+        wallpapers.push_back(newWallpaper);
+        cout << "  + Обои \"" << newWallpaper.getName() << "\" добавлены!\n";
+    }
+
+    // Добавление нескольких видов обоев
+    void addMultipleWallpapers(int count) {
+        for (int i = 0; i < count; i++) {
+            cout << "\n--- Вид обоев #" << i + 1 << " ---\n";
+            addWallpaper();
+        }
+    }
+
+    // Удаление вида обоев
+    bool removeWallpaper(int index) {
+        if (index >= 0 && index < (int)wallpapers.size()) {
+            string name = wallpapers[index].getName();
+            wallpapers.erase(wallpapers.begin() + index);
+            cout << "  - Обои \"" << name << "\" удалены.\n";
+            return true;
+        }
+        cout << "  X Ошибка: неверный индекс обоев!\n";
+        return false;
+    }
+
+    // Показать все комнаты
+    void showRooms() const {
+        if (rooms.empty()) {
+            cout << "\n  Список комнат пуст.\n";
+            return;
+        }
+
+        cout << "\n--- СПИСОК КОМНАТ ---\n";
+        cout << left << setw(5) << "N"   // Заменил № на N
+            << setw(20) << "Название"
+            << setw(10) << "Ширина"
+            << setw(10) << "Длина"
+            << setw(10) << "Высота"
+            << setw(13) << "Потолок"
+            << setw(14) << "Площ. стен"
+            << "Общая площ." << endl;
+        cout << string(95, '-') << endl;
+
+        for (size_t i = 0; i < rooms.size(); i++) {
+            cout << "  " << setw(3) << i + 1 << " ";
+            rooms[i].print();
+        }
+        cout << string(95, '-') << endl;
+    }
+
+    // Показать все виды обоев
+    void showWallpapers() const {
+        if (wallpapers.empty()) {
+            cout << "\n  Список обоев пуст.\n";
+            return;
+        }
+
+        cout << "\n--- ВИДЫ ОБОЕВ ---\n";
+        cout << left << setw(5) << "N"   // Заменил № на N
+            << setw(25) << "Название"
+            << setw(12) << "Ширина"
+            << setw(12) << "Длина"
+            << setw(12) << "Цена"
+            << "Площадь" << endl;
+        cout << string(80, '-') << endl;
+
+        for (size_t i = 0; i < wallpapers.size(); i++) {
+            cout << "  " << setw(3) << i + 1 << " ";
+            wallpapers[i].print();
+        }
+        cout << string(80, '-') << endl;
+    }
+
+    // Расчет необходимого количества рулонов
+    void calculate() {
+        if (rooms.empty()) {
+            cout << "\n  X Нет комнат для расчета!\n";
+            return;
+        }
+
+        if (wallpapers.empty()) {
+            cout << "\n  X Нет видов обоев для расчета!\n";
+            return;
+        }
+
+        cout << "\n================================================";
+        cout << "\n========== РЕЗУЛЬТАТЫ РАСЧЕТА =================";
+        cout << "\n================================================\n";
+
+        double totalCost = 0;
+        double totalArea = 0;
+
+        // Вектор для хранения количества рулонов каждого вида
+        vector<int> rollsNeeded(wallpapers.size(), 0);
+
+        // Расчет для каждой комнаты
+        for (size_t i = 0; i < rooms.size(); i++) {
+            const Room& room = rooms[i];
+            double area = room.getTotalArea();
+            totalArea += area;
+
+            cout << "\n--- Комната: " << room.getName() << " ---\n";
+            cout << "  Площадь оклейки: " << fixed << setprecision(2) << area << " м2\n";  // Заменил ² на 2
+
+            // Выбор обоев для комнаты
+            cout << "  Выберите вид обоев для этой комнаты:\n";
+            showWallpapers();
+
+            int choice;
+            cout << "  Ваш выбор (1-" << wallpapers.size() << "): ";
+            cin >> choice;
+
+            while (choice < 1 || choice >(int)wallpapers.size()) {
+                cout << "  Неверный выбор. Повторите: ";
+                cin >> choice;
+            }
+
+            int wpIndex = choice - 1;
+            const WallpaperRoll& wp = wallpapers[wpIndex];
+
+            // Расчет количества рулонов (с запасом 10% на подгонку)
+            double rollArea = wp.getArea();
+            int rolls = static_cast<int>(ceil(area / rollArea * 1.1));
+
+            rollsNeeded[wpIndex] += rolls;
+
+            double roomCost = rolls * wp.getPrice();
+            totalCost += roomCost;
+
+            cout << "  Выбраны обои: " << wp.getName() << endl;
+            cout << "  Площадь рулона: " << rollArea << " м2\n";  // Заменил ² на 2
+            cout << "  Требуется рулонов: " << rolls << endl;
+            cout << "  Стоимость для комнаты: " << roomCost << " руб\n";
+        }
+
+        // Итоговый расчет
+        cout << "\n================================================";
+        cout << "\n-------------------- ИТОГ ----------------------\n";
+        cout << "  Общая площадь оклейки: " << fixed << setprecision(2)
+            << totalArea << " м2\n\n";  // Заменил ² на 2
+
+        cout << left << setw(25) << "  Вид обоев"
+            << setw(15) << "Рулонов"
+            << setw(15) << "Цена за рулон"
+            << "Стоимость" << endl;
+        cout << string(70, '-') << endl;
+
+        for (size_t i = 0; i < wallpapers.size(); i++) {
+            if (rollsNeeded[i] > 0) {
+                double cost = rollsNeeded[i] * wallpapers[i].getPrice();
+                cout << left << "  " << setw(23) << wallpapers[i].getName()
+                    << setw(15) << rollsNeeded[i]
+                    << setw(15) << wallpapers[i].getPrice()
+                    << cost << " руб" << endl;
+            }
+        }
+
+        cout << string(70, '-') << endl;
+        cout << "  ОБЩАЯ СТОИМОСТЬ: " << totalCost << " руб\n";
+        cout << "================================================\n";
+    }
+
+    // Геттеры для размеров
+    size_t getRoomsCount() const { return rooms.size(); }
+    size_t getWallpapersCount() const { return wallpapers.size(); }
+};
+
+// Функция очистки экрана
+void clearScreen() {
+    system("cls");
+}
+
+// Функция паузы
+void pause() {
+    cout << "\nНажмите Enter для продолжения...";
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cin.get();
 }
 
 int main() {
+    // Настройка кодировки для русского языка
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
-    cout << "ПРОГРАММА 'ГРУППА СТУДЕНТОВ'\n\n";
+    Apartment apartment;
+    int choice;
 
-    cout << "Создать примерные файлы? (1 - да, 0 - нет): ";
-    int createFiles;
-    cin >> createFiles;
+    cout << "========================================\n";
+    cout << "=== ПРОГРАММА РАСЧЕТА СТОИМОСТИ ОБОЕВ ===\n";
+    cout << "========================================\n";
 
-    if (createFiles == 1) createSampleFiles();
+    // Ввод количества комнат
+    int roomCount;
+    cout << "\nВведите количество комнат для оклейки: ";
+    cin >> roomCount;
 
-    string studentsFile, subjectsFile, gradesFile, groupName;
-
-    cout << "Название группы: ";
-    cin.ignore();
-    getline(cin, groupName);
-
-    cout << "Файл со студентами: ";
-    getline(cin, studentsFile);
-
-    cout << "Файл с предметами: ";
-    getline(cin, subjectsFile);
-
-    cout << "Файл с оценками: ";
-    getline(cin, gradesFile);
-
-    Group group(groupName);
-
-    cout << "\nЗагрузка данных...\n";
-    if (!group.loadFromFiles(studentsFile, subjectsFile, gradesFile)) {
-        cout << "Ошибка загрузки.\n";
-        return 1;
+    if (roomCount > 0) {
+        apartment.addMultipleRooms(roomCount);
     }
 
-    group.printFullReport();
+    // Ввод количества видов обоев
+    int wallpaperCount;
+    cout << "\nВведите количество видов обоев: ";
+    cin >> wallpaperCount;
 
-    int choice;
+    if (wallpaperCount > 0) {
+        apartment.addMultipleWallpapers(wallpaperCount);
+    }
+
+    clearScreen();
+
     do {
-        cout << "\nМЕНЮ\n";
-        cout << "1. Таблица оценок\n";
-        cout << "2. Средние оценки студентов\n";
-        cout << "3. Средние оценки по предметам\n";
-        cout << "4. Средний балл группы\n";
-        cout << "5. Макс/мин оценки\n";
-        cout << "6. Полный отчет\n";
+        cout << "\n=============== ГЛАВНОЕ МЕНЮ ===============\n";
+        cout << "1. Показать все комнаты\n";
+        cout << "2. Показать все виды обоев\n";
+        cout << "3. Добавить комнату\n";
+        cout << "4. Добавить вид обоев\n";
+        cout << "5. Удалить комнату\n";
+        cout << "6. Удалить вид обоев\n";
+        cout << "7. ВЫПОЛНИТЬ РАСЧЕТ\n";
         cout << "0. Выход\n";
-        cout << "Выберите: ";
+        cout << "============================================\n";
+        cout << "Выберите действие: ";
         cin >> choice;
 
         switch (choice) {
-        case 1: group.printGradeTable(); break;
-        case 2: group.printStudentAverages(); break;
-        case 3: group.printSubjectAverages(); break;
-        case 4: group.printGroupAverage(); break;
-        case 5: group.printMinMaxGrades(); break;
-        case 6: group.printFullReport(); break;
-        case 0: cout << "Программа завершена.\n"; break;
-        default: cout << "Неверный выбор!\n";
+        case 1:
+            apartment.showRooms();
+            break;
+
+        case 2:
+            apartment.showWallpapers();
+            break;
+
+        case 3:
+            apartment.addRoom();
+            break;
+
+        case 4:
+            apartment.addWallpaper();
+            break;
+
+        case 5: {
+            if (apartment.getRoomsCount() == 0) {
+                cout << "\n  Список комнат пуст!\n";
+                break;
+            }
+            apartment.showRooms();
+            cout << "Введите номер комнаты для удаления: ";
+            int index;
+            cin >> index;
+            apartment.removeRoom(index - 1);
+            break;
         }
+
+        case 6: {
+            if (apartment.getWallpapersCount() == 0) {
+                cout << "\n  Список обоев пуст!\n";
+                break;
+            }
+            apartment.showWallpapers();
+            cout << "Введите номер обоев для удаления: ";
+            int index;
+            cin >> index;
+            apartment.removeWallpaper(index - 1);
+            break;
+        }
+
+        case 7:
+            apartment.calculate();
+            break;
+
+        case 0:
+            cout << "\nПрограмма завершена. Спасибо за использование!\n";
+            break;
+
+        default:
+            cout << "\n  X Неверный выбор! Попробуйте снова.\n";
+        }
+
+        if (choice != 0) {
+            pause();
+            clearScreen();
+        }
+
     } while (choice != 0);
 
     return 0;
