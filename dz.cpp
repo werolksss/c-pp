@@ -1,102 +1,134 @@
 ﻿#include <iostream>
-#include <fstream>
 #include <windows.h>
+
 using namespace std;
 
-class Point {
+class Fraction {
 private:
-    double x, y, z;
+    int numerator;
+    int denominator;
+
+    // Вспомогательная функция для сокращения дроби (может быть inline)
+    inline void reduce() {
+        int gcd = findGCD(abs(numerator), abs(denominator));
+        if (gcd > 0) {
+            numerator /= gcd;
+            denominator /= gcd;
+        }
+    }
+
+    // Вспомогательная функция для нахождения НОД
+    inline int findGCD(int a, int b) const {
+        while (b != 0) {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
 
 public:
     // Конструктор по умолчанию с инициализатором
-    Point() : x(0.0), y(0.0), z(0.0) {
-        cout << "Вызван конструктор по умолчанию\n";
+    Fraction() : numerator(0), denominator(1) {}
+
+    // Конструктор с одним параметром (целое число)
+    explicit Fraction(int num) : numerator(num), denominator(1) {}
+
+    // Конструктор с двумя параметрами
+    Fraction(int num, int denom) : numerator(num), denominator(denom) {
+        if (denominator == 0) {
+            cout << "Знаменатель не может быть равен 0. Установлено значение 1.\n";
+            denominator = 1;
+        }
+        reduce(); // Сокращаем дробь при создании
     }
 
-    // Конструктор с параметрами (инициализатор)
-    Point(double x_val, double y_val, double z_val) : x(x_val), y(y_val), z(z_val) {
-        cout << "Вызван конструктор с параметрами\n";
-    }
-
-    // Конструктор копирования
-    Point(const Point& other) : x(other.x), y(other.y), z(other.z) {
-        cout << "Вызван конструктор копирования\n";
-    }
+    // Конструктор копирования (inline через определение в классе)
+    Fraction(const Fraction& other) : numerator(other.numerator), denominator(other.denominator) {}
 
     // Деструктор
-    ~Point() {
-        cout << "Вызван деструктор для точки (" << x << ", " << y << ", " << z << ")\n";
+    ~Fraction() = default;
+
+    // Ввод дроби
+    void input() {
+        cout << "Введите числитель: ";
+        cin >> numerator;
+        cout << "Введите знаменатель: ";
+        cin >> denominator;
+
+        if (denominator == 0) {
+            cout << "Знаменатель не может быть равен 0\n";
+            denominator = 1;
+        }
+        reduce();
     }
 
-    // Ввод данных (inline)
-    inline void input() {
-        cout << "Введите координату X: ";
-        cin >> x;
-        cout << "Введите координату Y: ";
-        cin >> y;
-        cout << "Введите координату Z: ";
-        cin >> z;
-    }
-
-    // Вывод данных (inline)
+    // Вывод дроби (inline)
     inline void print() const {
-        cout << "Координаты точки: ("
-            << x << ", "
-            << y << ", "
-            << z << ")" << endl;
+        cout << numerator << "/" << denominator;
     }
 
-    // Аксессоры (inline геттеры)
-    inline double getX() const { return x; }
-    inline double getY() const { return y; }
-    inline double getZ() const { return z; }
+    // Геттеры (inline)
+    inline int getNumerator() const { return numerator; }
+    inline int getDenominator() const { return denominator; }
 
-    // Аксессоры (inline сеттеры)
-    inline void setX(double newX) { x = newX; }
-    inline void setY(double newY) { y = newY; }
-    inline void setZ(double newZ) { z = newZ; }
-
-    // Метод для установки всех координат сразу
-    inline void setCoordinates(double x_val, double y_val, double z_val) {
-        x = x_val;
-        y = y_val;
-        z = z_val;
+    // Сеттеры
+    inline void setNumerator(int num) {
+        numerator = num;
+        reduce();
     }
 
-    // Метод для получения модуля вектора (расстояние от начала координат)
-    inline double getMagnitude() const {
-        return sqrt(x * x + y * y + z * z);
-    }
-
-    // Метод для проверки равенства точек
-    inline bool equals(const Point& other) const {
-        return (x == other.x && y == other.y && z == other.z);
-    }
-
-    // Сохранение в файл
-    void saveToFile(string filename) {
-        ofstream file(filename);
-        if (file.is_open()) {
-            file << x << " " << y << " " << z;
-            file.close();
-            cout << "Данные успешно сохранены в файл\n";
+    inline void setDenominator(int denom) {
+        if (denom != 0) {
+            denominator = denom;
+            reduce();
         }
         else {
-            cout << "Ошибка при открытии файла!\n";
+            cout << "Знаменатель не может быть равен 0\n";
         }
     }
 
-    // Загрузка из файла
-    void loadFromFile(string filename) {
-        ifstream file(filename);
-        if (file.is_open()) {
-            file >> x >> y >> z;
-            file.close();
-            cout << "Данные успешно загружены из файла.\n";
+    // Сложение
+    Fraction add(const Fraction& f) const {
+        int newNumerator = numerator * f.denominator + f.numerator * denominator;
+        int newDenominator = denominator * f.denominator;
+        return Fraction(newNumerator, newDenominator);
+    }
+
+    // Вычитание
+    Fraction subtract(const Fraction& f) const {
+        int newNumerator = numerator * f.denominator - f.numerator * denominator;
+        int newDenominator = denominator * f.denominator;
+        return Fraction(newNumerator, newDenominator);
+    }
+
+    // Умножение
+    Fraction multiply(const Fraction& f) const {
+        int newNumerator = numerator * f.numerator;
+        int newDenominator = denominator * f.denominator;
+        return Fraction(newNumerator, newDenominator);
+    }
+
+    // Деление
+    Fraction divide(const Fraction& f) const {
+        if (f.numerator == 0) {
+            cout << "Деление на ноль невозможно. Возвращена исходная дробь.\n";
+            return *this;
         }
-        else {
-            cout << "Ошибка при открытии файла!\n";
-        }
+        int newNumerator = numerator * f.denominator;
+        int newDenominator = denominator * f.numerator;
+        return Fraction(newNumerator, newDenominator);
+    }
+
+    // Перегрузка операторов (как бонус)
+    Fraction operator+(const Fraction& f) const { return add(f); }
+    Fraction operator-(const Fraction& f) const { return subtract(f); }
+    Fraction operator*(const Fraction& f) const { return multiply(f); }
+    Fraction operator/(const Fraction& f) const { return divide(f); }
+
+    // Преобразование в double
+    inline double toDouble() const {
+        return static_cast<double>(numerator) / denominator;
     }
 };
 
@@ -104,45 +136,68 @@ int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
-    cout << "Тест конструкторов\n";
+    // Демонстрация различных конструкторов
+    cout << "Демонстрация различных конструкторов:\n";
 
-    // Тест конструктора по умолчанию
-    Point p1;
-    p1.print();
+    Fraction f1;  // конструктор по умолчанию
+    cout << "f1 (по умолчанию): ";
+    f1.print();
+    cout << endl;
 
-    // Тест конструктора с параметрами
-    Point p2(5.5, 7.8, 3.2);
-    p2.print();
+    Fraction f2(5);  // конструктор с одним параметром
+    cout << "f2 (5): ";
+    f2.print();
+    cout << endl;
 
-    // Тест конструктора копирования
-    Point p3(p2);
-    p3.print();
+    Fraction f3(3, 6);  // конструктор с двумя параметрами (сократится до 1/2)
+    cout << "f3 (3/6 после сокращения): ";
+    f3.print();
+    cout << " = " << f3.toDouble() << endl;
 
-    cout << "\nТест inline методов\n";
+    Fraction f4(f3);  // конструктор копирования
+    cout << "f4 (копия f3): ";
+    f4.print();
+    cout << endl;
 
-    // Тест сеттеров
-    p1.setCoordinates(1.1, 2.2, 3.3);
-    cout << "После setCoordinates: ";
-    p1.print();
+    cout << "\nРабота с дробями\n";
 
-    // Тест геттеров
-    cout << "Значение X у p2: " << p2.getX() << endl;
+    cout << "Введите первую дробь:\n";
+    f1.input();
 
-    // Тест дополнительных методов
-    cout << "Модуль вектора p2: " << p2.getMagnitude() << endl;
-    cout << "p2 и p3 " << (p2.equals(p3) ? "равны" : "не равны") << endl;
+    cout << "\nВведите вторую дробь:\n";
+    Fraction f5;
+    f5.input();
 
-    cout << "\nТест файловых операций\n";
+    cout << "\nРезультаты операций:\n";
 
-    // Тест сохранения и загрузки
-    p1.saveToFile("point.txt");
-    Point p4;
-    p4.loadFromFile("point.txt");
-    cout << "Загруженная точка: ";
-    p4.print();
+    cout << "Сложение: ";
+    Fraction result = f1.add(f5);
+    result.print();
+    cout << " = " << result.toDouble() << endl;
 
-    cout << "\nДемонстрация работы деструкторов\n";
-    cout << "Программа завершается, объекты будут уничтожены:\n";
+    cout << "Вычитание: ";
+    result = f1.subtract(f5);
+    result.print();
+    cout << " = " << result.toDouble() << endl;
+
+    cout << "Умножение: ";
+    result = f1.multiply(f5);
+    result.print();
+    cout << " = " << result.toDouble() << endl;
+
+    cout << "Деление: ";
+    result = f1.divide(f5);
+    result.print();
+    cout << " = " << result.toDouble() << endl;
+
+    // Демонстрация перегруженных операторов
+    cout << "\nС использованием перегруженных операторов:\n";
+    result = f1 + f5;
+    cout << f1.getNumerator() << "/" << f1.getDenominator() << " + ";
+    f5.print();
+    cout << " = ";
+    result.print();
+    cout << " = " << result.toDouble() << endl;
 
     return 0;
 }
