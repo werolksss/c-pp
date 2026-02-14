@@ -1,171 +1,156 @@
 ﻿#include <iostream>
-#include <cmath>
+#include <string>
 #include <windows.h>
 using namespace std;
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
-class AreaCalculator {
+class Student {
 private:
-    static int calculationCount;
-    AreaCalculator() {}
+    string fio;
+    string birthDate;
+    string phone;
+    string city;
+    string country;
+    string university;
+    string universityCity;
+    string universityCountry;
+    string groupNumber;
+
+    static int objectCount;  // Статический счетчик объектов
 
 public:
-    static double triangleByBaseAndHeight(double base, double height) {
-        calculationCount++;
-        return 0.5 * base * height;
+    // Конструктор по умолчанию (делегирует конструктору с параметрами)
+    Student() : Student("", "", "", "", "", "", "", "", "") {
+        cout << "Конструктор по умолчанию\n";
     }
 
-    static double triangleByThreeSides(double a, double b, double c) {
-        calculationCount++;
-        if (a + b <= c || a + c <= b || b + c <= a) {
-            cout << "Ошибка: треугольник не существует!\n";
-            return 0;
-        }
-        double p = (a + b + c) / 2;
-        return sqrt(p * (p - a) * (p - b) * (p - c));
+    // Конструктор с основными данными (делегирует полному конструктору)
+    Student(string fio, string group) : Student(fio, "", "", "", "", "", "", "", group) {
+        cout << "Конструктор с ФИО и группой\n";
     }
 
-    static double triangleByTwoSidesAndAngle(double a, double b, double angleDegrees) {
-        calculationCount++;
-        double angleRadians = angleDegrees * M_PI / 180.0;
-        return 0.5 * a * b * sin(angleRadians);
+    // Полный конструктор со всеми параметрами
+    Student(string fio, string birthDate, string phone, string city, string country,
+        string university, string universityCity, string universityCountry, string groupNumber) {
+        this->fio = fio;
+        this->birthDate = birthDate;
+        this->phone = phone;
+        this->city = city;
+        this->country = country;
+        this->university = university;
+        this->universityCity = universityCity;
+        this->universityCountry = universityCountry;
+        this->groupNumber = groupNumber;
+        objectCount++;
+        cout << "Полный конструктор\n";
     }
 
-    static double triangleByCoordinates(double x1, double y1, double x2, double y2, double x3, double y3) {
-        calculationCount++;
-        return 0.5 * abs((x1 * (y2 - y3) + x2 * (y3 - y1) + x3 * (y1 - y2)));
+    // Конструктор копирования
+    Student(const Student& other) {
+        this->fio = other.fio;
+        this->birthDate = other.birthDate;
+        this->phone = other.phone;
+        this->city = other.city;
+        this->country = other.country;
+        this->university = other.university;
+        this->universityCity = other.universityCity;
+        this->universityCountry = other.universityCountry;
+        this->groupNumber = other.groupNumber;
+        objectCount++;
+        cout << "Конструктор копирования\n";
     }
 
-    static double rectangle(double length, double width) {
-        calculationCount++;
-        return length * width;
+    // Деструктор
+    ~Student() {
+        objectCount--;
+        cout << "Деструктор для студента " << fio << "\n";
     }
 
-    static double rectangleByDiagonalAndAngle(double diagonal, double angleDegrees) {
-        calculationCount++;
-        double angleRadians = angleDegrees * M_PI / 180.0;
-        return (diagonal * diagonal * sin(angleRadians)) / 2;
+    // Ввод данных
+    void input() {
+        cout << "Введите ФИО: ";
+        getline(cin, fio);
+
+        cout << "Введите дату рождения: ";
+        getline(cin, birthDate);
+
+        cout << "Введите контактный телефон: ";
+        getline(cin, phone);
+
+        cout << "Введите город проживания: ";
+        getline(cin, city);
+
+        cout << "Введите страну проживания: ";
+        getline(cin, country);
+
+        cout << "Введите название учебного заведения: ";
+        getline(cin, university);
+
+        cout << "Введите город учебного заведения: ";
+        getline(cin, universityCity);
+
+        cout << "Введите страну учебного заведения: ";
+        getline(cin, universityCountry);
+
+        cout << "Введите номер группы: ";
+        getline(cin, groupNumber);
     }
 
-    static double square(double side) {
-        calculationCount++;
-        return side * side;
+    // Вывод данных
+    void print() {
+        cout << "\nДанные студента:\n";
+        cout << "ФИО: " << fio << endl;
+        cout << "Дата рождения: " << birthDate << endl;
+        cout << "Телефон: " << phone << endl;
+        cout << "Город: " << city << endl;
+        cout << "Страна: " << country << endl;
+        cout << "Учебное заведение: " << university << endl;
+        cout << "Город учебного заведения: " << universityCity << endl;
+        cout << "Страна учебного заведения: " << universityCountry << endl;
+        cout << "Номер группы: " << groupNumber << endl;
     }
 
-    static double squareByDiagonal(double diagonal) {
-        calculationCount++;
-        return (diagonal * diagonal) / 2;
+    // Аксессоры (get)
+    string getFio() { return fio; }
+    string getPhone() { return phone; }
+
+    // Мутаторы (set)
+    void setPhone(string newPhone) {
+        phone = newPhone;
     }
 
-    static double squareByPerimeter(double perimeter) {
-        calculationCount++;
-        double side = perimeter / 4;
-        return side * side;
-    }
-
-    static double rhombusByDiagonals(double d1, double d2) {
-        calculationCount++;
-        return (d1 * d2) / 2;
-    }
-
-    static double rhombusBySideAndHeight(double side, double height) {
-        calculationCount++;
-        return side * height;
-    }
-
-    static double rhombusBySideAndAngle(double side, double angleDegrees) {
-        calculationCount++;
-        double angleRadians = angleDegrees * M_PI / 180.0;
-        return side * side * sin(angleRadians);
-    }
-
-    static double rhombusByDiagonalAndSide(double diagonal, double side) {
-        calculationCount++;
-        double secondDiagonal = 2 * sqrt(side * side - (diagonal * diagonal) / 4);
-        return (diagonal * secondDiagonal) / 2;
-    }
-
-    static int getCalculationCount() {
-        return calculationCount;
-    }
-
-    static void resetCalculationCount() {
-        calculationCount = 0;
-        cout << "Счетчик сброшен.\n";
+    // Статический метод для получения количества объектов
+    static int getObjectCount() {
+        return objectCount;
     }
 };
 
-int AreaCalculator::calculationCount = 0;
-
-void printResult(const string& figure, double area) {
-    cout << "Площадь " << figure << ": " << area << endl;
-}
+// Инициализация статического члена класса
+int Student::objectCount = 0;
 
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
-    cout << "Калькулятор площади фигур\n\n";
+    cout << "Начальное количество объектов: " << Student::getObjectCount() << "\n\n";
 
-    cout << "Треугольники\n";
-    double area = AreaCalculator::triangleByBaseAndHeight(10, 5);
-    printResult("треугольника (осн.10, выс.5)", area);
+    cout << "Создание студента s1 (конструктор по умолчанию)\n";
+    Student s1;
+    cout << "Объектов: " << Student::getObjectCount() << "\n\n";
 
-    area = AreaCalculator::triangleByThreeSides(3, 4, 5);
-    printResult("треугольника (3,4,5)", area);
+    cout << "Ввод данных студента s1:\n";
+    s1.input();
+    s1.print();
 
-    area = AreaCalculator::triangleByTwoSidesAndAngle(6, 8, 30);
-    printResult("треугольника (6,8,30°)", area);
+    cout << "\nСоздание студента s2 (конструктор с ФИО и группой)\n";
+    Student s2("Иванов Иван Иванович", "ИС-21");
+    cout << "Объектов: " << Student::getObjectCount() << "\n\n";
 
-    area = AreaCalculator::triangleByCoordinates(0, 0, 4, 0, 0, 3);
-    printResult("треугольника по координатам", area);
+    cout << "Создание студента s3 (копия s2)\n";
+    Student s3(s2);
+    cout << "Объектов: " << Student::getObjectCount() << "\n\n";
 
-    cout << "\nПрямоугольники\n";
-    area = AreaCalculator::rectangle(5, 8);
-    printResult("прямоугольника (5x8)", area);
-
-    area = AreaCalculator::rectangleByDiagonalAndAngle(10, 60);
-    printResult("прямоугольника (диаг.10,60°)", area);
-
-    cout << "\nКвадраты\n";
-    area = AreaCalculator::square(7);
-    printResult("квадрата (стор.7)", area);
-
-    area = AreaCalculator::squareByDiagonal(10);
-    printResult("квадрата (диаг.10)", area);
-
-    area = AreaCalculator::squareByPerimeter(20);
-    printResult("квадрата (перим.20)", area);
-
-    cout << "\nРомбы\n";
-    area = AreaCalculator::rhombusByDiagonals(8, 6);
-    printResult("ромба (диаг.8,6)", area);
-
-    area = AreaCalculator::rhombusBySideAndHeight(5, 4);
-    printResult("ромба (стор.5,выс.4)", area);
-
-    area = AreaCalculator::rhombusBySideAndAngle(5, 60);
-    printResult("ромба (стор.5,60°)", area);
-
-    area = AreaCalculator::rhombusByDiagonalAndSide(8, 5);
-    printResult("ромба (диаг.8,стор.5)", area);
-
-    cout << "\nСтатистика\n";
-    cout << "Всего подсчетов: " << AreaCalculator::getCalculationCount() << endl;
-
-    cout << "\nДополнительные вычисления\n";
-    AreaCalculator::triangleByBaseAndHeight(12, 6);
-    AreaCalculator::rectangle(7, 9);
-    AreaCalculator::square(4);
-
-    cout << "Всего подсчетов: " << AreaCalculator::getCalculationCount() << endl;
-
-    cout << "\nСброс счетчика\n";
-    AreaCalculator::resetCalculationCount();
-    cout << "После сброса: " << AreaCalculator::getCalculationCount() << endl;
+    cout << "\nВсего создано объектов: " << Student::getObjectCount() << endl;
+    cout << "Завершение программы (деструкторы будут вызваны автоматически)\n";
 
     return 0;
 }
