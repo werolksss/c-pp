@@ -1,121 +1,104 @@
 ﻿#include <iostream>
-#include <string>
+#include <fstream>
 #include <windows.h>
 using namespace std;
 
-class Student {
+class Point {
 private:
-    string fio;
-    string birthDate;
-    string phone;
-    string city;
-    string country;
-    string university;
-    string universityCity;
-    string universityCountry;
-    string groupNumber;
-
+    double x, y, z;
     static int objectCount;  // Статический счетчик объектов
 
 public:
-    // Конструктор по умолчанию (делегирует конструктору с параметрами)
-    Student() : Student("", "", "", "", "", "", "", "", "") {
+    // Конструктор по умолчанию (инициализация нулями)
+    Point() : Point(0, 0, 0) {
         cout << "Конструктор по умолчанию\n";
     }
 
-    // Конструктор с основными данными (делегирует полному конструктору)
-    Student(string fio, string group) : Student(fio, "", "", "", "", "", "", "", group) {
-        cout << "Конструктор с ФИО и группой\n";
+    // Конструктор с двумя координатами (третья = 0)
+    Point(double x, double y) : Point(x, y, 0) {
+        cout << "Конструктор с двумя координатами\n";
     }
 
-    // Полный конструктор со всеми параметрами
-    Student(string fio, string birthDate, string phone, string city, string country,
-        string university, string universityCity, string universityCountry, string groupNumber) {
-        this->fio = fio;
-        this->birthDate = birthDate;
-        this->phone = phone;
-        this->city = city;
-        this->country = country;
-        this->university = university;
-        this->universityCity = universityCity;
-        this->universityCountry = universityCountry;
-        this->groupNumber = groupNumber;
+    // Конструктор с одной координатой (остальные = 0)
+    Point(double x) : Point(x, 0, 0) {
+        cout << "Конструктор с одной координатой\n";
+    }
+
+    // Полный конструктор со всеми координатами
+    Point(double x, double y, double z) {
+        this->x = x;
+        this->y = y;
+        this->z = z;
         objectCount++;
         cout << "Полный конструктор\n";
     }
 
     // Конструктор копирования
-    Student(const Student& other) {
-        this->fio = other.fio;
-        this->birthDate = other.birthDate;
-        this->phone = other.phone;
-        this->city = other.city;
-        this->country = other.country;
-        this->university = other.university;
-        this->universityCity = other.universityCity;
-        this->universityCountry = other.universityCountry;
-        this->groupNumber = other.groupNumber;
+    Point(const Point& other) {
+        this->x = other.x;
+        this->y = other.y;
+        this->z = other.z;
         objectCount++;
         cout << "Конструктор копирования\n";
     }
 
     // Деструктор
-    ~Student() {
+    ~Point() {
         objectCount--;
-        cout << "Деструктор для студента " << fio << "\n";
+        cout << "Деструктор для точки (" << x << ", " << y << ", " << z << ")\n";
     }
 
     // Ввод данных
     void input() {
-        cout << "Введите ФИО: ";
-        getline(cin, fio);
-
-        cout << "Введите дату рождения: ";
-        getline(cin, birthDate);
-
-        cout << "Введите контактный телефон: ";
-        getline(cin, phone);
-
-        cout << "Введите город проживания: ";
-        getline(cin, city);
-
-        cout << "Введите страну проживания: ";
-        getline(cin, country);
-
-        cout << "Введите название учебного заведения: ";
-        getline(cin, university);
-
-        cout << "Введите город учебного заведения: ";
-        getline(cin, universityCity);
-
-        cout << "Введите страну учебного заведения: ";
-        getline(cin, universityCountry);
-
-        cout << "Введите номер группы: ";
-        getline(cin, groupNumber);
+        cout << "Введите координату X: ";
+        cin >> x;
+        cout << "Введите координату Y: ";
+        cin >> y;
+        cout << "Введите координату Z: ";
+        cin >> z;
     }
 
     // Вывод данных
     void print() {
-        cout << "\nДанные студента:\n";
-        cout << "ФИО: " << fio << endl;
-        cout << "Дата рождения: " << birthDate << endl;
-        cout << "Телефон: " << phone << endl;
-        cout << "Город: " << city << endl;
-        cout << "Страна: " << country << endl;
-        cout << "Учебное заведение: " << university << endl;
-        cout << "Город учебного заведения: " << universityCity << endl;
-        cout << "Страна учебного заведения: " << universityCountry << endl;
-        cout << "Номер группы: " << groupNumber << endl;
+        cout << "Координаты точки: ("
+            << x << ", "
+            << y << ", "
+            << z << ")" << endl;
     }
 
-    // Аксессоры (get)
-    string getFio() { return fio; }
-    string getPhone() { return phone; }
+    // Аксессоры
+    double getX() { return x; }
+    double getY() { return y; }
+    double getZ() { return z; }
 
-    // Мутаторы (set)
-    void setPhone(string newPhone) {
-        phone = newPhone;
+    void setX(double newX) { x = newX; }
+    void setY(double newY) { y = newY; }
+    void setZ(double newZ) { z = newZ; }
+
+    // Сохранение в файл
+    void saveToFile(string filename) {
+        ofstream file(filename);
+        if (file.is_open()) {
+            file << x << " " << y << " " << z;
+            file.close();
+            cout << "Данные успешно сохранены в файл.\n";
+        }
+        else {
+            cout << "Ошибка при открытии файла!\n";
+        }
+    }
+
+    // Загрузка из файла
+    void loadFromFile(string filename) {
+        ifstream file(filename);
+        if (file.is_open()) {
+            file >> x >> y >> z;
+            file.close();
+            cout << "Данные успешно загружены из файла.\n";
+        }
+        else {
+            cout << "Ошибка при открытии файла!\n";
+        }
     }
 
     // Статический метод для получения количества объектов
@@ -125,31 +108,52 @@ public:
 };
 
 // Инициализация статического члена класса
-int Student::objectCount = 0;
+int Point::objectCount = 0;
 
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
 
-    cout << "Начальное количество объектов: " << Student::getObjectCount() << "\n\n";
+    cout << "Начальное количество объектов: " << Point::getObjectCount() << "\n\n";
 
-    cout << "Создание студента s1 (конструктор по умолчанию)\n";
-    Student s1;
-    cout << "Объектов: " << Student::getObjectCount() << "\n\n";
+    cout << "Создание точки p1 (конструктор по умолчанию)\n";
+    Point p1;
+    cout << "Объектов: " << Point::getObjectCount() << "\n\n";
 
-    cout << "Ввод данных студента s1:\n";
-    s1.input();
-    s1.print();
+    cout << "Создание точки p2 (конструктор с двумя координатами)\n";
+    Point p2(5.5, 3.2);
+    p2.print();
+    cout << "Объектов: " << Point::getObjectCount() << "\n\n";
 
-    cout << "\nСоздание студента s2 (конструктор с ФИО и группой)\n";
-    Student s2("Иванов Иван Иванович", "ИС-21");
-    cout << "Объектов: " << Student::getObjectCount() << "\n\n";
+    cout << "Создание точки p3 (конструктор с одной координатой)\n";
+    Point p3(10.0);
+    p3.print();
+    cout << "Объектов: " << Point::getObjectCount() << "\n\n";
 
-    cout << "Создание студента s3 (копия s2)\n";
-    Student s3(s2);
-    cout << "Объектов: " << Student::getObjectCount() << "\n\n";
+    cout << "Создание точки p4 (полный конструктор)\n";
+    Point p4(1.1, 2.2, 3.3);
+    p4.print();
+    cout << "Объектов: " << Point::getObjectCount() << "\n\n";
 
-    cout << "\nВсего создано объектов: " << Student::getObjectCount() << endl;
+    cout << "Создание точки p5 (копия p4)\n";
+    Point p5(p4);
+    p5.print();
+    cout << "Объектов: " << Point::getObjectCount() << "\n\n";
+
+    cout << "Ввод данных для точки p1:\n";
+    p1.input();
+    p1.print();
+
+    cout << "\nСохранение точки p1 в файл\n";
+    p1.saveToFile("point.txt");
+
+    cout << "\nЗагрузка данных из файла в новую точку p6\n";
+    Point p6;
+    p6.loadFromFile("point.txt");
+    p6.print();
+    cout << "Объектов: " << Point::getObjectCount() << "\n\n";
+
+    cout << "\nВсего создано объектов: " << Point::getObjectCount() << endl;
     cout << "Завершение программы (деструкторы будут вызваны автоматически)\n";
 
     return 0;
