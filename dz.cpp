@@ -3,106 +3,130 @@
 #include <windows.h>
 using namespace std;
 
-class Book {
+class Worker {
 private:
-    string author;
-    string title;
-    string publisher;
-    int year;
-    int pages;
+    string fio;
+    string dolgnost;
+    int god;
+    double zp;
 
 public:
-    explicit Book(string a, string t, string p, int y, int pg) {
-        author = a;
-        title = t;
-        publisher = p;
-        year = y;
-        pages = pg;
+    explicit Worker(string f, string d, int g, double z) {
+        fio = f;
+        dolgnost = d;
+        god = g;
+        zp = z;
+    }
+    string getFIO() const {
+        return fio;
+    }
+    string getDolgnost() const {
+        return dolgnost;
     }
 
-    string getAuthor() const {
-        return author;
+    int getGod() const {
+        return god;
     }
-    string getTitle() const {
-        return title;
+
+    double getZp() const {
+        return zp;
     }
-    string getPublisher() const {
-        return publisher;
-    }
-    int getYear() const {
-        return year;
-    }
-    int getPages() const {
-        return pages;
+
+    int getStag() const {
+        return 2026 - god;
     }
 
     void show() const {
-        cout << "Автор: " << author << endl;
-        cout << "Название: " << title << endl;
-        cout << "Издательство: " << publisher << endl;
-        cout << "Год: " << year << endl;
-        cout << "Страниц: " << pages << endl;
+        cout << "ФИО: " << fio << endl;
+        cout << "Должность: " << dolgnost << endl;
+        cout << "Год поступления: " << god << endl;
+        cout << "Зарплата: " << zp << " руб." << endl;
+        cout << "Стаж: " << getStag() << " лет" << endl;
     }
 };
 
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-
-    Book books[5] = {
-        Book("Пушкин", "Евгений Онегин", "Эксмо", 2005, 320),
-        Book("Пушкин", "Капитанская дочка", "Азбука", 2010, 280),
-        Book("Толстой", "Война и мир", "Эксмо", 2008, 1300),
-        Book("Достоевский", "Преступление и наказание", "Просвещение", 2015, 540),
-        Book("Толстой", "Анна Каренина", "Азбука", 2020, 800)
+    const int SIZE = 5;
+    Worker workers[SIZE] = {
+        Worker("Иванов И.И.", "Инженер", 2020, 50000),
+        Worker("Петров П.П.", "Программист", 2018, 80000),
+        Worker("Сидоров С.С.", "Инженер", 2022, 45000),
+        Worker("Смирнова А.А.", "Бухгалтер", 2015, 60000),
+        Worker("Козлов К.К.", "Программист", 2019, 75000)
     };
 
     int vibor;
-    string poisk;
-    int god;
 
     do {
-        cout << "1. книги автора" << endl;
-        cout << "2. книги издательства" << endl;
-        cout << "3. книги после года" << endl;
+        cout << "1. список по стажу" << endl;
+        cout << "2. список по зарплате" << endl;
+        cout << "3. список по должности" << endl;
         cout << "4. выход" << endl;
-        cout << "ваш выбор: ";
+        cout << "выберите: ";
         cin >> vibor;
 
         if (vibor == 1) {
-            cout << "Введите автора: ";
-            cin >> poisk;
+            int let;
+            cout << "Введите стаж: ";
+            cin >> let;
 
-            cout << "\nРезультат:" << endl;
-            for (int i = 0; i < 5; i++) {
-                if (books[i].getAuthor() == poisk) {
-                    books[i].show(); 
+            cout << "\nРаботники со стажем больше " << let << " лет:" << endl;
+            bool naiden = false;
+
+            for (int i = 0; i < SIZE; i++) {
+                if (workers[i].getStag() > let) {
+                    workers[i].show();
+                    naiden = true;
                 }
+            }
+
+            if (!naiden) {
+                cout << "Таких работников нет" << endl;
             }
         }
         else if (vibor == 2) {
-            cout << "Введите издательство: ";
-            cin >> poisk;
+            double summa;
+            cout << "Введите зарплату: ";
+            cin >> summa;
 
-            cout << "\nРезультат:" << endl;
-            for (int i = 0; i < 5; i++) {
-                if (books[i].getPublisher() == poisk) {
-                    books[i].show(); 
+            cout << "\nРаботники с зарплатой больше " << summa << " руб.:" << endl;
+            bool naiden = false;
+
+            for (int i = 0; i < SIZE; i++) {
+                if (workers[i].getZp() > summa) {
+                    workers[i].show();
+                    naiden = true;
                 }
+            }
+
+            if (!naiden) {
+                cout << "Таких работников нет" << endl;
             }
         }
         else if (vibor == 3) {
-            cout << "Введите год: ";
-            cin >> god;
+            string dolgn;
+            cout << "Введите должность: ";
+            cin >> dolgn;
 
-            cout << "\nРезультат:" << endl;
-            for (int i = 0; i < 5; i++) {
-                if (books[i].getYear() > god) {
-                    books[i].show();
+            cout << "\nРаботники с должностью \"" << dolgn << "\":" << endl;
+            bool naiden = false;
+
+            for (int i = 0; i < SIZE; i++) {
+                if (workers[i].getDolgnost() == dolgn) {
+                    workers[i].show();
+                    naiden = true;
                 }
+            }
+
+            if (!naiden) {
+                cout << "Таких работников нет" << endl;
             }
         }
 
     } while (vibor != 4);
+
+    cout << "Программа завершена" << endl;
     return 0;
 }
