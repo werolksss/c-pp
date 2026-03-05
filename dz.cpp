@@ -1,142 +1,114 @@
 ﻿#include <iostream>
+#include <string>
 #include <windows.h>
 using namespace std;
 
-class Date {
+class MyString {
 private:
-    int day;
-    int month;
-    int year;
-
-    bool isLeap(int y) const {
-        return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
-    }
-
-    int daysInMonth(int m, int y) const {
-        if (m == 2) {
-            return isLeap(y) ? 29 : 28;
-        }
-        if (m == 4 || m == 6 || m == 9 || m == 11) {
-            return 30;
-        }
-        return 31;
-    }
-
-    long dateToDays() const {
-        long days = 0;
-
-        for (int y = 1; y < year; y++) {
-            days += isLeap(y) ? 366 : 365;
-        }
-
-        for (int m = 1; m < month; m++) {
-            days += daysInMonth(m, year);
-        }
-
-        days += day;
-
-        return days;
-    }
+    string str;
 
 public:
-    Date(int d = 1, int m = 1, int y = 2000) {
-        day = d;
-        month = m;
-        year = y;
+    MyString() : str("") {}
+    MyString(const string& s) : str(s) {}
+    MyString(const char* s) : str(s) {}
+
+    string getString() const {
+        return str;
     }
 
-    int getDay() const { return day; }
-    int getMonth() const { return month; }
-    int getYear() const { return year; }
-
-    int operator-(const Date& other) const {
-        long days1 = this->dateToDays();
-        long days2 = other.dateToDays();
-        return abs(days1 - days2);
+    void setString(const string& s) {
+        str = s;
     }
 
-    Date& operator+=(int days) {
-        while (days > 0) {
-            int daysInCurrentMonth = daysInMonth(month, year);
-            if (day + days <= daysInCurrentMonth) {
-                day += days;
-                days = 0;
+    MyString operator*(const MyString& other) const {
+        string result = "";
+
+        for (int i = 0; i < str.length(); i++) {
+            char currentChar = str[i];
+
+            bool foundInSecond = false;
+            for (int j = 0; j < other.str.length(); j++) {
+                if (other.str[j] == currentChar) {
+                    foundInSecond = true;
+                    break;
+                }
             }
-            else {
-                days -= (daysInCurrentMonth - day + 1);
-                day = 1;
-                month++;
-                if (month > 12) {
-                    month = 1;
-                    year++;
+
+            if (foundInSecond) {
+                bool alreadyInResult = false;
+                for (int k = 0; k < result.length(); k++) {
+                    if (result[k] == currentChar) {
+                        alreadyInResult = true;
+                        break;
+                    }
+                }
+
+                if (!alreadyInResult) {
+                    result += currentChar;
                 }
             }
         }
-        return *this;
+
+        return MyString(result);
     }
 
-    Date operator+(int days) const {
-        Date result = *this;
-        result += days;
-        return result;
-    }
-
-    friend ostream& operator<<(ostream& os, const Date& d) {
-        os << d.day << "." << d.month << "." << d.year;
+    friend ostream& operator<<(ostream& os, const MyString& ms) {
+        os << ms.str;
         return os;
     }
 
-    friend istream& operator>>(istream& is, Date& d) {
-        cout << "Введите день: ";
-        is >> d.day;
-        cout << "Введите месяц: ";
-        is >> d.month;
-        cout << "Введите год: ";
-        is >> d.year;
+    friend istream& operator>>(istream& is, MyString& ms) {
+        is >> ms.str;
         return is;
+    }
+
+    int length() const {
+        return str.length();
     }
 };
 
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-    cout << "Работа с датами" << endl;
+    cout << "Пересечение строк" << endl;
 
-    Date d1(15, 3, 2024);
-    Date d2(1, 1, 2025);
+    MyString s1("sdqcg");
+    MyString s2("rgfas34");
 
-    cout << "Дата 1: " << d1 << endl;
-    cout << "Дата 2: " << d2 << endl;
+    cout << "Строка 1: " << s1 << endl;
+    cout << "Строка 2: " << s2 << endl;
 
-    int diff = d2 - d1;
-    cout << "Разность между датами: " << diff << " дней" << endl;
+    MyString result = s1 * s2;
+    cout << "Пересечение (общие символы): " << result << endl;
+    cout << "Ожидаемый результат: sg" << endl;
 
-    Date d3(28, 2, 2024);
-    cout << "\nНачальная дата: " << d3 << endl;
 
-    d3 += 5;
-    cout << "После +5 дней: " << d3 << endl;
+    MyString a("hello world");
+    MyString b("world hello");
+    cout << "Строка A: " << a << endl;
+    cout << "Строка B: " << b << endl;
+    cout << "Пересечение: " << (a * b) << endl;
 
-    Date d4 = d3 + 30;
-    cout << "Еще +30 дней: " << d4 << endl;
+    MyString c("programming");
+    MyString d("c++ language");
+    cout << "\nСтрока C: " << c << endl;
+    cout << "Строка D: " << d << endl;
+    cout << "Пересечение: " << (c * d) << endl;
 
-    cout << "\nВведите свои даты" << endl;
-    Date d5, d6;
-    cout << "Введите первую дату:" << endl;
-    cin >> d5;
-    cout << "Введите вторую дату:" << endl;
-    cin >> d6;
+    cout << "\nВведите свои строки" << endl;
 
-    cout << "\nПервая дата: " << d5 << endl;
-    cout << "Вторая дата: " << d6 << endl;
-    cout << "Разность: " << (d6 - d5) << " дней" << endl;
+    MyString user1, user2;
+    cout << "Введите первую строку: ";
+    cin >> user1;
+    cout << "Введите вторую строку: ";
+    cin >> user2;
 
-    int days;
-    cout << "\nВведите количество дней для добавления к первой дате: ";
-    cin >> days;
+    cout << "\nВаши строки:" << endl;
+    cout << "1: " << user1 << endl;
+    cout << "2: " << user2 << endl;
 
-    Date d7 = d5 + days;
-    cout << "Результат: " << d7 << endl;
+    MyString userResult = user1 * user2;
+    cout << "Общие символы: " << userResult << endl;
 
     return 0;
 }
