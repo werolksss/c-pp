@@ -1,132 +1,142 @@
 ﻿#include <iostream>
-#include <string>
 #include <windows.h>
 using namespace std;
 
-class Worker {
+class Date {
 private:
-    string fio;
-    string dolgnost;
-    int god;
-    double zp;
+    int day;
+    int month;
+    int year;
+
+    bool isLeap(int y) const {
+        return (y % 4 == 0 && y % 100 != 0) || (y % 400 == 0);
+    }
+
+    int daysInMonth(int m, int y) const {
+        if (m == 2) {
+            return isLeap(y) ? 29 : 28;
+        }
+        if (m == 4 || m == 6 || m == 9 || m == 11) {
+            return 30;
+        }
+        return 31;
+    }
+
+    long dateToDays() const {
+        long days = 0;
+
+        for (int y = 1; y < year; y++) {
+            days += isLeap(y) ? 366 : 365;
+        }
+
+        for (int m = 1; m < month; m++) {
+            days += daysInMonth(m, year);
+        }
+
+        days += day;
+
+        return days;
+    }
 
 public:
-    explicit Worker(string f, string d, int g, double z) {
-        fio = f;
-        dolgnost = d;
-        god = g;
-        zp = z;
-    }
-    string getFIO() const {
-        return fio;
-    }
-    string getDolgnost() const {
-        return dolgnost;
+    Date(int d = 1, int m = 1, int y = 2000) {
+        day = d;
+        month = m;
+        year = y;
     }
 
-    int getGod() const {
-        return god;
+    int getDay() const { return day; }
+    int getMonth() const { return month; }
+    int getYear() const { return year; }
+
+    int operator-(const Date& other) const {
+        long days1 = this->dateToDays();
+        long days2 = other.dateToDays();
+        return abs(days1 - days2);
     }
 
-    double getZp() const {
-        return zp;
+    Date& operator+=(int days) {
+        while (days > 0) {
+            int daysInCurrentMonth = daysInMonth(month, year);
+            if (day + days <= daysInCurrentMonth) {
+                day += days;
+                days = 0;
+            }
+            else {
+                days -= (daysInCurrentMonth - day + 1);
+                day = 1;
+                month++;
+                if (month > 12) {
+                    month = 1;
+                    year++;
+                }
+            }
+        }
+        return *this;
     }
 
-    int getStag() const {
-        return 2026 - god;
+    Date operator+(int days) const {
+        Date result = *this;
+        result += days;
+        return result;
     }
 
-    void show() const {
-        cout << "ФИО: " << fio << endl;
-        cout << "Должность: " << dolgnost << endl;
-        cout << "Год поступления: " << god << endl;
-        cout << "Зарплата: " << zp << " руб." << endl;
-        cout << "Стаж: " << getStag() << " лет" << endl;
+    friend ostream& operator<<(ostream& os, const Date& d) {
+        os << d.day << "." << d.month << "." << d.year;
+        return os;
+    }
+
+    friend istream& operator>>(istream& is, Date& d) {
+        cout << "Введите день: ";
+        is >> d.day;
+        cout << "Введите месяц: ";
+        is >> d.month;
+        cout << "Введите год: ";
+        is >> d.year;
+        return is;
     }
 };
 
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-    const int SIZE = 5;
-    Worker workers[SIZE] = {
-        Worker("Иванов И.И.", "Инженер", 2020, 50000),
-        Worker("Петров П.П.", "Программист", 2018, 80000),
-        Worker("Сидоров С.С.", "Инженер", 2022, 45000),
-        Worker("Смирнова А.А.", "Бухгалтер", 2015, 60000),
-        Worker("Козлов К.К.", "Программист", 2019, 75000)
-    };
+    cout << "Работа с датами" << endl;
 
-    int vibor;
+    Date d1(15, 3, 2024);
+    Date d2(1, 1, 2025);
 
-    do {
-        cout << "1. список по стажу" << endl;
-        cout << "2. список по зарплате" << endl;
-        cout << "3. список по должности" << endl;
-        cout << "4. выход" << endl;
-        cout << "выберите: ";
-        cin >> vibor;
+    cout << "Дата 1: " << d1 << endl;
+    cout << "Дата 2: " << d2 << endl;
 
-        if (vibor == 1) {
-            int let;
-            cout << "Введите стаж: ";
-            cin >> let;
+    int diff = d2 - d1;
+    cout << "Разность между датами: " << diff << " дней" << endl;
 
-            cout << "\nРаботники со стажем больше " << let << " лет:" << endl;
-            bool naiden = false;
+    Date d3(28, 2, 2024);
+    cout << "\nНачальная дата: " << d3 << endl;
 
-            for (int i = 0; i < SIZE; i++) {
-                if (workers[i].getStag() > let) {
-                    workers[i].show();
-                    naiden = true;
-                }
-            }
+    d3 += 5;
+    cout << "После +5 дней: " << d3 << endl;
 
-            if (!naiden) {
-                cout << "Таких работников нет" << endl;
-            }
-        }
-        else if (vibor == 2) {
-            double summa;
-            cout << "Введите зарплату: ";
-            cin >> summa;
+    Date d4 = d3 + 30;
+    cout << "Еще +30 дней: " << d4 << endl;
 
-            cout << "\nРаботники с зарплатой больше " << summa << " руб.:" << endl;
-            bool naiden = false;
+    cout << "\nВведите свои даты" << endl;
+    Date d5, d6;
+    cout << "Введите первую дату:" << endl;
+    cin >> d5;
+    cout << "Введите вторую дату:" << endl;
+    cin >> d6;
 
-            for (int i = 0; i < SIZE; i++) {
-                if (workers[i].getZp() > summa) {
-                    workers[i].show();
-                    naiden = true;
-                }
-            }
+    cout << "\nПервая дата: " << d5 << endl;
+    cout << "Вторая дата: " << d6 << endl;
+    cout << "Разность: " << (d6 - d5) << " дней" << endl;
 
-            if (!naiden) {
-                cout << "Таких работников нет" << endl;
-            }
-        }
-        else if (vibor == 3) {
-            string dolgn;
-            cout << "Введите должность: ";
-            cin >> dolgn;
+    int days;
+    cout << "\nВведите количество дней для добавления к первой дате: ";
+    cin >> days;
 
-            cout << "\nРаботники с должностью \"" << dolgn << "\":" << endl;
-            bool naiden = false;
+    Date d7 = d5 + days;
+    cout << "Результат: " << d7 << endl;
 
-            for (int i = 0; i < SIZE; i++) {
-                if (workers[i].getDolgnost() == dolgn) {
-                    workers[i].show();
-                    naiden = true;
-                }
-            }
-
-            if (!naiden) {
-                cout << "Таких работников нет" << endl;
-            }
-        }
-
-    } while (vibor != 4);
-
-    cout << "Программа завершена" << endl;
     return 0;
 }
