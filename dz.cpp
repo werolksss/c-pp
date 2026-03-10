@@ -1,114 +1,160 @@
 ﻿#include <iostream>
-#include <string>
+#include <cstring>
 #include <windows.h>
+
 using namespace std;
 
-class MyString {
+class Student {
 private:
-    string str;
+    char* name;
+    int* grades;
+    int count;
+    int id;
+    static int nextId;
 
 public:
-    MyString() : str("") {}
-    MyString(const string& s) : str(s) {}
-    MyString(const char* s) : str(s) {}
+    Student() : name(nullptr), grades(nullptr), count(0), id(nextId++) {}
 
-    string getString() const {
-        return str;
-    }
-
-    void setString(const string& s) {
-        str = s;
-    }
-
-    MyString operator*(const MyString& other) const {
-        string result = "";
-
-        for (int i = 0; i < str.length(); i++) {
-            char currentChar = str[i];
-
-            bool foundInSecond = false;
-            for (int j = 0; j < other.str.length(); j++) {
-                if (other.str[j] == currentChar) {
-                    foundInSecond = true;
-                    break;
-                }
-            }
-
-            if (foundInSecond) {
-                bool alreadyInResult = false;
-                for (int k = 0; k < result.length(); k++) {
-                    if (result[k] == currentChar) {
-                        alreadyInResult = true;
-                        break;
-                    }
-                }
-
-                if (!alreadyInResult) {
-                    result += currentChar;
-                }
-            }
+    Student(const char* n, const int* g, int c) : count(c), id(nextId++) {
+        if (n) {
+            name = new char[strlen(n) + 1];
+            strcpy_s(name, strlen(n) + 1, n);
+        }
+        else {
+            name = nullptr;
         }
 
-        return MyString(result);
+        if (g && c > 0) {
+            grades = new int[c];
+            for (int i = 0; i < c; i++) {
+                grades[i] = g[i];
+            }
+        }
+        else {
+            grades = nullptr;
+        }
     }
 
-    friend ostream& operator<<(ostream& os, const MyString& ms) {
-        os << ms.str;
-        return os;
+    Student(const Student& other) : count(other.count), id(nextId++) {
+        if (other.name) {
+            name = new char[strlen(other.name) + 1];
+            strcpy_s(name, strlen(other.name) + 1, other.name);
+        }
+        else {
+            name = nullptr;
+        }
+
+        if (other.grades && count > 0) {
+            grades = new int[count];
+            for (int i = 0; i < count; i++) {
+                grades[i] = other.grades[i];
+            }
+        }
+        else {
+            grades = nullptr;
+        }
     }
 
-    friend istream& operator>>(istream& is, MyString& ms) {
-        is >> ms.str;
-        return is;
+    Student(Student&& other) noexcept
+        : name(other.name), grades(other.grades),
+        count(other.count), id(nextId++) {
+        other.name = nullptr;
+        other.grades = nullptr;
+        other.count = 0;
     }
 
-    int length() const {
-        return str.length();
+    ~Student() {
+        delete[] name;
+        delete[] grades;
+    }
+
+    Student& operator=(const Student& other) {
+        if (this != &other) {
+            delete[] name;
+            delete[] grades;
+
+            count = other.count;
+
+            if (other.name) {
+                name = new char[strlen(other.name) + 1];
+                strcpy_s(name, strlen(other.name) + 1, other.name);
+            }
+            else {
+                name = nullptr;
+            }
+
+            if (other.grades && count > 0) {
+                grades = new int[count];
+                for (int i = 0; i < count; i++) {
+                    grades[i] = other.grades[i];
+                }
+            }
+            else {
+                grades = nullptr;
+            }
+        }
+        return *this;
+    }
+
+    Student& operator=(Student&& other) noexcept {
+        if (this != &other) {
+            delete[] name;
+            delete[] grades;
+
+            name = other.name;
+            grades = other.grades;
+            count = other.count;
+
+            other.name = nullptr;
+            other.grades = nullptr;
+            other.count = 0;
+        }
+        return *this;
+    }
+
+    void print() const {
+        cout << "ID: " << id << ", Имя: " << (name ? name : "не указано") << ", Оценки: ";
+        if (grades && count > 0) {
+            for (int i = 0; i < count; i++) {
+                cout << grades[i] << " ";
+            }
+        }
+        else {
+            cout << "нет оценок";
+        }
+        cout << endl;
     }
 };
+
+int Student::nextId = 1;
+
+Student createTestStudent() {
+    int grades[] = { 5, 4, 5 };
+    return Student("Тест", grades, 3);
+}
 
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-    cout << "Пересечение строк" << endl;
 
-    MyString s1("sdqcg");
-    MyString s2("rgfas34");
+    cout << "Демонстрация конструктора переноса" << endl << endl;
 
-    cout << "Строка 1: " << s1 << endl;
-    cout << "Строка 2: " << s2 << endl;
+    int g1[] = { 5, 4, 5 };
+    Student s1("Иван", g1, 3);
+    s1.print();
 
-    MyString result = s1 * s2;
-    cout << "Пересечение (общие символы): " << result << endl;
-    cout << "Ожидаемый результат: sg" << endl;
+    Student s2 = s1;
+    s2.print();
 
+    cout << endl << "Конструктор переноса" << endl;
+    Student s3 = move(s1);
+    s3.print();
+    cout << "s1 после переноса: ";
+    s1.print();
 
-    MyString a("hello world");
-    MyString b("world hello");
-    cout << "Строка A: " << a << endl;
-    cout << "Строка B: " << b << endl;
-    cout << "Пересечение: " << (a * b) << endl;
-
-    MyString c("programming");
-    MyString d("c++ language");
-    cout << "\nСтрока C: " << c << endl;
-    cout << "Строка D: " << d << endl;
-    cout << "Пересечение: " << (c * d) << endl;
-
-    cout << "\nВведите свои строки" << endl;
-
-    MyString user1, user2;
-    cout << "Введите первую строку: ";
-    cin >> user1;
-    cout << "Введите вторую строку: ";
-    cin >> user2;
-
-    cout << "\nВаши строки:" << endl;
-    cout << "1: " << user1 << endl;
-    cout << "2: " << user2 << endl;
-
-    MyString userResult = user1 * user2;
-    cout << "Общие символы: " << userResult << endl;
+    cout << endl << "Автоматический перенос" << endl;
+    Student s4 = createTestStudent();
+    s4.print();
 
     return 0;
 }
