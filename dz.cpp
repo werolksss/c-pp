@@ -1,322 +1,190 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
 #include <windows.h>
+#include <ctime>
 using namespace std;
 
-class Date {
+class Array {
 private:
-    int day, month, year;
-public:
-    Date(int d = 1, int m = 1, int y = 2000) : day(d), month(m), year(y) {}
-    Date(const Date&) = default;
-
-    int getDay() const { return day; }
-    int getMonth() const { return month; }
-    int getYear() const { return year; }
-
-    void setDay(int d) { day = d; }
-    void setMonth(int m) { month = m; }
-    void setYear(int y) { year = y; }
-
-    void print() const {
-        printf("%02d.%02d.%d", day, month, year);
-    }
-
-    Date& operator=(const Date&) = default;
-};
-
-class Person {
-private:
-    int id;
-    char* surname{ nullptr };
-    char* name{ nullptr };
-    char* patronymic{ nullptr };
-    Date birthDate;
-    static int objectCount;
-
-    void copyStrings(const char* s, const char* n, const char* p) {
-        surname = new char[strlen(s) + 1]; strcpy(surname, s);
-        name = new char[strlen(n) + 1]; strcpy(name, n);
-        patronymic = new char[strlen(p) + 1]; strcpy(patronymic, p);
-    }
+    int* data;
+    int size;
 
 public:
-    Person(int id, const char* s, const char* n, const char* p, int d, int m, int y)
-        : id(id), birthDate(d, m, y) {
-        copyStrings(s, n, p); objectCount++;
+    Array() : data(nullptr), size(0) {}
+
+    Array(int s) : size(s) {
+        data = new int[size];
+        for (int i = 0; i < size; i++) {
+            data[i] = rand() % 100;
+        }
     }
 
-    Person() : Person(0, "Неизвестно", "Неизвестно", "Неизвестно", 1, 1, 2000) {}
-
-    Person(const Person& o) : id(o.id), birthDate(o.birthDate) {
-        copyStrings(o.surname, o.name, o.patronymic); objectCount++;
+    Array(const Array& other) : size(other.size) {
+        data = new int[size];
+        for (int i = 0; i < size; i++) {
+            data[i] = other.data[i];
+        }
     }
 
-    Person(Person&& o) noexcept : id(o.id), birthDate(o.birthDate),
-        surname(o.surname), name(o.name), patronymic(o.patronymic) {
-        o.surname = o.name = o.patronymic = nullptr; objectCount++;
+    ~Array() {
+        delete[] data;
     }
 
-    ~Person() { delete[] surname; delete[] name; delete[] patronymic; objectCount--; }
-
-    Person& operator=(const Person& o) {
-        if (this != &o) {
-            delete[] surname; delete[] name; delete[] patronymic;
-            id = o.id; birthDate = o.birthDate;
-            copyStrings(o.surname, o.name, o.patronymic);
+    Array& operator=(const Array& other) {
+        if (this != &other) {
+            delete[] data;
+            size = other.size;
+            data = new int[size];
+            for (int i = 0; i < size; i++) {
+                data[i] = other.data[i];
+            }
         }
         return *this;
     }
 
-    Person& operator=(Person&& o) noexcept {
-        if (this != &o) {
-            delete[] surname; delete[] name; delete[] patronymic;
-            id = o.id; birthDate = o.birthDate;
-            surname = o.surname; name = o.name; patronymic = o.patronymic;
-            o.surname = o.name = o.patronymic = nullptr;
+    int& operator[](int index) {
+        if (index < 0 || index >= size) {
+            cout << "Ошибка: индекс вне диапазона!" << endl;
+            static int dummy = 0;
+            return dummy;
         }
-        return *this;
+        return data[index];
     }
 
-    int getId() const { return id; }
-    const char* getSurname() const { return surname; }
-    const char* getName() const { return name; }
-    const char* getPatronymic() const { return patronymic; }
-    Date getBirthDate() const { return birthDate; }
+    const int& operator[](int index) const {
+        if (index < 0 || index >= size) {
+            cout << "Ошибка: индекс вне диапазона!" << endl;
+            static int dummy = 0;
+            return dummy;
+        }
+        return data[index];
+    }
 
-    void setSurname(const char* s) { delete[] surname; surname = new char[strlen(s) + 1]; strcpy(surname, s); }
-    void setName(const char* n) { delete[] name; name = new char[strlen(n) + 1]; strcpy(name, n); }
-    void setPatronymic(const char* p) { delete[] patronymic; patronymic = new char[strlen(p) + 1]; strcpy(patronymic, p); }
-    void setBirthDate(int d, int m, int y) { birthDate = Date(d, m, y); }
+    void operator()(int value) {
+        for (int i = 0; i < size; i++) {
+            data[i] += value;
+        }
+    }
 
-    static int getObjectCount() { return objectCount; }
+    operator int() const {
+        int sum = 0;
+        for (int i = 0; i < size; i++) {
+            sum += data[i];
+        }
+        return sum;
+    }
+
+    operator char* () const {
+        if (size == 0) {
+            char* empty = new char[2];
+            strcpy(empty, "");
+            return empty;
+        }
+
+        int totalLen = 0;
+        char temp[20];
+        for (int i = 0; i < size; i++) {
+            sprintf(temp, "%d ", data[i]);
+            totalLen += strlen(temp);
+        }
+        totalLen += 1;
+
+        char* result = new char[totalLen];
+        result[0] = '\0';
+
+        for (int i = 0; i < size; i++) {
+            sprintf(temp, "%d ", data[i]);
+            strcat(result, temp);
+        }
+
+        return result;
+    }
+
+    int getSize() const { return size; }
 
     void print() const {
-        printf("  ID: %d, ФИО: %s %s %s, Дата: ", id, surname, name, patronymic);
-        birthDate.print();
-    }
-
-    void printShort() const {
-        printf("%s %c.%c.", surname, name[0], patronymic[0]);
-    }
-};
-int Person::objectCount = 0;
-
-class Apartment {
-private:
-    int apartmentNumber;
-    Person* residents{ nullptr };
-    int residentCount{ 0 };
-    int maxResidents;
-
-public:
-    Apartment(int num = 0, int max = 5) : apartmentNumber(num), maxResidents(max) {
-        residents = new Person[maxResidents];
-    }
-
-    Apartment(const Apartment& o) : apartmentNumber(o.apartmentNumber),
-        residentCount(o.residentCount), maxResidents(o.maxResidents) {
-        residents = new Person[maxResidents];
-        for (int i = 0; i < residentCount; i++) residents[i] = o.residents[i];
-    }
-
-    Apartment(Apartment&& o) noexcept : apartmentNumber(o.apartmentNumber),
-        residentCount(o.residentCount), maxResidents(o.maxResidents), residents(o.residents) {
-        o.residents = nullptr; o.residentCount = o.maxResidents = 0;
-    }
-
-    ~Apartment() { delete[] residents; }
-
-    Apartment& operator=(const Apartment& o) {
-        if (this != &o) {
-            delete[] residents;
-            apartmentNumber = o.apartmentNumber;
-            residentCount = o.residentCount;
-            maxResidents = o.maxResidents;
-            residents = new Person[maxResidents];
-            for (int i = 0; i < residentCount; i++) residents[i] = o.residents[i];
+        cout << "[";
+        for (int i = 0; i < size; i++) {
+            cout << data[i];
+            if (i < size - 1) cout << ", ";
         }
-        return *this;
+        cout << "]";
     }
 
-    Apartment& operator=(Apartment&& o) noexcept {
-        if (this != &o) {
-            delete[] residents;
-            apartmentNumber = o.apartmentNumber;
-            residentCount = o.residentCount;
-            maxResidents = o.maxResidents;
-            residents = o.residents;
-            o.residents = nullptr; o.residentCount = o.maxResidents = 0;
-        }
-        return *this;
-    }
-
-    int getNumber() const { return apartmentNumber; }
-    int getResidentCount() const { return residentCount; }
-
-    bool addResident(const Person& p) {
-        if (residentCount >= maxResidents) return false;
-        residents[residentCount++] = p;
-        return true;
-    }
-
-    bool removeResident(int idx) {
-        if (idx < 0 || idx >= residentCount) return false;
-        for (int i = idx; i < residentCount - 1; i++) residents[i] = residents[i + 1];
-        residentCount--;
-        return true;
-    }
-
-    bool removeResidentById(int id) {
-        for (int i = 0; i < residentCount; i++)
-            if (residents[i].getId() == id) return removeResident(i);
-        return false;
-    }
-
-    Person getResident(int idx) const {
-        return (idx >= 0 && idx < residentCount) ? residents[idx] : Person();
-    }
-
-    void print() const {
-        printf("Кв.№%d (%d):\n", apartmentNumber, residentCount);
-        if (!residentCount) printf("  Свободна\n");
-        else for (int i = 0; i < residentCount; i++) {
-            printf("  "); residents[i].print(); printf("\n");
+    void fillRandom() {
+        for (int i = 0; i < size; i++) {
+            data[i] = rand() % 100;
         }
     }
 };
-
-class House {
-private:
-    string address;
-    Apartment* apartments{ nullptr };
-    int apartmentCount{ 0 };
-    int floorCount{ 0 };
-
-public:
-    House(const char* addr, int floors, int aptsPerFloor)
-        : address(addr), floorCount(floors), apartmentCount(floors* aptsPerFloor) {
-        apartments = new Apartment[apartmentCount];
-        for (int i = 0; i < apartmentCount; i++) apartments[i] = Apartment(i + 1, 4);
-        cout << "Создан дом: " << address << "\n";
-    }
-
-    House() : House("Неизвестный адрес", 1, 1) {}
-
-    House(const House& o) : address(o.address),
-        apartmentCount(o.apartmentCount), floorCount(o.floorCount) {
-        apartments = new Apartment[apartmentCount];
-        for (int i = 0; i < apartmentCount; i++) apartments[i] = o.apartments[i];
-    }
-
-    House(House&& o) noexcept : address(move(o.address)),
-        apartmentCount(o.apartmentCount), floorCount(o.floorCount), apartments(o.apartments) {
-        o.apartments = nullptr; o.apartmentCount = o.floorCount = 0;
-    }
-
-    ~House() { delete[] apartments; }
-
-    House& operator=(const House& o) {
-        if (this != &o) {
-            delete[] apartments;
-            address = o.address;
-            apartmentCount = o.apartmentCount;
-            floorCount = o.floorCount;
-            apartments = new Apartment[apartmentCount];
-            for (int i = 0; i < apartmentCount; i++) apartments[i] = o.apartments[i];
-        }
-        return *this;
-    }
-
-    House& operator=(House&& o) noexcept {
-        if (this != &o) {
-            delete[] apartments;
-            address = move(o.address);
-            apartmentCount = o.apartmentCount;
-            floorCount = o.floorCount;
-            apartments = o.apartments;
-            o.apartments = nullptr; o.apartmentCount = o.floorCount = 0;
-        }
-        return *this;
-    }
-
-    string getAddress() const { return address; }
-    int getApartmentCount() const { return apartmentCount; }
-    Apartment& getApartment(int idx) { return apartments[idx]; }
-
-    bool addResidentToApartment(int aptIdx, const Person& p) {
-        return (aptIdx >= 0 && aptIdx < apartmentCount) ? apartments[aptIdx].addResident(p) : false;
-    }
-
-    void print() const {
-        printf("\nДом %s, этажей: %d, квартир: %d\n\n", address.c_str(), floorCount, apartmentCount);
-        int total = 0;
-        for (int i = 0; i < apartmentCount; i++) {
-            apartments[i].print();
-            total += apartments[i].getResidentCount();
-            printf("\n");
-        }
-        printf("Всего жильцов: %d\n", total);
-    }
-
-    void printShort() const {
-        int total = 0, occupied = 0;
-        for (int i = 0; i < apartmentCount; i++) {
-            int cnt = apartments[i].getResidentCount();
-            total += cnt;
-            if (cnt) occupied++;
-        }
-        printf("Дом %s: %d кв., %d занято, %d жильцов\n", address.c_str(), apartmentCount, occupied, total);
-    }
-};
-
-Person createPerson(int id, const char* s, const char* n, const char* p, int d, int m, int y) {
-    return Person(id, s, n, p, d, m, y);
-}
 
 int main() {
-    SetConsoleCP(1251); SetConsoleOutputCP(1251);
-    cout << "МНОГОКВАРТИРНЫЙ ДОМ\n\n";
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+    srand(time(0));
 
-    House myHouse("ул. Ленина, д. 42", 5, 4);
-    myHouse.printShort();
+    cout << "Демонстрация класса Array\n\n";
 
-    Person p1 = createPerson(101, "Иванов", "Иван", "Иванович", 15, 5, 1990);
-    Person p2 = createPerson(102, "Петрова", "Мария", "Петровна", 23, 8, 1985);
-    Person p3 = createPerson(103, "Сидоров", "Петр", "Сергеевич", 10, 3, 2000);
-    Person p4 = createPerson(104, "Козлова", "Анна", "Павловна", 5, 12, 1995);
-    Person p5 = createPerson(105, "Смирнов", "Алексей", "Викторович", 30, 1, 1980);
-    Person p6 = createPerson(106, "Кузнецова", "Елена", "Дмитриевна", 17, 7, 1992);
-    Person p7 = createPerson(107, "Попов", "Андрей", "Николаевич", 3, 9, 1988);
-    Person p8 = createPerson(108, "Васильева", "Ольга", "Игоревна", 22, 4, 1998);
+    Array arr(5);
+    cout << "Исходный массив: ";
+    arr.print();
+    cout << endl;
 
-    cout << "Создано жильцов: " << Person::getObjectCount() << "\n\n";
+    cout << "\n1. Оператор []:\n";
+    cout << "arr[2] = " << arr[2] << endl;
+    arr[2] = 99;
+    cout << "После arr[2] = 99: ";
+    arr.print();
+    cout << endl;
 
-    myHouse.addResidentToApartment(0, p1); myHouse.addResidentToApartment(0, p2);
-    myHouse.addResidentToApartment(5, p3); myHouse.addResidentToApartment(5, p4);
-    myHouse.addResidentToApartment(10, p5); myHouse.addResidentToApartment(10, p6);
-    myHouse.addResidentToApartment(15, p7); myHouse.addResidentToApartment(15, p8);
+    cout << "\n2. Оператор ():\n";
+    arr(10);
+    cout << "После arr(10): ";
+    arr.print();
+    cout << endl;
 
-    myHouse.print();
+    cout << "\n3. Преобразование в int:\n";
+    int sum = arr;
+    cout << "Сумма элементов (int) = " << sum << endl;
+    cout << "Явное преобразование: " << (int)arr << endl;
 
-    cout << "\n=== Демонстрация конструкторов переноса ===\n";
+    cout << "\n4. Преобразование в char*:\n";
+    char* str = (char*)arr;
+    cout << "Строковое представление: \"" << str << "\"" << endl;
+    delete[] str;
 
-    Person p9 = createPerson(109, "Новиков", "Денис", "Александрович", 12, 3, 1993);
-    cout << "Создан p9\n";
-    Person p10 = move(p9);
-    cout << "p10 создан через move из p9\np9 после переноса: "; p9.printShort(); cout << "\np10: "; p10.printShort(); cout << "\n\n";
+    cout << "\nДополнительные тесты\n";
 
-    Apartment apt1(50, 3);
-    apt1.addResident(p1); apt1.addResident(p2);
-    cout << "Создана apt1 с жильцами\n";
-    Apartment apt2 = move(apt1);
-    cout << "apt2 создана через move из apt1\napt1: "; apt1.print(); cout << "apt2: "; apt2.print(); cout << "\n";
+    Array emptyArr;
+    cout << "Пустой массив: ";
+    emptyArr.print();
+    cout << endl;
+    cout << "Преобразование пустого массива в char*: \"";
+    char* emptyStr = (char*)emptyArr;
+    cout << emptyStr << "\"" << endl;
+    delete[] emptyStr;
 
-    House house2 = move(myHouse);
-    cout << "house2 создан через move из myHouse\nmyHouse: "; myHouse.printShort();
-    cout << "house2: "; house2.printShort(); cout << "\n";
+    Array bigArr(10);
+    bigArr.fillRandom();
+    cout << "\nБольшой массив (10 элементов):\n";
+    bigArr.print();
+    cout << endl;
 
-    cout << "Всего объектов Person: " << Person::getObjectCount() << "\n\n";
+    bigArr(5);
+    cout << "После увеличения на 5, сумма = " << (int)bigArr << endl;
+
+    char* bigStr = (char*)bigArr;
+    cout << "Строка: " << bigStr << endl;
+    delete[] bigStr;
+
+    cout << "\nКонстантный доступ\n";
+    const Array constArr(3);
+    cout << "Константный массив: ";
+    constArr.print();
+    cout << endl;
+    cout << "constArr[1] = " << constArr[1] << endl;
+
     return 0;
 }
