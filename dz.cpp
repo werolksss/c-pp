@@ -1,190 +1,325 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <cstring>
 #include <cstdlib>
-#include <windows.h>
 #include <ctime>
+#include <windows.h>
 using namespace std;
 
-class Array {
+class Set {
 private:
-    int* data;
+    int* elements;
     int size;
+    int capacity;
+
+    void resize(int newCapacity) {
+        int* newElements = new int[newCapacity];
+        for (int i = 0; i < size; i++) {
+            newElements[i] = elements[i];
+        }
+        delete[] elements;
+        elements = newElements;
+        capacity = newCapacity;
+    }
+
+    bool contains(int value) const {
+        for (int i = 0; i < size; i++) {
+            if (elements[i] == value) return true;
+        }
+        return false;
+    }
 
 public:
-    Array() : data(nullptr), size(0) {}
+    Set() : elements(nullptr), size(0), capacity(0) {}
 
-    Array(int s) : size(s) {
-        data = new int[size];
-        for (int i = 0; i < size; i++) {
-            data[i] = rand() % 100;
+    Set(int* arr, int n) : elements(nullptr), size(0), capacity(0) {
+        for (int i = 0; i < n; i++) {
+            add(arr[i]);
         }
     }
 
-    Array(const Array& other) : size(other.size) {
-        data = new int[size];
-        for (int i = 0; i < size; i++) {
-            data[i] = other.data[i];
+    Set(const Set& other) : elements(nullptr), size(0), capacity(0) {
+        for (int i = 0; i < other.size; i++) {
+            add(other.elements[i]);
         }
     }
 
-    ~Array() {
-        delete[] data;
+    ~Set() {
+        delete[] elements;
     }
 
-    Array& operator=(const Array& other) {
+    Set& operator=(const Set& other) {
         if (this != &other) {
-            delete[] data;
-            size = other.size;
-            data = new int[size];
-            for (int i = 0; i < size; i++) {
-                data[i] = other.data[i];
+            delete[] elements;
+            elements = nullptr;
+            size = 0;
+            capacity = 0;
+
+            for (int i = 0; i < other.size; i++) {
+                add(other.elements[i]);
             }
         }
         return *this;
     }
 
-    int& operator[](int index) {
-        if (index < 0 || index >= size) {
-            cout << "Ошибка: индекс вне диапазона!" << endl;
-            static int dummy = 0;
-            return dummy;
+    bool add(int value) {
+        if (contains(value)) return false;
+
+        if (size >= capacity) {
+            int newCapacity = capacity == 0 ? 4 : capacity * 2;
+            resize(newCapacity);
         }
-        return data[index];
+
+        elements[size++] = value;
+        return true;
     }
 
-    const int& operator[](int index) const {
-        if (index < 0 || index >= size) {
-            cout << "Ошибка: индекс вне диапазона!" << endl;
-            static int dummy = 0;
-            return dummy;
+    bool remove(int value) {
+        for (int i = 0; i < size; i++) {
+            if (elements[i] == value) {
+                for (int j = i; j < size - 1; j++) {
+                    elements[j] = elements[j + 1];
+                }
+                size--;
+                return true;
+            }
         }
-        return data[index];
+        return false;
     }
 
-    void operator()(int value) {
-        for (int i = 0; i < size; i++) {
-            data[i] += value;
-        }
+    bool belongs(int value) const {
+        return contains(value);
     }
 
-    operator int() const {
-        int sum = 0;
-        for (int i = 0; i < size; i++) {
-            sum += data[i];
-        }
-        return sum;
+    int getSize() const {
+        return size;
     }
 
-    operator char* () const {
-        if (size == 0) {
-            char* empty = new char[2];
-            strcpy(empty, "");
-            return empty;
-        }
-
-        int totalLen = 0;
-        char temp[20];
-        for (int i = 0; i < size; i++) {
-            sprintf(temp, "%d ", data[i]);
-            totalLen += strlen(temp);
-        }
-        totalLen += 1;
-
-        char* result = new char[totalLen];
-        result[0] = '\0';
-
-        for (int i = 0; i < size; i++) {
-            sprintf(temp, "%d ", data[i]);
-            strcat(result, temp);
-        }
-
+    Set operator+(int value) const {
+        Set result = *this;
+        result.add(value);
         return result;
     }
 
-    int getSize() const { return size; }
-
-    void print() const {
-        cout << "[";
-        for (int i = 0; i < size; i++) {
-            cout << data[i];
-            if (i < size - 1) cout << ", ";
-        }
-        cout << "]";
+    Set& operator+=(int value) {
+        add(value);
+        return *this;
     }
 
-    void fillRandom() {
-        for (int i = 0; i < size; i++) {
-            data[i] = rand() % 100;
+    Set operator+(const Set& other) const {
+        Set result = *this;
+        for (int i = 0; i < other.size; i++) {
+            result.add(other.elements[i]);
         }
+        return result;
+    }
+
+    Set& operator+=(const Set& other) {
+        for (int i = 0; i < other.size; i++) {
+            add(other.elements[i]);
+        }
+        return *this;
+    }
+
+    Set operator-(int value) const {
+        Set result = *this;
+        result.remove(value);
+        return result;
+    }
+
+    Set& operator-=(int value) {
+        remove(value);
+        return *this;
+    }
+
+    Set operator-(const Set& other) const {
+        Set result;
+        for (int i = 0; i < size; i++) {
+            if (!other.contains(elements[i])) {
+                result.add(elements[i]);
+            }
+        }
+        return result;
+    }
+
+    Set& operator-=(const Set& other) {
+        Set result;
+        for (int i = 0; i < size; i++) {
+            if (!other.contains(elements[i])) {
+                result.add(elements[i]);
+            }
+        }
+        *this = result;
+        return *this;
+    }
+
+    Set operator*(const Set& other) const {
+        Set result;
+        for (int i = 0; i < size; i++) {
+            if (other.contains(elements[i])) {
+                result.add(elements[i]);
+            }
+        }
+        return result;
+    }
+
+    Set& operator*=(const Set& other) {
+        Set result;
+        for (int i = 0; i < size; i++) {
+            if (other.contains(elements[i])) {
+                result.add(elements[i]);
+            }
+        }
+        *this = result;
+        return *this;
+    }
+
+    bool operator==(const Set& other) const {
+        if (size != other.size) return false;
+
+        for (int i = 0; i < size; i++) {
+            if (!other.contains(elements[i])) return false;
+        }
+        return true;
+    }
+
+    bool operator!=(const Set& other) const {
+        return !(*this == other);
+    }
+
+    friend ostream& operator<<(ostream& os, const Set& s) {
+        os << "{";
+        for (int i = 0; i < s.size; i++) {
+            os << s.elements[i];
+            if (i < s.size - 1) os << ", ";
+        }
+        os << "}";
+        return os;
+    }
+
+    friend istream& operator>>(istream& is, Set& s) {
+        int n, value;
+        cout << "Введите количество элементов: ";
+        is >> n;
+
+        s = Set();
+        cout << "Введите элементы: ";
+        for (int i = 0; i < n; i++) {
+            is >> value;
+            s.add(value);
+        }
+        return is;
+    }
+
+    void print() const {
+        cout << *this;
+    }
+
+    void println() const {
+        print();
+        cout << endl;
     }
 };
 
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
-    srand(time(0));
 
-    cout << "Демонстрация класса Array\n\n";
+    cout << "Множество целых чисел\n\n";
 
-    Array arr(5);
-    cout << "Исходный массив: ";
-    arr.print();
-    cout << endl;
+    int arr1[] = { 3, 8, 46, 5, 11 };
+    int arr2[] = { 18, 8, 90, 11, 2 };
 
-    cout << "\n1. Оператор []:\n";
-    cout << "arr[2] = " << arr[2] << endl;
-    arr[2] = 99;
-    cout << "После arr[2] = 99: ";
-    arr.print();
-    cout << endl;
+    Set A(arr1, 5);
+    Set B(arr2, 5);
 
-    cout << "\n2. Оператор ():\n";
-    arr(10);
-    cout << "После arr(10): ";
-    arr.print();
-    cout << endl;
+    cout << "Множество A = "; A.println();
+    cout << "Множество B = "; B.println();
 
-    cout << "\n3. Преобразование в int:\n";
-    int sum = arr;
-    cout << "Сумма элементов (int) = " << sum << endl;
-    cout << "Явное преобразование: " << (int)arr << endl;
+    cout << "\n1. Добавление и удаление элементов:\n";
+    Set C = A + 4;
+    cout << "A + 4 = "; C.println();
 
-    cout << "\n4. Преобразование в char*:\n";
-    char* str = (char*)arr;
-    cout << "Строковое представление: \"" << str << "\"" << endl;
-    delete[] str;
+    Set D = A + 3;
+    cout << "A + 3 = "; D.println();
 
-    cout << "\nДополнительные тесты\n";
+    Set E = A - 8;
+    cout << "A - 8 = "; E.println();
 
-    Array emptyArr;
-    cout << "Пустой массив: ";
-    emptyArr.print();
-    cout << endl;
-    cout << "Преобразование пустого массива в char*: \"";
-    char* emptyStr = (char*)emptyArr;
-    cout << emptyStr << "\"" << endl;
-    delete[] emptyStr;
+    A += 7;
+    cout << "A += 7 -> "; A.println();
 
-    Array bigArr(10);
-    bigArr.fillRandom();
-    cout << "\nБольшой массив (10 элементов):\n";
-    bigArr.print();
-    cout << endl;
+    A -= 46;
+    cout << "A -= 46 -> "; A.println();
 
-    bigArr(5);
-    cout << "После увеличения на 5, сумма = " << (int)bigArr << endl;
+    cout << "\n2. Проверка принадлежности:\n";
+    cout << "8 принадлежит A? " << (A.belongs(8) ? "Да" : "Нет") << endl;
+    cout << "100 принадлежит A? " << (A.belongs(100) ? "Да" : "Нет") << endl;
 
-    char* bigStr = (char*)bigArr;
-    cout << "Строка: " << bigStr << endl;
-    delete[] bigStr;
+    cout << "\n3. Объединение множеств:\n";
+    Set Union = A + B;
+    cout << "A U B = "; Union.println();
 
-    cout << "\nКонстантный доступ\n";
-    const Array constArr(3);
-    cout << "Константный массив: ";
-    constArr.print();
-    cout << endl;
-    cout << "constArr[1] = " << constArr[1] << endl;
+    A = Set(arr1, 5);
+    B = Set(arr2, 5);
+    Set Union2 = A + B;
+    cout << "A U B (оригинальные) = "; Union2.println();
+
+    A += B;
+    cout << "A += B -> "; A.println();
+
+    cout << "\n4. Пересечение множеств:\n";
+    A = Set(arr1, 5);
+    Set Intersection = A * B;
+    cout << "A ∩ B = "; Intersection.println();
+
+    A *= B;
+    cout << "A *= B -> "; A.println();
+
+    cout << "\n5. Разность множеств:\n";
+    A = Set(arr1, 5);
+    Set Difference = A - B;
+    cout << "A \\ B = "; Difference.println();
+
+    Set Diff2 = B - A;
+    cout << "B \\ A = "; Diff2.println();
+
+    A -= B;
+    cout << "A -= B -> "; A.println();
+
+    cout << "\n6. Сравнение множеств:\n";
+    Set X(arr1, 5);
+    Set Y(arr1, 5);
+    Set Z(arr2, 5);
+
+    cout << "X = "; X.println();
+    cout << "Y = "; Y.println();
+    cout << "Z = "; Z.println();
+
+    cout << "X == Y? " << (X == Y ? "Да" : "Нет") << endl;
+    cout << "X == Z? " << (X == Z ? "Да" : "Нет") << endl;
+    cout << "X != Z? " << (X != Z ? "Да" : "Нет") << endl;
+
+    cout << "\n7. Конструктор копирования и присваивание:\n";
+    Set Copy = X;
+    cout << "Copy (копия X) = "; Copy.println();
+
+    Set Assign;
+    Assign = Z;
+    cout << "Assign = Z -> "; Assign.println();
+
+    cout << "\n8. Потоковый ввод:\n";
+    Set Input;
+    cin >> Input;
+    cout << "Введенное множество: "; Input.println();
+
+    cout << "\n9. Демонстрация уникальности:\n";
+    Set Unique;
+    Unique.add(5);
+    Unique.add(10);
+    Unique.add(5);
+    Unique.add(7);
+    Unique.add(10);
+    cout << "После добавления 5,10,5,7,10: "; Unique.println();
 
     return 0;
 }
