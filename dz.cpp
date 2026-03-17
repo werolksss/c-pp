@@ -1,42 +1,46 @@
 ﻿#include <iostream>
 using namespace std;
 
-class Circle {
+class Airplane {
 public:
-    double r;
+    int passengers;
+    int max_passengers;
 
-    Circle(double r) : r(r) {}
+    Airplane(int p, int max_p) : passengers(p), max_passengers(max_p) {}
 
     // ==
-    bool operator==(const Circle& other) const {
-        return r == other.r;
+    bool operator==(const Airplane& other) const {
+        return max_passengers == other.max_passengers;
+    }
+
+
+    // ++ (префикс)
+    Airplane& operator++() {
+        passengers++;
+        return *this;
+    }
+
+    // -- (префикс)
+    Airplane& operator--() {
+        passengers--;
+        return *this;
     }
 
     // >
-    bool operator>(const Circle& other) const {
-        return r > other.r;
-    }
-    // +=
-    Circle& operator+=(double x) {
-        r += x;
-        return *this;
-    }
 
-    // -=
-    Circle& operator-=(double x) {
-        r -= x;
-        return *this;
+    bool operator>(const Airplane& other) const {
+        return max_passengers > other.max_passengers;
     }
 };
 
 int main() {
-    Circle a(5), b(3);
+    Airplane a(100, 200), b(80, 150);
 
     cout << (a == b) << endl;
     cout << (a > b) << endl;
 
-    a += 2;
-    a -= 1;
+    ++a;
+    --a;
 
     return 0;
 }
