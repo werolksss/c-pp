@@ -1,51 +1,42 @@
 ﻿#include <iostream>
+using namespace std;
 
-class Buffer {
-private:
-    int* data;
-    size_t size;
-
+class Circle {
 public:
-    Buffer(size_t n) : size(n) {
-        data = new int[n];
+    double r;
+
+    Circle(double r) : r(r) {}
+
+    // ==
+    bool operator==(const Circle& other) const {
+        return r == other.r;
     }
 
-    // Копирование
-    Buffer(const Buffer& other) : size(other.size) {
-        data = new int[size];
-        for (size_t i = 0; i < size; i++)
-            data[i] = other.data[i];
-        std::cout << "Copy\n";
+    // >
+    bool operator>(const Circle& other) const {
+        return r > other.r;
     }
-
-    // Перемещение
-    Buffer(Buffer&& other) noexcept {
-        data = other.data;
-        size = other.size;
-        other.data = nullptr;
-        other.size = 0;
-        std::cout << "Move\n";
-    }
-
-    // Перемещающее присваивание
-    Buffer& operator=(Buffer&& other) noexcept {
-        if (this != &other) {
-            delete[] data;
-            data = other.data;
-            size = other.size;
-            other.data = nullptr;
-            other.size = 0;
-        }
-        std::cout << "Move assign\n";
+    // +=
+    Circle& operator+=(double x) {
+        r += x;
         return *this;
     }
 
-    ~Buffer() {
-        delete[] data;
+    // -=
+    Circle& operator-=(double x) {
+        r -= x;
+        return *this;
     }
 };
 
 int main() {
-    Buffer a(10);
-    Buffer b = std::move(a); // теперь move, а не copy
+    Circle a(5), b(3);
+
+    cout << (a == b) << endl;
+    cout << (a > b) << endl;
+
+    a += 2;
+    a -= 1;
+
+    return 0;
 }
