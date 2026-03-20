@@ -1,46 +1,61 @@
 ﻿#include <iostream>
 using namespace std;
 
-class Airplane {
-public:
-    int passengers;
-    int max_passengers;
+class Complex {
+    double re, im;
 
-    Airplane(int p, int max_p) : passengers(p), max_passengers(max_p) {}
+public:
+    Complex() : re(0), im(0) {}
+    Complex(double r, double i) : re(r), im(i) {}
+
+    // +
+    Complex operator+(const Complex& c) const {
+        return Complex(re + c.re, im + c.im);
+    }
+
+    // -
+    Complex operator-(const Complex& c) const {
+        return Complex(re - c.re, im - c.im);
+    }
 
     // ==
-    bool operator==(const Airplane& other) const {
-        return max_passengers == other.max_passengers;
+    bool operator==(const Complex& c) const {
+        return re == c.re && im == c.im;
     }
 
-
-    // ++ (префикс)
-    Airplane& operator++() {
-        passengers++;
-        return *this;
+    // !=
+    bool operator!=(const Complex& c) const {
+        return !(*this == c);
     }
 
-    // -- (префикс)
-    Airplane& operator--() {
-        passengers--;
-        return *this;
+    // ()
+    double operator()() const {
+        return re * re + im * im;
     }
 
-    // >
+    // << (дружественная)
+    friend ostream& operator<<(ostream& out, const Complex& c) {
+        return out << c.re << "+" << c.im << "i";
+    }
 
-    bool operator>(const Airplane& other) const {
-        return max_passengers > other.max_passengers;
+    // >> (дружественная)
+    friend istream& operator>>(istream& in, Complex& c) {
+        return in >> c.re >> c.im;
     }
 };
-
 int main() {
-    Airplane a(100, 200), b(80, 150);
+    Complex a(1, 2), b(3, 4), c;
+
+    cin >> c;              // ввод
+    cout << c << endl;     // вывод
+
+    cout << (a + b) << endl;
+    cout << (a - b) << endl;
 
     cout << (a == b) << endl;
-    cout << (a > b) << endl;
+    cout << (a != b) << endl;
 
-    ++a;
-    --a;
+    cout << a() << endl;   // модуль (квадрат)
 
     return 0;
 }
