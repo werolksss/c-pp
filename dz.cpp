@@ -1,94 +1,39 @@
 ﻿#include <iostream>
 using namespace std;
-
-class Time {
-    int h, m, s;
-
+class Processor {
 public:
-    Time() : h(0), m(0), s(0) {}
-    Time(int h, int m, int s) : h(h), m(m), s(s) {}
-
-    // ++
-    Time& operator++() {
-        s++;
-        if (s >= 60) { s = 0; m++; }
-        if (m >= 60) { m = 0; h++; }
-        return *this;
+    string model;
+    Processor(string m) {
+        model = m;
+        cout << "Создан процессор: " << model << endl;
     }
-
-    // --
-    Time& operator--() {
-        s--;
-        if (s < 0) { s = 59; m--; }
-        if (m < 0) { m = 59; h--; }
-        return *this;
+    ~Processor() {
+        cout << "Уничтожен процессор: " << model << endl;
     }
-
-    // ==
-    bool operator==(const Time& t) const {
-        return h == t.h && m == t.m && s == t.s;
+};
+class Computer {
+private:
+    Processor* cpu;
+public:
+    Computer(string cpuModel) {
+        cpu = new Processor(cpuModel);
+        cout << "Компьютер собран" << endl;
     }
-
-    // !=
-    bool operator!=(const Time& t) const {
-        return !(*this == t);
+    Computer(const Computer&) = delete;
+    Computer& operator=(const Computer&) = delete;
+    ~Computer() {
+        delete cpu;
+        cout << "Компьютер уничтожен" << endl;
     }
-
-    // >
-    bool operator>(const Time& t) const {
-        return h * 3600 + m * 60 + s > t.h * 3600 + t.m * 60 + t.s;
-    }
-
-    // <
-    bool operator<(const Time& t) const {
-        return !(*this > t) && !(*this == t);
-    }
-
-    // +=
-    Time& operator+=(int sec) {
-        s += sec;
-        return *this;
-    }
-
-    // -=
-    Time& operator-=(int sec) {
-        s -= sec;
-        return *this;
-    }
-
-    // ()
-    int operator()() const {
-        return h * 3600 + m * 60 + s;
-    }
-
-    // <<
-    friend ostream& operator<<(ostream& out, const Time& t) {
-        return out << t.h << ":" << t.m << ":" << t.s;
-    }
-
-    // >>
-    friend istream& operator>>(istream& in, Time& t) {
-        return in >> t.h >> t.m >> t.s;
+    void showInfo() {
+        cout << "В компьютере установлен: " << cpu->model << endl;
     }
 };
 int main() {
-    Time t1(1, 2, 3), t2;
-
-    cin >> t2;
-    cout << t2 << endl;
-
-    ++t1;
-    --t1;
-
-    cout << (t1 == t2) << endl;
-    cout << (t1 != t2) << endl;
-    cout << (t1 > t2) << endl;
-    cout << (t1 < t2) << endl;
-
-    t1 += 10;
-    t1 -= 5;
-
-    cout << t1() << endl; // в секундах
-
+    setlocale(LC_ALL, "ru");
+    cout << "Создаём компьютер\n";
+    Computer myPC("Intel i5");
+    myPC.showInfo();
+    cout << "\nКомпьютер завершает работу\n";
     return 0;
 }
