@@ -1,61 +1,94 @@
 ﻿#include <iostream>
 using namespace std;
 
-class Complex {
-    double re, im;
+class Time {
+    int h, m, s;
 
 public:
-    Complex() : re(0), im(0) {}
-    Complex(double r, double i) : re(r), im(i) {}
+    Time() : h(0), m(0), s(0) {}
+    Time(int h, int m, int s) : h(h), m(m), s(s) {}
 
-    // +
-    Complex operator+(const Complex& c) const {
-        return Complex(re + c.re, im + c.im);
+    // ++
+    Time& operator++() {
+        s++;
+        if (s >= 60) { s = 0; m++; }
+        if (m >= 60) { m = 0; h++; }
+        return *this;
     }
 
-    // -
-    Complex operator-(const Complex& c) const {
-        return Complex(re - c.re, im - c.im);
+    // --
+    Time& operator--() {
+        s--;
+        if (s < 0) { s = 59; m--; }
+        if (m < 0) { m = 59; h--; }
+        return *this;
     }
 
     // ==
-    bool operator==(const Complex& c) const {
-        return re == c.re && im == c.im;
+    bool operator==(const Time& t) const {
+        return h == t.h && m == t.m && s == t.s;
     }
 
     // !=
-    bool operator!=(const Complex& c) const {
-        return !(*this == c);
+    bool operator!=(const Time& t) const {
+        return !(*this == t);
+    }
+
+    // >
+    bool operator>(const Time& t) const {
+        return h * 3600 + m * 60 + s > t.h * 3600 + t.m * 60 + t.s;
+    }
+
+    // <
+    bool operator<(const Time& t) const {
+        return !(*this > t) && !(*this == t);
+    }
+
+    // +=
+    Time& operator+=(int sec) {
+        s += sec;
+        return *this;
+    }
+
+    // -=
+    Time& operator-=(int sec) {
+        s -= sec;
+        return *this;
     }
 
     // ()
-    double operator()() const {
-        return re * re + im * im;
+    int operator()() const {
+        return h * 3600 + m * 60 + s;
     }
 
-    // << (дружественная)
-    friend ostream& operator<<(ostream& out, const Complex& c) {
-        return out << c.re << "+" << c.im << "i";
+    // <<
+    friend ostream& operator<<(ostream& out, const Time& t) {
+        return out << t.h << ":" << t.m << ":" << t.s;
     }
 
-    // >> (дружественная)
-    friend istream& operator>>(istream& in, Complex& c) {
-        return in >> c.re >> c.im;
+    // >>
+    friend istream& operator>>(istream& in, Time& t) {
+        return in >> t.h >> t.m >> t.s;
     }
 };
 int main() {
-    Complex a(1, 2), b(3, 4), c;
+    Time t1(1, 2, 3), t2;
 
-    cin >> c;              // ввод
-    cout << c << endl;     // вывод
+    cin >> t2;
+    cout << t2 << endl;
 
-    cout << (a + b) << endl;
-    cout << (a - b) << endl;
+    ++t1;
+    --t1;
 
-    cout << (a == b) << endl;
-    cout << (a != b) << endl;
+    cout << (t1 == t2) << endl;
+    cout << (t1 != t2) << endl;
+    cout << (t1 > t2) << endl;
+    cout << (t1 < t2) << endl;
 
-    cout << a() << endl;   // модуль (квадрат)
+    t1 += 10;
+    t1 -= 5;
+
+    cout << t1() << endl; // в секундах
 
     return 0;
 }
