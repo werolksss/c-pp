@@ -1,39 +1,37 @@
 ﻿#include <iostream>
+#include <vector>
 using namespace std;
-class Processor {
+
+class Student {
 public:
-    string model;
-    Processor(string m) {
-        model = m;
-        cout << "Создан процессор: " << model << endl;
+    string name;
+
+    Student(string n) : name(n) {}
+};
+
+class University {
+public:
+    vector<Student*> students;
+    void addStudent(Student* s) {
+        students.push_back(s);
     }
-    ~Processor() {
-        cout << "Уничтожен процессор: " << model << endl;
+
+    void show() {
+        for (auto s : students)
+            cout << s->name << endl;
     }
 };
-class Computer {
-private:
-    Processor* cpu;
-public:
-    Computer(string cpuModel) {
-        cpu = new Processor(cpuModel);
-        cout << "Компьютер собран" << endl;
-    }
-    Computer(const Computer&) = delete;
-    Computer& operator=(const Computer&) = delete;
-    ~Computer() {
-        delete cpu;
-        cout << "Компьютер уничтожен" << endl;
-    }
-    void showInfo() {
-        cout << "В компьютере установлен: " << cpu->model << endl;
-    }
-};
+
 int main() {
-    setlocale(LC_ALL, "ru");
-    cout << "Создаём компьютер\n";
-    Computer myPC("Intel i5");
-    myPC.showInfo();
-    cout << "\nКомпьютер завершает работу\n";
+    Student s1("Alice");
+    Student s2("Bob");
+
+    University uni;
+
+    uni.addStudent(&s1);
+    uni.addStudent(&s2);
+
+    uni.show();
+
     return 0;
 }
