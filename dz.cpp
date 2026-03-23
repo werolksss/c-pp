@@ -1,24 +1,19 @@
 ﻿#include <iostream>
-#include <string>
 #include <locale>
 using namespace std;
-struct Stack {
-    char arr[100];
-    int top = -1;
-    void push(char c) { arr[++top] = c; }
-    void pop() { if (top >= 0) top--; }
-    char peek() { return arr[top]; }
-    bool empty() { return top == -1; }
+struct Queue {
+    int arr[100];
+    int front = 0, back = 0;
+    void enqueue(int v) { arr[back++] = v; }
+    void dequeue() { if (front < back) front++; }
+    int peek() { return arr[front]; }
+    bool empty() { return front == back; }
 };
 int main() {
     setlocale(LC_ALL, "");
-    Stack s;
-    string str = "abba";
-    for (char c : str) s.push(c);
-    bool pal = true;
-    for (char c : str) {
-        if (s.peek() != c) pal = false;
-        s.pop();
-    }
-    cout << "\"" << str << "\" " << (pal ? "является палиндромом" : "не является палиндромом") << "\n";
+    Queue q;
+    for (int i = 1; i <= 5; i++) q.enqueue(i);
+    cout << "Порядок обработки очереди: ";
+    while (!q.empty()) { cout << q.peek() << " "; q.dequeue(); }
+    cout << "\n";
 }
