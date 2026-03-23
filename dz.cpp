@@ -1,80 +1,49 @@
 ﻿#include <iostream>
+#include <locale>
 using namespace std;
 
-template <typename T>
-class Array {
-    T* data;
-    int size, capacity;
+struct Node {
+    int data;
+    Node* next = nullptr;
+    Node(int v) : data(v) {}
+};
 
-public:
-    Array() : data(nullptr), size(0), capacity(0) {}
+struct List {
+    Node* head = nullptr;
 
-    int GetSize() const { return size; }
-
-    void Add(T val) {
-        if (size >= capacity) {
-            capacity = (capacity == 0) ? 1 : capacity * 2;
-            T* tmp = new T[capacity];
-            for (int i = 0; i < size; i++)
-                tmp[i] = data[i];
-            delete[] data;
-            data = tmp;
-        }
-        data[size++] = val;
+    void push_front(int v) {
+        Node* n = new Node(v);
+        n->next = head;
+        head = n;
     }
 
-    T& operator[](int i) { return data[i]; }
-
-    void InsertAt(int index, T val) {
-        if (index < 0 || index > size) return;
-
-        Add(val); // увеличили size
-
-        for (int i = size - 1; i > index; i--)
-            data[i] = data[i - 1];
-
-        data[index] = val;
+    void push_back(int v) {
+        Node* n = new Node(v);
+        if (!head) { head = n; return; }
+        Node* c = head; while (c->next) c = c->next;
+        c->next = n;
     }
 
-    void RemoveAt(int index) {
-        if (index < 0 || index >= size) return;
-
-        for (int i = index; i < size - 1; i++)
-            data[i] = data[i + 1];
-
-        size--;
+    void pop_front() {
+        if (head) { Node* t = head; head = head->next; delete t; }
     }
 
-    ~Array() { delete[] data; }
+    void print() {
+        Node* c = head;
+        while (c) { cout << c->data << " "; c = c->next; }
+        cout << "\n";
+    }
 };
 
 int main() {
-    setlocale(LC_ALL, "Russian");
+    setlocale(LC_ALL, "");
 
-    Array<int> arr;
+    List l;
+    l.push_front(1);
+    l.push_back(2);
+    l.push_front(0);
 
-    arr.Add(1);
-    arr.Add(2);
-    arr.Add(3);
-
-    cout << "Массив: ";
-    for (int i = 0; i < arr.GetSize(); i++)
-        cout << arr[i] << " ";
-    cout << endl;
-
-    arr.InsertAt(1, 10);
-
-    cout << "После вставки: ";
-    for (int i = 0; i < arr.GetSize(); i++)
-        cout << arr[i] << " ";
-    cout << endl;
-
-    arr.RemoveAt(2);
-
-    cout << "После удаления: ";
-    for (int i = 0; i < arr.GetSize(); i++)
-        cout << arr[i] << " ";
-    cout << endl;
-
-    return 0;
+    cout << "Список: "; l.print();
+    l.pop_front();
+    cout << "После удаления первого элемента: "; l.print();
 }
