@@ -1,66 +1,80 @@
 ﻿#include <iostream>
-#include <cmath>
 using namespace std;
 
-// 1. Среднее массива
 template <typename T>
-T avg(T arr[], int n) {
-    T sum = 0;
-    for (int i = 0; i < n; i++)
-        sum += arr[i];
-    return sum / n;
-}
+class Array {
+    T* data;
+    int size, capacity;
 
-// 2. Линейное уравнение
-template <typename T>
-T solve(T a, T b) {
-    return -b / a;
-}
+public:
+    Array() : data(nullptr), size(0), capacity(0) {}
 
-// 2. Квадратное уравнение
-template <typename T>
-void solve(T a, T b, T c) {
-    T d = b * b - 4 * a * c;
+    int GetSize() const { return size; }
 
-    if (d > 0) {
-        T x1 = (-b + sqrt(d)) / (2 * a);
-        T x2 = (-b - sqrt(d)) / (2 * a);
-        cout << "Корни: " << x1 << " " << x2 << endl;
+    void Add(T val) {
+        if (size >= capacity) {
+            capacity = (capacity == 0) ? 1 : capacity * 2;
+            T* tmp = new T[capacity];
+            for (int i = 0; i < size; i++)
+                tmp[i] = data[i];
+            delete[] data;
+            data = tmp;
+        }
+        data[size++] = val;
     }
-    else if (d == 0) {
-        cout << "Один корень: " << -b / (2 * a) << endl;
-    }
-    else {
-        cout << "Корней нет\n";
-    }
-}
 
-// 3. Максимум
-template <typename T>
-T myMax(T a, T b) {
-    return (a > b) ? a : b;
-}
+    T& operator[](int i) { return data[i]; }
 
-// 4. Минимум
-template <typename T>
-T myMin(T a, T b) {
-    return (a < b) ? a : b;
-}
+    void InsertAt(int index, T val) {
+        if (index < 0 || index > size) return;
+
+        Add(val); // увеличили size
+
+        for (int i = size - 1; i > index; i--)
+            data[i] = data[i - 1];
+
+        data[index] = val;
+    }
+
+    void RemoveAt(int index) {
+        if (index < 0 || index >= size) return;
+
+        for (int i = index; i < size - 1; i++)
+            data[i] = data[i + 1];
+
+        size--;
+    }
+
+    ~Array() { delete[] data; }
+};
 
 int main() {
-    setlocale(LC_ALL, "ru");
+    setlocale(LC_ALL, "Russian");
 
-    int arr[] = { 1,2,3,4,5 };
+    Array<int> arr;
 
-    cout << "Среднее массива: " << avg(arr, 5) << endl;
+    arr.Add(1);
+    arr.Add(2);
+    arr.Add(3);
 
-    cout << "Решение линейного уравнения: " << solve(2.0, 4.0) << endl;
+    cout << "Массив: ";
+    for (int i = 0; i < arr.GetSize(); i++)
+        cout << arr[i] << " ";
+    cout << endl;
 
-    cout << "Решение квадратного уравнения: ";
-    solve(1.0, -3.0, 2.0);
+    arr.InsertAt(1, 10);
 
-    cout << "Максимум: " << myMax(3, 7) << endl;
-    cout << "Минимум: " << myMin(3, 7) << endl;
+    cout << "После вставки: ";
+    for (int i = 0; i < arr.GetSize(); i++)
+        cout << arr[i] << " ";
+    cout << endl;
+
+    arr.RemoveAt(2);
+
+    cout << "После удаления: ";
+    for (int i = 0; i < arr.GetSize(); i++)
+        cout << arr[i] << " ";
+    cout << endl;
 
     return 0;
 }
