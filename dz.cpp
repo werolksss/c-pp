@@ -1,30 +1,42 @@
 ﻿#include <iostream>
-#include <exception>
+#include <stdexcept>
 using namespace std;
 
-class DivisionByZeroException : public exception {
+class IntArray {
+private:
+    int* arr;
+    int size;
+
 public:
-    const char* what() const noexcept override {
-        return "Division by zero!";
+    IntArray(int s) {
+        size = s;
+        arr = new int[size];
     }
-};
 
-class SafeDivision {
-public:
-    static double divide(double a, double b) {
-        if (b == 0)
-            throw DivisionByZeroException();
+    int& at(int index) {
+        if (index < 0 || index >= size)
+            throw out_of_range("Index out of range");
 
-        return a / b;
+        return arr[index];
+    }
+
+    ~IntArray() {
+        delete[] arr;
     }
 };
 
 int main() {
     try {
-        cout << SafeDivision::divide(10, 2) << endl;
-        cout << SafeDivision::divide(5, 0) << endl; // ошибка
+        IntArray a(3);
+
+        a.at(0) = 10;
+        a.at(1) = 20;
+
+        cout << a.at(1) << endl;
+
+        cout << a.at(5); // ошибка
     }
-    catch (DivisionByZeroException& e) {
+    catch (out_of_range& e) {
         cout << e.what() << endl;
     }
 }
