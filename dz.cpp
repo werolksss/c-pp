@@ -1,49 +1,30 @@
 ﻿#include <iostream>
-#include <stdexcept>
+#include <exception>
 using namespace std;
 
-class BankAccount {
-private:
-    string name;
-    double balance;
-
+class DivisionByZeroException : public exception {
 public:
-    BankAccount(string n, double b) {
-        if (b < 0)
-            throw invalid_argument("Negative start balance");
-
-        name = n;
-        balance = b;
+    const char* what() const noexcept override {
+        return "Division by zero!";
     }
+};
 
-    void withdraw(double amount) {
-        if (amount < 0)
-            throw invalid_argument("Negative amount");
+class SafeDivision {
+public:
+    static double divide(double a, double b) {
+        if (b == 0)
+            throw DivisionByZeroException();
 
-        if (amount > balance)
-            throw runtime_error("Not enough money");
-
-        balance -= amount;
-    }
-
-    void show() {
-        cout << name << " balance: " << balance << endl;
+        return a / b;
     }
 };
 
 int main() {
     try {
-        BankAccount acc("Alex", 100);
-
-        acc.withdraw(50);
-        acc.show();
-
-        acc.withdraw(200); // ошибка
+        cout << SafeDivision::divide(10, 2) << endl;
+        cout << SafeDivision::divide(5, 0) << endl; // ошибка
     }
-    catch (invalid_argument& e) {
-        cout << "Invalid argument: " << e.what() << endl;
-    }
-    catch (runtime_error& e) {
-        cout << "Runtime error: " << e.what() << endl;
+    catch (DivisionByZeroException& e) {
+        cout << e.what() << endl;
     }
 }
