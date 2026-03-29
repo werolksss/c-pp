@@ -1,42 +1,98 @@
 ﻿#include <iostream>
-#include <stdexcept>
+#include <string>
 using namespace std;
 
-class IntArray {
-private:
-    int* arr;
-    int size;
+// 1
+namespace Geometry {
+    const double PI = 3.14159;
 
-public:
-    IntArray(int s) {
-        size = s;
-        arr = new int[size];
+    double circleArea(double r) {
+        return PI * r * r;
     }
 
-    int& at(int index) {
-        if (index < 0 || index >= size)
-            throw out_of_range("Index out of range");
-
-        return arr[index];
+    double rectangleArea(double w, double h) {
+        return w * h;
     }
 
-    ~IntArray() {
-        delete[] arr;
+    namespace Shapes {
+        class Circle {
+            double radius;
+        public:
+            Circle(double r) : radius(r) {}
+
+            double area() {
+                return Geometry::circleArea(radius);
+            }
+        };
     }
-};
+}
+
+// 2
+namespace Logger {
+    enum LogLevel { INFO, WARNING, ERROR };
+
+    void log(LogLevel level, const string& msg) {
+        if (level == INFO) cout << "[INFO] ";
+        else if (level == WARNING) cout << "[WARNING] ";
+        else cout << "[ERROR] ";
+
+        cout << msg << endl;
+    }
+
+    namespace FileLogger {
+        void logToFile(const string& file, const string& msg) {
+            cout << "Запись в файл " << file << ": " << msg << endl;
+        }
+    }
+}
+
+// 3
+
+// анонимное пространство
+namespace {
+    int counter = 0;
+
+    void normalize(double& v) {
+        if (v < 0) v = 0;
+        if (v > 1) v = 1;
+        counter++;
+    }
+}
+
+namespace Utils {
+    double clamp(double val, double min, double max) {
+        if (val < min) val = min;
+        if (val > max) val = max;
+
+        normalize(val); // используем скрытую функцию
+        return val;
+    }
+}
 
 int main() {
-    try {
-        IntArray a(3);
+    setlocale(LC_ALL, "Russian");
 
-        a.at(0) = 10;
-        a.at(1) = 20;
+    //1
+    cout << "Площадь круга: " << Geometry::circleArea(5) << endl;
 
-        cout << a.at(1) << endl;
+    using Geometry::rectangleArea;
+    cout << "Площадь прямоугольника: " << rectangleArea(4, 6) << endl;
 
-        cout << a.at(5); // ошибка
-    }
-    catch (out_of_range& e) {
-        cout << e.what() << endl;
-    }
+    Geometry::Shapes::Circle c(3);
+    cout << "Площадь (класс): " << c.area() << endl;
+
+    //2
+    using namespace Logger;
+
+    log(INFO, "Программа запущена");
+    log(WARNING, "Предупреждение");
+    log(ERROR, "Ошибка");
+
+    FileLogger::logToFile("log.txt", "Тест");
+
+    //3
+    double x = 1.5;
+    cout << "Clamp: " << Utils::clamp(x, 0, 1) << endl;
+
+    return 0;
 }
