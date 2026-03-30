@@ -13,7 +13,6 @@ public:
     template <typename Func>
     ThreadGuard(Func func) : t(func) {}
 
-    // запрет копирования
     ThreadGuard(const ThreadGuard&) = delete;
     ThreadGuard& operator=(const ThreadGuard&) = delete;
 
@@ -23,7 +22,7 @@ public:
     }
 };
 
-// 2
+//2
 class AtomicCounter {
     int value;
     mutex mtx;
@@ -48,7 +47,7 @@ public:
 };
 
 int main() {
-    setlocale(LC_ALL, "Russian");
+    setlocale(LC_ALL, "ru");
 
     ThreadGuard t1([]() {
         cout << "Поток 1 работает\n";
