@@ -1,82 +1,62 @@
 ﻿#include <iostream>
-#include <thread>
-#include <mutex>
-#include <vector>
+#include <memory>
 #include <chrono>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <cctype>
 using namespace std;
 
-//1
-class ThreadGuard {
-    thread t;
+class Timer {
+    chrono::steady_clock::time_point start;
 
 public:
-    template <typename Func>
-    ThreadGuard(Func func) : t(func) {}
+    Timer() {
+        start = chrono::steady_clock::now();
+        cout << "Таймер запущен\n";
+    }
 
-    ThreadGuard(const ThreadGuard&) = delete;
-    ThreadGuard& operator=(const ThreadGuard&) = delete;
-
-    ~ThreadGuard() {
-        if (t.joinable())
-            t.join();
+    ~Timer() {
+        auto end = chrono::steady_clock::now();
+        auto ms = chrono::duration_cast<chrono::milliseconds>(end - start);
+        cout << "Прошло: " << ms.count() << " мс\n";
     }
 };
 
-//2
-class AtomicCounter {
-    int value;
-    mutex mtx;
+unique_ptr<Timer> createTimer() {
+    return make_unique<Timer>();
+}
 
-public:
-    AtomicCounter(int v = 0) : value(v) {}
-
-    void increment() {
-        lock_guard<mutex> lock(mtx);
-        value++;
-    }
-
-    void decrement() {
-        lock_guard<mutex> lock(mtx);
-        value--;
-    }
-
-    int get() {
-        lock_guard<mutex> lock(mtx);
-        return value;
-    }
-};
 
 int main() {
-    setlocale(LC_ALL, "ru");
+    setlocale(LC_ALL, "Ru");
 
-    ThreadGuard t1([]() {
-        cout << "Поток 1 работает\n";
-        });
-
-    ThreadGuard t2([]() {
-        this_thread::sleep_for(chrono::seconds(1));
-        cout << "Поток 2 с задержкой\n";
-        });
-
-    AtomicCounter counter(0);
-    vector<thread> threads;
-
-    for (int i = 0; i < 5; i++) {
-        threads.push_back(thread([&]() {
-            for (int j = 0; j < 10000; j++)
-                counter.increment();
-            }));
-
-        threads.push_back(thread([&]() {
-            for (int j = 0; j < 10000; j++)
-                counter.decrement();
-            }));
+    {
+        unique_ptr<Timer> t = createTimer();
     }
 
-    for (auto& t : threads)
-        t.join();
+    vector<string> names = { "Ann", "Michael", "Tom", "Kate", "Alexander" };
 
-    cout << "Итоговое значение: " << counter.get() << endl;
+    sort(names.begin(), names.end(),
+        [](string a, string b) {
+            return a.size() < b.size();
+        });
+
+    names.erase(remove_if(names.begin(), names.end(),
+        [](string s) {
+            return s.size() < 4;
+        }), names.end());
+
+    for_each(names.begin(), names.end(),
+        [](string& s) {
+            for (char& c : s)
+                c = toupper(c);
+        });
+
+
+    cout << "Результат:\n";
+    for (auto s : names)
+        cout << s << endl;
 
     return 0;
 }
