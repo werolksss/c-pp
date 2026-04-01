@@ -1,62 +1,80 @@
 ﻿#include <iostream>
-#include <memory>
-#include <chrono>
 #include <vector>
-#include <algorithm>
-#include <string>
-#include <cctype>
 using namespace std;
 
-class Timer {
-    chrono::steady_clock::time_point start;
-
+//1
+class Shape {
 public:
-    Timer() {
-        start = chrono::steady_clock::now();
-        cout << "Таймер запущен\n";
+    virtual void draw() {
+        cout << "Фигура\n";
     }
+    virtual ~Shape() {}
+};
 
-    ~Timer() {
-        auto end = chrono::steady_clock::now();
-        auto ms = chrono::duration_cast<chrono::milliseconds>(end - start);
-        cout << "Прошло: " << ms.count() << " мс\n";
+class Circle : public Shape {
+public:
+    void draw() override {
+        cout << "Рисуем круг\n";
     }
 };
 
-unique_ptr<Timer> createTimer() {
-    return make_unique<Timer>();
+class Rectangle : public Shape {
+public:
+    void draw() override {
+        cout << "Рисуем прямоугольник\n";
+    }
+};
+
+void identifyAndDraw(Shape* s) {
+    if (dynamic_cast<Circle*>(s)) {
+        cout << "Это Circle: ";
+        s->draw();
+    }
+    else if (dynamic_cast<Rectangle*>(s)) {
+        cout << "Это Rectangle: ";
+        s->draw();
+    }
 }
 
+//2
+class DataHolder {
+    int data[3] = { 1, 2, 3 };
 
-int main() {
-    setlocale(LC_ALL, "Ru");
-
-    {
-        unique_ptr<Timer> t = createTimer();
+public:
+    const int* getData() const {
+        return data;
     }
 
-    vector<string> names = { "Ann", "Michael", "Tom", "Kate", "Alexander" };
+    void print() const {
+        for (int x : data) cout << x << " ";
+        cout << endl;
+    }
+};
 
-    sort(names.begin(), names.end(),
-        [](string a, string b) {
-            return a.size() < b.size();
-        });
+void modifyData(const DataHolder& dh) {
+    int* ptr = const_cast<int*>(dh.getData());
+    ptr[0] = 100;
+}
 
-    names.erase(remove_if(names.begin(), names.end(),
-        [](string s) {
-            return s.size() < 4;
-        }), names.end());
+int main() {
+    setlocale(LC_ALL, "ru");
 
-    for_each(names.begin(), names.end(),
-        [](string& s) {
-            for (char& c : s)
-                c = toupper(c);
-        });
+    vector<Shape*> shapes;
+    shapes.push_back(new Circle());
+    shapes.push_back(new Rectangle());
 
+    for (auto s : shapes)
+        identifyAndDraw(s);
 
-    cout << "Результат:\n";
-    for (auto s : names)
-        cout << s << endl;
+    for (auto s : shapes)
+        delete s;
+
+    DataHolder d;
+    d.print();
+
+    modifyData(d);
+
+    d.print();
 
     return 0;
 }
